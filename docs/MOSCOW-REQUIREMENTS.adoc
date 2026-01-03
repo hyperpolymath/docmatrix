@@ -39,7 +39,7 @@ This document defines Must/Should/Could requirements for each component of the d
 
 |FD-M06
 |File open/save operations
-|🔲 Pending
+|✅ Done
 
 |FD-M07
 |Basic Tauri GUI shell
@@ -54,7 +54,7 @@ This document defines Must/Should/Could requirements for each component of the d
 |🔲 Pending
 
 |FD-M10
-|C FFI exports for Ada TUI
+|Zig FFI bindings for Ada TUI
 |✅ Done
 
 |FD-M11

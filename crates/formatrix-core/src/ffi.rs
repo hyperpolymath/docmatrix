@@ -8,7 +8,7 @@ use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::ptr;
 
-use crate::ast::{Block, Document, DocumentMeta, SourceFormat};
+use crate::ast::{Document, SourceFormat};
 use crate::traits::{ParseConfig, Parser, RenderConfig, Renderer};
 
 /// Opaque handle to a document
@@ -18,6 +18,7 @@ pub struct DocumentHandle {
 
 /// Result code for FFI operations
 #[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum FfiResult {
     Success = 0,
     InvalidInput = 1,
@@ -30,6 +31,7 @@ pub enum FfiResult {
 
 /// Document format for FFI
 #[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum FfiFormat {
     PlainText = 0,
     Markdown = 1,
@@ -394,7 +396,7 @@ pub unsafe extern "C" fn formatrix_convert(
     // Parse input
     let mut handle: *mut DocumentHandle = ptr::null_mut();
     let parse_result = formatrix_parse(content, from_format, &mut handle);
-    if parse_result as u32 != FfiResult::Success as u32 {
+    if parse_result != FfiResult::Success {
         return parse_result;
     }
 
@@ -405,6 +407,167 @@ pub unsafe extern "C" fn formatrix_convert(
     formatrix_free_document(handle);
 
     render_result
+}
+
+/// Open a file and parse it into a document handle
+///
+/// # Safety
+/// - `path` must be a valid null-terminated UTF-8 file path
+/// - `out_handle` must be a valid pointer to store the result
+/// - `out_format` must be a valid pointer to store the detected format
+#[no_mangle]
+pub unsafe extern "C" fn formatrix_open_file(
+    path: *const c_char,
+    out_handle: *mut *mut DocumentHandle,
+    out_format: *mut FfiFormat,
+) -> FfiResult {
+    if path.is_null() || out_handle.is_null() || out_format.is_null() {
+        return FfiResult::NullPointer;
+    }
+
+    let path_str = match CStr::from_ptr(path).to_str() {
+        Ok(s) => s,
+        Err(_) => return FfiResult::Utf8Error,
+    };
+
+    use crate::file_ops;
+    match file_ops::open_file(path_str) {
+        Ok(opened) => {
+            *out_format = opened.file_info.format.into();
+            let handle = Box::new(DocumentHandle { doc: opened.document });
+            *out_handle = Box::into_raw(handle);
+            FfiResult::Success
+        }
+        Err(e) => match e {
+            file_ops::FileError::Io(_) => FfiResult::InvalidInput,
+            file_ops::FileError::Parse(_) => FfiResult::ParseError,
+            file_ops::FileError::UnknownFormat { .. } => FfiResult::UnsupportedFormat,
+            file_ops::FileError::UnsupportedFormat { .. } => FfiResult::UnsupportedFormat,
+            file_ops::FileError::Render(_) => FfiResult::RenderError,
+        },
+    }
+}
+
+/// Save a document to a file
+///
+/// Format is determined by the file extension. If no extension matches,
+/// uses the document's source format.
+///
+/// # Safety
+/// - `handle` must be a valid document handle
+/// - `path` must be a valid null-terminated UTF-8 file path
+#[no_mangle]
+pub unsafe extern "C" fn formatrix_save_file(
+    handle: *const DocumentHandle,
+    path: *const c_char,
+) -> FfiResult {
+    if handle.is_null() || path.is_null() {
+        return FfiResult::NullPointer;
+    }
+
+    let path_str = match CStr::from_ptr(path).to_str() {
+        Ok(s) => s,
+        Err(_) => return FfiResult::Utf8Error,
+    };
+
+    let doc = &(*handle).doc;
+
+    use crate::file_ops;
+    match file_ops::save_file(doc, path_str) {
+        Ok(()) => FfiResult::Success,
+        Err(e) => match e {
+            file_ops::FileError::Io(_) => FfiResult::InvalidInput,
+            file_ops::FileError::Render(_) => FfiResult::RenderError,
+            file_ops::FileError::UnsupportedFormat { .. } => FfiResult::UnsupportedFormat,
+            _ => FfiResult::RenderError,
+        },
+    }
+}
+
+/// Save a document to a file in a specific format
+///
+/// # Safety
+/// - `handle` must be a valid document handle
+/// - `path` must be a valid null-terminated UTF-8 file path
+#[no_mangle]
+pub unsafe extern "C" fn formatrix_save_file_as(
+    handle: *const DocumentHandle,
+    path: *const c_char,
+    format: FfiFormat,
+) -> FfiResult {
+    if handle.is_null() || path.is_null() {
+        return FfiResult::NullPointer;
+    }
+
+    let path_str = match CStr::from_ptr(path).to_str() {
+        Ok(s) => s,
+        Err(_) => return FfiResult::Utf8Error,
+    };
+
+    let doc = &(*handle).doc;
+    let target_format: SourceFormat = format.into();
+
+    use crate::file_ops;
+    use crate::traits::RenderConfig;
+    match file_ops::save_file_as(doc, path_str, target_format, &RenderConfig::default()) {
+        Ok(()) => FfiResult::Success,
+        Err(e) => match e {
+            file_ops::FileError::Io(_) => FfiResult::InvalidInput,
+            file_ops::FileError::Render(_) => FfiResult::RenderError,
+            file_ops::FileError::UnsupportedFormat { .. } => FfiResult::UnsupportedFormat,
+            _ => FfiResult::RenderError,
+        },
+    }
+}
+
+/// Detect format from file path (by extension)
+///
+/// # Safety
+/// - `path` must be a valid null-terminated UTF-8 file path
+#[no_mangle]
+pub unsafe extern "C" fn formatrix_detect_file_format(path: *const c_char) -> FfiFormat {
+    if path.is_null() {
+        return FfiFormat::PlainText;
+    }
+
+    let path_str = match CStr::from_ptr(path).to_str() {
+        Ok(s) => s,
+        Err(_) => return FfiFormat::PlainText,
+    };
+
+    use crate::file_ops;
+    use std::path::Path;
+
+    match file_ops::format_from_extension(Path::new(path_str)) {
+        Some(format) => format.into(),
+        None => FfiFormat::PlainText,
+    }
+}
+
+/// Get the file extension for a format
+///
+/// # Safety
+/// Returns a static string, do not free
+#[no_mangle]
+pub extern "C" fn formatrix_format_extension(format: FfiFormat) -> *const c_char {
+    static EXT_TXT: &[u8] = b"txt\0";
+    static EXT_MD: &[u8] = b"md\0";
+    static EXT_ADOC: &[u8] = b"adoc\0";
+    static EXT_DJ: &[u8] = b"dj\0";
+    static EXT_ORG: &[u8] = b"org\0";
+    static EXT_RST: &[u8] = b"rst\0";
+    static EXT_TYP: &[u8] = b"typ\0";
+
+    let ptr = match format {
+        FfiFormat::PlainText => EXT_TXT.as_ptr(),
+        FfiFormat::Markdown => EXT_MD.as_ptr(),
+        FfiFormat::AsciiDoc => EXT_ADOC.as_ptr(),
+        FfiFormat::Djot => EXT_DJ.as_ptr(),
+        FfiFormat::OrgMode => EXT_ORG.as_ptr(),
+        FfiFormat::ReStructuredText => EXT_RST.as_ptr(),
+        FfiFormat::Typst => EXT_TYP.as_ptr(),
+    };
+    ptr as *const c_char
 }
 
 #[cfg(test)]
@@ -419,7 +582,7 @@ mod tests {
 
         unsafe {
             let result = formatrix_parse(content.as_ptr(), FfiFormat::Markdown, &mut handle);
-            assert_eq!(result as u32, FfiResult::Success as u32);
+            assert_eq!(result, FfiResult::Success);
             assert!(!handle.is_null());
 
             let count = formatrix_block_count(handle);
@@ -435,8 +598,8 @@ mod tests {
         let org = CString::new("#+TITLE: Test\n* Heading").unwrap();
 
         unsafe {
-            assert_eq!(formatrix_detect_format(md.as_ptr()) as u32, FfiFormat::Markdown as u32);
-            assert_eq!(formatrix_detect_format(org.as_ptr()) as u32, FfiFormat::OrgMode as u32);
+            assert_eq!(formatrix_detect_format(md.as_ptr()), FfiFormat::Markdown);
+            assert_eq!(formatrix_detect_format(org.as_ptr()), FfiFormat::OrgMode);
         }
     }
 }

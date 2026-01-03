@@ -1410,6 +1410,7 @@ dependencies = [
  "rst_parser",
  "serde",
  "serde_json",
+ "tempfile",
  "thiserror 2.0.17",
  "typst-syntax",
  "unicode-segmentation",

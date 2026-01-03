@@ -34,6 +34,7 @@ unicode-segmentation.workspace = true
 [dev-dependencies]
 pretty_assertions = "1.4"
 proptest = "1.5"
+tempfile = "3.14"
 
 [features]
 default = ["markdown", "djot", "orgmode", "rst", "typst", "asciidoc"]
