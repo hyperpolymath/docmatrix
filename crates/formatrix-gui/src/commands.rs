@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Tauri commands for document operations
 
-use formatrix_core::{Document, ParseConfig, RenderConfig, SourceFormat};
+use formatrix_core::{ParseConfig, RenderConfig};
 use serde::{Deserialize, Serialize};
 use sha2::{Sha256, Digest};
 
@@ -243,7 +243,10 @@ pub async fn convert_to_format(
     from_format: String,
     to_format: String,
 ) -> Result<ConversionResult, String> {
-    use formatrix_core::formats::{MarkdownHandler, PlainTextHandler};
+    use formatrix_core::formats::{
+        AsciidocHandler, DjotHandler, MarkdownHandler, OrgModeHandler, PlainTextHandler,
+        RstHandler, TypstHandler,
+    };
     use formatrix_core::traits::{Parser, Renderer};
 
     // For now, just return the content as-is if converting to same format
@@ -265,6 +268,21 @@ pub async fn convert_to_format(
         "md" => MarkdownHandler::new()
             .parse(&content, &parse_config)
             .map_err(|e| e.to_string())?,
+        "adoc" => AsciidocHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        "djot" => DjotHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        "org" => OrgModeHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        "rst" => RstHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        "typ" => TypstHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
         _ => {
             return Err(format!("Unsupported source format: {}", from_format));
         }
@@ -278,13 +296,190 @@ pub async fn convert_to_format(
         "md" => MarkdownHandler::new()
             .render(&doc, &render_config)
             .map_err(|e| e.to_string())?,
+        "adoc" => AsciidocHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        "djot" => DjotHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        "org" => OrgModeHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        "rst" => RstHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        "typ" => TypstHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
         _ => {
             return Err(format!("Unsupported target format: {}", to_format));
         }
     };
 
+    // Emit conversion event
+    emit_event(DocumentEvent::converted(&content, &output, &from_format, &to_format));
+
     Ok(ConversionResult {
         content: output,
         warnings: Vec::new(),
     })
+}
+
+/// Parsed document result for frontend
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ParsedDocument {
+    pub title: Option<String>,
+    pub block_count: usize,
+    pub format: String,
+}
+
+/// Parse a document and return metadata
+#[tauri::command]
+pub async fn parse_document(content: String, format: String) -> Result<ParsedDocument, String> {
+    use formatrix_core::formats::{
+        AsciidocHandler, DjotHandler, MarkdownHandler, OrgModeHandler, PlainTextHandler,
+        RstHandler, TypstHandler,
+    };
+    use formatrix_core::traits::Parser;
+
+    let parse_config = ParseConfig::default();
+
+    let doc = match format.as_str() {
+        "txt" => PlainTextHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        "md" => MarkdownHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        "adoc" => AsciidocHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        "djot" => DjotHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        "org" => OrgModeHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        "rst" => RstHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        "typ" => TypstHandler::new()
+            .parse(&content, &parse_config)
+            .map_err(|e| e.to_string())?,
+        _ => {
+            return Err(format!("Unsupported format: {}", format));
+        }
+    };
+
+    Ok(ParsedDocument {
+        title: doc.meta.title,
+        block_count: doc.content.len(),
+        format,
+    })
+}
+
+/// Render a document from AST JSON (for advanced use)
+#[tauri::command]
+pub async fn render_document(content: String, to_format: String) -> Result<String, String> {
+    use formatrix_core::formats::{
+        AsciidocHandler, DjotHandler, MarkdownHandler, OrgModeHandler, PlainTextHandler,
+        RstHandler, TypstHandler,
+    };
+    use formatrix_core::traits::{Parser, Renderer};
+
+    // Parse as markdown by default for rendering
+    let parse_config = ParseConfig::default();
+    let render_config = RenderConfig::default();
+
+    let doc = MarkdownHandler::new()
+        .parse(&content, &parse_config)
+        .map_err(|e| e.to_string())?;
+
+    let output = match to_format.as_str() {
+        "txt" => PlainTextHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        "md" => MarkdownHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        "adoc" => AsciidocHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        "djot" => DjotHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        "org" => OrgModeHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        "rst" => RstHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        "typ" => TypstHandler::new()
+            .render(&doc, &render_config)
+            .map_err(|e| e.to_string())?,
+        _ => {
+            return Err(format!("Unsupported target format: {}", to_format));
+        }
+    };
+
+    Ok(output)
+}
+
+/// Detect format from content using heuristics
+#[tauri::command]
+pub fn detect_format(content: String) -> String {
+    use formatrix_core::file_ops::format_from_content;
+
+    let format = format_from_content(&content);
+    format.extension().to_string()
+}
+
+/// Format info for frontend
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FormatInfo {
+    pub id: String,
+    pub label: String,
+    pub extension: String,
+}
+
+/// Get list of supported formats
+#[tauri::command]
+pub fn get_supported_formats() -> Vec<FormatInfo> {
+    vec![
+        FormatInfo {
+            id: "txt".to_string(),
+            label: "Plain Text".to_string(),
+            extension: "txt".to_string(),
+        },
+        FormatInfo {
+            id: "md".to_string(),
+            label: "Markdown".to_string(),
+            extension: "md".to_string(),
+        },
+        FormatInfo {
+            id: "adoc".to_string(),
+            label: "AsciiDoc".to_string(),
+            extension: "adoc".to_string(),
+        },
+        FormatInfo {
+            id: "djot".to_string(),
+            label: "Djot".to_string(),
+            extension: "dj".to_string(),
+        },
+        FormatInfo {
+            id: "org".to_string(),
+            label: "Org-mode".to_string(),
+            extension: "org".to_string(),
+        },
+        FormatInfo {
+            id: "rst".to_string(),
+            label: "reStructuredText".to_string(),
+            extension: "rst".to_string(),
+        },
+        FormatInfo {
+            id: "typ".to_string(),
+            label: "Typst".to_string(),
+            extension: "typ".to_string(),
+        },
+    ]
 }

@@ -8,18 +8,34 @@ authors.workspace = true
 license.workspace = true
 repository.workspace = true
 
+[lib]
+name = "formatrix_gui_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "formatrix-gui"
+path = "src/main.rs"
+
 [build-dependencies]
-tauri-build.workspace = true
+tauri-build = { workspace = true, features = [] }
 
 [dependencies]
 formatrix-core = { path = "../formatrix-core" }
-formatrix-db = { path = "../formatrix-db" }
-formatrix-pipeline = { path = "../formatrix-pipeline" }
+
 tauri.workspace = true
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-shell = "2"
+
 serde.workspace = true
 serde_json.workspace = true
+thiserror.workspace = true
 tokio.workspace = true
 tracing.workspace = true
+tracing-subscriber.workspace = true
+
+# Hashing for document events
+sha2 = "0.10"
 
 [features]
 default = ["custom-protocol"]
