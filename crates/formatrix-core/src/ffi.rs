@@ -120,6 +120,14 @@ pub unsafe extern "C" fn formatrix_parse(
                 Err(_) => return FfiResult::ParseError,
             }
         }
+        // FD-S01: AsciiDoc support
+        SourceFormat::AsciiDoc => {
+            use crate::formats::AsciidocHandler;
+            match AsciidocHandler::new().parse(content_str, &config) {
+                Ok(d) => d,
+                Err(_) => return FfiResult::ParseError,
+            }
+        }
         // FD-S02: RST support
         SourceFormat::ReStructuredText => {
             use crate::formats::RstHandler;
@@ -136,7 +144,6 @@ pub unsafe extern "C" fn formatrix_parse(
                 Err(_) => return FfiResult::ParseError,
             }
         }
-        _ => return FfiResult::UnsupportedFormat,
     };
 
     let handle = Box::new(DocumentHandle { doc });
@@ -195,6 +202,14 @@ pub unsafe extern "C" fn formatrix_render(
                 Err(_) => return FfiResult::RenderError,
             }
         }
+        // FD-S01: AsciiDoc support
+        SourceFormat::AsciiDoc => {
+            use crate::formats::AsciidocHandler;
+            match AsciidocHandler::new().render(doc, &config) {
+                Ok(s) => s,
+                Err(_) => return FfiResult::RenderError,
+            }
+        }
         // FD-S02: RST support
         SourceFormat::ReStructuredText => {
             use crate::formats::RstHandler;
@@ -211,7 +226,6 @@ pub unsafe extern "C" fn formatrix_render(
                 Err(_) => return FfiResult::RenderError,
             }
         }
-        _ => return FfiResult::UnsupportedFormat,
     };
 
     let c_string = match CString::new(output.clone()) {

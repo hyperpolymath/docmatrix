@@ -29,6 +29,7 @@ orgize = { version = "0.9", features = ["chrono"] }
 rst_parser = "0.4"
 document_tree = "0.4"
 typst-syntax = "0.12"
+asciidoc-parser = "0.14"
 
 # Database
 arangors = "0.6"

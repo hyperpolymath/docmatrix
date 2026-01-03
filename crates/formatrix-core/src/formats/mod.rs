@@ -6,12 +6,10 @@ pub mod markdown;
 pub mod djot;
 pub mod orgmode;
 
-// FD-S02, FD-S03: SHOULD requirement implementations
+// FD-S01, FD-S02, FD-S03: SHOULD requirement implementations
+pub mod asciidoc;
 pub mod rst;
 pub mod typst;
-
-// FD-S01: AsciiDoc - to be implemented
-// pub mod asciidoc;
 
 pub use plaintext::PlainTextHandler;
 pub use markdown::MarkdownHandler;
@@ -19,5 +17,6 @@ pub use djot::DjotHandler;
 pub use orgmode::OrgModeHandler;
 
 // SHOULD handlers
+pub use asciidoc::AsciidocHandler;
 pub use rst::RstHandler;
 pub use typst::TypstHandler;

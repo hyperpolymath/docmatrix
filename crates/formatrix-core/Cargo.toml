@@ -19,6 +19,7 @@ orgize.workspace = true
 rst_parser.workspace = true
 document_tree.workspace = true
 typst-syntax.workspace = true
+asciidoc-parser.workspace = true
 
 # Serialization
 serde.workspace = true
@@ -35,10 +36,11 @@ pretty_assertions = "1.4"
 proptest = "1.5"
 
 [features]
-default = ["markdown", "djot", "orgmode", "rst", "typst"]
+default = ["markdown", "djot", "orgmode", "rst", "typst", "asciidoc"]
 markdown = []
 djot = []
 orgmode = []
 rst = []
 typst = []
+asciidoc = []
 ffi = []  # Enable C FFI for Ada TUI

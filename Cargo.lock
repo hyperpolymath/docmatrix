@@ -155,6 +155,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "asciidoc-parser"
+version = "0.14.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dad5712e3772113340257d55b364a4b49a75e67df9ee1f0f20bebc6ac60cee80"
+dependencies = [
+ "bytecount",
+ "memchr",
+ "percent-encoding",
+ "regex",
+ "self_cell",
+ "thiserror 2.0.17",
+]
+
+[[package]]
 name = "async-compression"
 version = "0.4.36"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1386,6 +1400,7 @@ dependencies = [
 name = "formatrix-core"
 version = "0.1.0"
 dependencies = [
+ "asciidoc-parser",
  "comrak 0.29.0",
  "document_tree",
  "jotdown",
@@ -4293,6 +4308,12 @@ dependencies = [
  "servo_arc",
  "smallvec",
 ]
+
+[[package]]
+name = "self_cell"
+version = "1.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b12e76d157a900eb52e81bc6e9f3069344290341720e9178cde2407113ac8d89"
 
 [[package]]
 name = "semver"

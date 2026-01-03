@@ -81,16 +81,16 @@ This document defines Must/Should/Could requirements for each component of the d
 |ID |Requirement |Status
 
 |FD-S01
-|AsciiDoc parser and renderer (asciidocr)
-|🔲 Pending
+|AsciiDoc parser and renderer (asciidoc-parser)
+|✅ Done
 
 |FD-S02
 |reStructuredText parser and renderer (rst_parser)
-|🔲 Pending
+|✅ Done
 
 |FD-S03
 |Typst parser and renderer (typst-syntax)
-|🔲 Pending
+|✅ Done
 
 |FD-S04
 |Git status in status bar
