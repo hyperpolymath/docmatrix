@@ -3,6 +3,126 @@
 
 use formatrix_core::{Document, ParseConfig, RenderConfig, SourceFormat};
 use serde::{Deserialize, Serialize};
+use sha2::{Sha256, Digest};
+
+// =============================================================================
+// FD-M12: Document event emission
+// =============================================================================
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum DocumentEvent {
+    Created {
+        hash: String,
+        path: String,
+        format: String,
+        timestamp: f64,
+    },
+    Modified {
+        hash: String,
+        old_hash: String,
+        path: String,
+        format: String,
+        timestamp: f64,
+    },
+    Deleted {
+        hash: String,
+        path: String,
+        timestamp: f64,
+    },
+    Converted {
+        source_hash: String,
+        target_hash: String,
+        from_format: String,
+        to_format: String,
+        timestamp: f64,
+    },
+}
+
+impl DocumentEvent {
+    pub fn created(content: &str, path: &str, format: &str) -> Self {
+        DocumentEvent::Created {
+            hash: hash_content(content),
+            path: path.to_string(),
+            format: format.to_string(),
+            timestamp: current_timestamp(),
+        }
+    }
+
+    pub fn modified(content: &str, old_content: &str, path: &str, format: &str) -> Self {
+        DocumentEvent::Modified {
+            hash: hash_content(content),
+            old_hash: hash_content(old_content),
+            path: path.to_string(),
+            format: format.to_string(),
+            timestamp: current_timestamp(),
+        }
+    }
+
+    pub fn deleted(content: &str, path: &str) -> Self {
+        DocumentEvent::Deleted {
+            hash: hash_content(content),
+            path: path.to_string(),
+            timestamp: current_timestamp(),
+        }
+    }
+
+    pub fn converted(source: &str, target: &str, from: &str, to: &str) -> Self {
+        DocumentEvent::Converted {
+            source_hash: hash_content(source),
+            target_hash: hash_content(target),
+            from_format: from.to_string(),
+            to_format: to.to_string(),
+            timestamp: current_timestamp(),
+        }
+    }
+}
+
+fn hash_content(content: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(content.as_bytes());
+    format!("{:x}", hasher.finalize())
+}
+
+fn current_timestamp() -> f64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs_f64()
+}
+
+// Event log for tracking document changes
+static EVENT_LOG: std::sync::LazyLock<std::sync::Mutex<Vec<DocumentEvent>>> =
+    std::sync::LazyLock::new(|| std::sync::Mutex::new(Vec::new()));
+
+/// Emit a document event
+pub fn emit_event(event: DocumentEvent) {
+    if let Ok(mut log) = EVENT_LOG.lock() {
+        log.push(event);
+    }
+}
+
+/// Get recent document events
+#[tauri::command]
+pub fn get_document_events(limit: usize) -> Vec<DocumentEvent> {
+    if let Ok(log) = EVENT_LOG.lock() {
+        log.iter()
+            .rev()
+            .take(limit)
+            .cloned()
+            .collect()
+    } else {
+        Vec::new()
+    }
+}
+
+/// Clear document event log
+#[tauri::command]
+pub fn clear_document_events() {
+    if let Ok(mut log) = EVENT_LOG.lock() {
+        log.clear();
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DocumentMeta {

@@ -1,0 +1,834 @@
+= MoSCoW Requirements - Documentation Ecosystem
+:toc: left
+:toclevels: 4
+:icons: font
+:source-highlighter: highlightjs
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+== Overview
+
+This document defines Must/Should/Could requirements for each component of the documentation ecosystem, organized for systematic implementation with integration seam checks.
+
+== Component 1: Formatrix Docs (Human Editor)
+
+=== MUST Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|FD-M01
+|Unified AST types (Block, Inline, Document)
+|✅ Done
+
+|FD-M02
+|Markdown parser and renderer (comrak)
+|✅ Done
+
+|FD-M03
+|Djot parser and renderer (jotdown)
+|✅ Done
+
+|FD-M04
+|Org-mode parser and renderer (orgize)
+|✅ Done
+
+|FD-M05
+|Plain text handler
+|✅ Done
+
+|FD-M06
+|File open/save operations
+|🔲 Pending
+
+|FD-M07
+|Basic Tauri GUI shell
+|🔲 Pending
+
+|FD-M08
+|Format tabs component (ReScript)
+|🔲 Pending
+
+|FD-M09
+|Editor component with syntax highlighting
+|🔲 Pending
+
+|FD-M10
+|C FFI exports for Ada TUI
+|🔲 Pending
+
+|FD-M11
+|Basic Ada TUI with ncurses
+|🔲 Pending
+
+|FD-M12
+|Document event emission (created/modified/deleted)
+|🔲 Pending
+
+|FD-M13
+|SPDX headers on all source files
+|✅ Done
+
+|FD-M14
+|RSR compliance (STATE.scm, ECOSYSTEM.scm, META.scm)
+|✅ Done
+|===
+
+=== SHOULD Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|FD-S01
+|AsciiDoc parser and renderer (asciidocr)
+|🔲 Pending
+
+|FD-S02
+|reStructuredText parser and renderer (rst_parser)
+|🔲 Pending
+
+|FD-S03
+|Typst parser and renderer (typst-syntax)
+|🔲 Pending
+
+|FD-S04
+|Git status in status bar
+|🔲 Pending
+
+|FD-S05
+|Hunspell spell checking integration
+|🔲 Pending
+
+|FD-S06
+|Print/export to PDF
+|🔲 Pending
+
+|FD-S07
+|ArangoDB document storage
+|🔲 Pending
+
+|FD-S08
+|Recent files list
+|🔲 Pending
+
+|FD-S09
+|Auto-save with recovery
+|🔲 Pending
+
+|FD-S10
+|Keyboard shortcuts (vim/emacs modes)
+|🔲 Pending
+
+|FD-S11
+|Dark/light theme support
+|🔲 Pending
+
+|FD-S12
+|Document diff view
+|🔲 Pending
+|===
+
+=== COULD Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|FD-C01
+|Graph view (document links visualization)
+|🔲 Pending
+
+|FD-C02
+|OCR integration (Tesseract)
+|🔲 Pending
+
+|FD-C03
+|TTS integration (espeak-ng)
+|🔲 Pending
+
+|FD-C04
+|STT integration (Vosk)
+|🔲 Pending
+
+|FD-C05
+|Pandoc bridge for exotic formats
+|🔲 Pending
+
+|FD-C06
+|Agrep fuzzy search
+|🔲 Pending
+
+|FD-C07
+|Gist library (ArangoDB-backed)
+|🔲 Pending
+
+|FD-C08
+|Share/send functionality
+|🔲 Pending
+
+|FD-C09
+|Nickel pipelines for import/export
+|🔲 Pending
+
+|FD-C10
+|Mobile support (Tauri 2.0)
+|🔲 Pending
+
+|FD-C11
+|Flying Logic reasoning diagrams
+|🔲 Pending
+
+|FD-C12
+|Collaborative editing (CRDTs)
+|🔲 Pending
+|===
+
+== Component 2: Recon-Silly-Ation (Reconciliation Engine)
+
+=== MUST Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|RSA-M01
+|ReconForth lexer (tokenization)
+|✅ Done
+
+|RSA-M02
+|ReconForth VM (stack, dictionary)
+|✅ Done
+
+|RSA-M03
+|Stack manipulation words (dup, drop, swap, over, rot)
+|✅ Done
+
+|RSA-M04
+|Arithmetic words (+, -, *, /, mod)
+|✅ Done
+
+|RSA-M05
+|Comparison words (=, <, >, <=, >=, <>)
+|✅ Done
+
+|RSA-M06
+|Logic words (and, or, not)
+|✅ Done
+
+|RSA-M07
+|Control flow words (if/else/then, call)
+|✅ Done
+
+|RSA-M08
+|Document words (new-doc, doc-hash, doc-content)
+|✅ Done
+
+|RSA-M09
+|Bundle words (new-bundle, bundle-add, bundle-count)
+|✅ Done
+
+|RSA-M10
+|Pack words (new-pack, require-doc, optional-doc)
+|✅ Done
+
+|RSA-M11
+|Validation words (emit-error, emit-warning, emit-suggestion)
+|✅ Done
+
+|RSA-M12
+|Format detection (detect-format)
+|✅ Done
+
+|RSA-M13
+|WASM bindings for ReScript
+|✅ Done
+
+|RSA-M14
+|EnforcementBot rule definitions
+|✅ Done
+
+|RSA-M15
+|PackShipper manifest creation
+|✅ Done
+
+|RSA-M16
+|Content hashing (SHA-256)
+|✅ Done
+
+|RSA-M17
+|RSR compliance files
+|✅ Done
+|===
+
+=== SHOULD Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|RSA-S01
+|Format parsing words (parse-content, get-headings)
+|✅ Done
+
+|RSA-S02
+|EnforcementBot job scheduling
+|🔲 Pending
+
+|RSA-S03
+|PackShipper Git destination
+|🔲 Pending
+
+|RSA-S04
+|PackShipper filesystem destination
+|🔲 Pending
+
+|RSA-S05
+|PackShipper ArangoDB destination
+|🔲 Pending
+
+|RSA-S06
+|LogicEngine Datalog rules
+|✅ Done
+
+|RSA-S07
+|Conflict detection algorithms
+|🔲 Pending
+
+|RSA-S08
+|Confidence scoring for auto-resolution
+|🔲 Pending
+
+|RSA-S09
+|7-stage pipeline implementation
+|🔲 Pending
+
+|RSA-S10
+|Report generation (JSON, HTML)
+|🔲 Pending
+
+|RSA-S11
+|CLI interface for standalone use
+|🔲 Pending
+
+|RSA-S12
+|Pre-built pack specs (RSR, minimal, security)
+|🔲 Pending
+|===
+
+=== COULD Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|RSA-C01
+|Haskell schema validator bridge
+|🔲 Pending
+
+|RSA-C02
+|DOT/Mermaid graph visualization
+|🔲 Pending
+
+|RSA-C03
+|CCCP compliance checker
+|🔲 Pending
+
+|RSA-C04
+|LLM integration hooks (for Docubot)
+|🔲 Pending
+
+|RSA-C05
+|Real-time event streaming (WebSocket)
+|🔲 Pending
+
+|RSA-C06
+|Distributed reconciliation across repos
+|🔲 Pending
+
+|RSA-C07
+|ML-enhanced conflict resolution
+|🔲 Pending
+
+|RSA-C08
+|Plugin system for custom words
+|🔲 Pending
+|===
+
+== Component 3: Docubot (AI Document Assistant)
+
+=== MUST Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|DB-M01
+|Module structure with ReScript types
+|🔲 Pending
+
+|DB-M02
+|LLM provider abstraction (Anthropic, OpenAI, local)
+|🔲 Pending
+
+|DB-M03
+|Document generation function
+|🔲 Pending
+
+|DB-M04
+|MANDATORY approval gate (requiresApproval: true)
+|🔲 Pending
+
+|DB-M05
+|Audit trail for all generations
+|🔲 Pending
+
+|DB-M06
+|Rate limiting per provider
+|🔲 Pending
+
+|DB-M07
+|Cost tracking and budgets
+|🔲 Pending
+
+|DB-M08
+|Template system for doc types
+|🔲 Pending
+
+|DB-M09
+|Context extraction from repo
+|🔲 Pending
+
+|DB-M10
+|Output validation before return
+|🔲 Pending
+|===
+
+=== SHOULD Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|DB-S01
+|Improvement suggestions for existing docs
+|🔲 Pending
+
+|DB-S02
+|Cross-reference validation
+|🔲 Pending
+
+|DB-S03
+|Multiple format output (MD, ADOC, ORG)
+|🔲 Pending
+
+|DB-S04
+|Batch generation mode
+|🔲 Pending
+
+|DB-S05
+|Quality scoring of generated content
+|🔲 Pending
+
+|DB-S06
+|Human-in-the-loop feedback collection
+|🔲 Pending
+
+|DB-S07
+|Caching of similar requests
+|🔲 Pending
+
+|DB-S08
+|Prompt versioning and management
+|🔲 Pending
+|===
+
+=== COULD Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|DB-C01
+|Local LLM support (Ollama, llama.cpp)
+|🔲 Pending
+
+|DB-C02
+|Fine-tuned models for doc generation
+|🔲 Pending
+
+|DB-C03
+|Multi-language doc generation
+|🔲 Pending
+
+|DB-C04
+|Style transfer between doc formats
+|🔲 Pending
+
+|DB-C05
+|Automated PR creation with generated docs
+|🔲 Pending
+
+|DB-C06
+|Integration with code analysis
+|🔲 Pending
+|===
+
+== Component 4: Docudactyl (Orchestrator)
+
+=== MUST Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|DD-M01
+|Module structure with ReScript types
+|🔲 Pending
+
+|DD-M02
+|Event bus for component communication
+|🔲 Pending
+
+|DD-M03
+|Scheduler for periodic tasks
+|🔲 Pending
+
+|DD-M04
+|Pipeline definition format
+|🔲 Pending
+
+|DD-M05
+|Pipeline executor
+|🔲 Pending
+
+|DD-M06
+|Component health checks
+|🔲 Pending
+
+|DD-M07
+|Configuration management
+|🔲 Pending
+
+|DD-M08
+|Logging and metrics
+|🔲 Pending
+
+|DD-M09
+|Error handling and recovery
+|🔲 Pending
+
+|DD-M10
+|CLI interface
+|🔲 Pending
+|===
+
+=== SHOULD Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|DD-S01
+|Web dashboard (status overview)
+|🔲 Pending
+
+|DD-S02
+|Pipeline visualization
+|🔲 Pending
+
+|DD-S03
+|Manual trigger interface
+|🔲 Pending
+
+|DD-S04
+|Notification system (email, Slack, webhook)
+|🔲 Pending
+
+|DD-S05
+|Resource usage tracking
+|🔲 Pending
+
+|DD-S06
+|Pipeline history and replay
+|🔲 Pending
+
+|DD-S07
+|Dependency graph management
+|🔲 Pending
+
+|DD-S08
+|Multi-repo coordination
+|🔲 Pending
+|===
+
+=== COULD Have
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|DD-C01
+|Distributed execution (multiple workers)
+|🔲 Pending
+
+|DD-C02
+|Auto-scaling based on load
+|🔲 Pending
+
+|DD-C03
+|Plugin system for custom pipelines
+|🔲 Pending
+
+|DD-C04
+|AI-powered pipeline optimization
+|🔲 Pending
+
+|DD-C05
+|Integration with CI/CD systems
+|🔲 Pending
+
+|DD-C06
+|Chaos engineering / resilience testing
+|🔲 Pending
+|===
+
+== Integration Seam Points
+
+=== Seam 1: Formatrix ↔ RSA
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Seam Requirement |Status
+
+|SEAM-1A
+|Document event protocol (JSON schema)
+|🔲 Pending
+
+|SEAM-1B
+|Shared format detection
+|✅ Done
+
+|SEAM-1C
+|AST interchange format
+|🔲 Pending
+
+|SEAM-1D
+|Hash algorithm consistency (SHA-256)
+|✅ Done
+|===
+
+=== Seam 2: RSA ↔ Docubot
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Seam Requirement |Status
+
+|SEAM-2A
+|Generation request protocol
+|🔲 Pending
+
+|SEAM-2B
+|Approval callback mechanism
+|🔲 Pending
+
+|SEAM-2C
+|Audit event format
+|🔲 Pending
+
+|SEAM-2D
+|Context passing format
+|🔲 Pending
+|===
+
+=== Seam 3: RSA ↔ Docudactyl
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Seam Requirement |Status
+
+|SEAM-3A
+|Pipeline trigger protocol
+|🔲 Pending
+
+|SEAM-3B
+|Status reporting format
+|🔲 Pending
+
+|SEAM-3C
+|Enforcement result format
+|🔲 Pending
+
+|SEAM-3D
+|Pack shipping completion event
+|🔲 Pending
+|===
+
+=== Seam 4: Docubot ↔ Docudactyl
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Seam Requirement |Status
+
+|SEAM-4A
+|Generation scheduling
+|🔲 Pending
+
+|SEAM-4B
+|Approval workflow routing
+|🔲 Pending
+
+|SEAM-4C
+|Cost budget integration
+|🔲 Pending
+
+|SEAM-4D
+|Health check protocol
+|🔲 Pending
+|===
+
+=== Seam 5: All ↔ ArangoDB
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Seam Requirement |Status
+
+|SEAM-5A
+|Document collection schema
+|🔲 Pending
+
+|SEAM-5B
+|Edge collection schema
+|🔲 Pending
+
+|SEAM-5C
+|Pack manifest collection schema
+|🔲 Pending
+
+|SEAM-5D
+|Audit log collection schema
+|🔲 Pending
+
+|SEAM-5E
+|Connection pooling strategy
+|🔲 Pending
+|===
+
+== Ecosystem-Level Requirements (v1 Publish)
+
+=== MUST Have for v1
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|ECO-M01
+|All component MUSTs complete
+|🔲 Pending
+
+|ECO-M02
+|All integration seams verified
+|🔲 Pending
+
+|ECO-M03
+|End-to-end workflow functional
+|🔲 Pending
+
+|ECO-M04
+|Container images for all components
+|🔲 Pending
+
+|ECO-M05
+|nerdctl-compose.yml for full stack
+|🔲 Pending
+
+|ECO-M06
+|Documentation complete (README, architecture, API)
+|🔲 Pending
+
+|ECO-M07
+|CI/CD pipelines for all repos
+|🔲 Pending
+
+|ECO-M08
+|Security audit passed
+|🔲 Pending
+
+|ECO-M09
+|License compliance verified
+|🔲 Pending
+
+|ECO-M10
+|Guix channel with all packages
+|🔲 Pending
+|===
+
+=== SHOULD Have for v1
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|ECO-S01
+|All component SHOULDs complete
+|🔲 Pending
+
+|ECO-S02
+|Performance benchmarks published
+|🔲 Pending
+
+|ECO-S03
+|User documentation and tutorials
+|🔲 Pending
+
+|ECO-S04
+|API documentation (OpenAPI/AsyncAPI)
+|🔲 Pending
+
+|ECO-S05
+|Integration tests across all seams
+|🔲 Pending
+
+|ECO-S06
+|Monitoring and alerting setup
+|🔲 Pending
+
+|ECO-S07
+|Backup and recovery procedures
+|🔲 Pending
+
+|ECO-S08
+|Version compatibility matrix
+|🔲 Pending
+|===
+
+=== COULD Have for v1
+
+[cols="1,4,2",options="header"]
+|===
+|ID |Requirement |Status
+
+|ECO-C01
+|All component COULDs complete
+|🔲 Pending
+
+|ECO-C02
+|Multi-cloud deployment guides
+|🔲 Pending
+
+|ECO-C03
+|Kubernetes/Helm charts
+|🔲 Pending
+
+|ECO-C04
+|SaaS offering roadmap
+|🔲 Pending
+
+|ECO-C05
+|Community contribution guidelines
+|🔲 Pending
+
+|ECO-C06
+|Plugin marketplace concept
+|🔲 Pending
+|===
