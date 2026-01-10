@@ -1,11 +1,14 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+image:https://img.shields.io/badge/license-PMPL--1.0-blue.svg[License,link="https://github.com/hyperpolymath/palimpsest-license"]
+// SPDX-License-Identifier: PMPL-1.0
 = Formatrix Docs
+
+
+
 :toc: left
 :toclevels: 3
 :icons: font
 :source-highlighter: rouge
 
-image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[License: MPL-2.0, link=https://opensource.org/licenses/MPL-2.0]
 image:https://img.shields.io/badge/Philosophy-Palimpsest-purple.svg[Philosophy: Palimpsest, link=https://github.com/hyperpolymath/palimpsest-licence]
 
 Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). Tauri 2.0 GUI + Ada TUI. Graph visualization, OCR, TTS/STT, Nickel pipelines.
@@ -127,7 +130,7 @@ These scripts follow the same language policy (Bash, Rust, ReScript, Deno, Gleam
 
 == License
 
-MPL-2.0 with Palimpsest philosophy.
+PMPL-1.0 with Palimpsest philosophy.
 
 == Links
 
