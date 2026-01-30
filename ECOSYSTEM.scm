@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: AGPL-3.0-or-later
+;; SPDX-License-Identifier: MPL-2.0-or-later
 ;; ECOSYSTEM.scm - Project ecosystem positioning
 ;; Copyright (C) 2025 Jonathan D.A. Jewell
 
@@ -18,7 +18,7 @@
       (docudactyl . ((relationship . "orchestrator")
                     (description . "Workflow coordination")))
       (rhodium-standard . "sibling-standard")
-      (gitvisor . "infrastructure")
+      (git-hud . "infrastructure")
       (mustfile . "build-system")
       (nickel . "configuration")))
 

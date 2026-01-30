@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: AGPL-3.0-or-later
+;; SPDX-License-Identifier: MPL-2.0-or-later
 ;; META.scm - Project metadata and architectural decisions
 ;; Copyright (C) 2025 Jonathan D.A. Jewell
 
@@ -21,7 +21,7 @@
          (date . "2026-01-02")
          (title . "Ada for TUI, Rust for core")
          (context . "Need safety-critical text handling and cross-platform performance")
-         (decision . "Ada/AdaCurses for TUI (matches gitvisor pattern), Rust for core library with C FFI")
+         (decision . "Ada/AdaCurses for TUI (matches git-hud pattern), Rust for core library with C FFI")
          (consequences . ("Strong safety guarantees in TUI"
                           "Performance-critical paths in Rust"
                           "FFI boundary requires careful design")))
@@ -57,5 +57,5 @@
     (design-rationale
       ((format-tabs . "Core UX - view same content in any format instantly")
        (graph-view . "Knowledge visualization like Anytype/Obsidian")
-       (ada-tui . "Safety-critical text handling, matches gitvisor pattern")
+       (ada-tui . "Safety-critical text handling, matches git-hud pattern")
        (nickel-pipelines . "Declarative import/export transformations")))))

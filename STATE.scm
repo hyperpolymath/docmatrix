@@ -1,5 +1,5 @@
 ;; STATE.scm - RSR State File
-;; SPDX-License-Identifier: AGPL-3.0-or-later
+;; SPDX-License-Identifier: MPL-2.0-or-later
 ;; Copyright (C) 2025 Jonathan D.A. Jewell
 ;;
 ;; This file tracks the current state of the project using S-expressions.
