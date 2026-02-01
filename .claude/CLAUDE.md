@@ -8,7 +8,7 @@ Cross-platform document editor with format tabs, allowing users to view and edit
 
 - **Core**: Rust library with unified AST for format conversion
 - **GUI**: Tauri 2.0 with ReScript frontend (not TypeScript!)
-- **TUI**: Ada with AdaCurses (matches gitvisor pattern)
+- **TUI**: Ada with AdaCurses (matches git-hud pattern)
 - **Storage**: ArangoDB for graph + document hybrid
 - **Pipelines**: Nickel for import/export transformations
 
@@ -91,7 +91,7 @@ Each format implements:
 - Package specs in `.ads`, bodies in `.adb`
 - Use `Terminal_Interface.Curses` for ncurses
 - C FFI bindings to formatrix-core in `bindings/`
-- Follow gitvisor hybrid pattern for widgets
+- Follow git-hud hybrid pattern for widgets
 
 ## Testing
 

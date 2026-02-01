@@ -3,7 +3,7 @@
 :toclevels: 3
 :icons: font
 :source-highlighter: highlightjs
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: MPL-2.0-or-later
 
 == Overview
 
@@ -75,7 +75,7 @@ formatrix-docs/
 │   ├── formatrix-gui/       # Tauri 2.0 commands
 │   ├── formatrix-db/        # ArangoDB client
 │   └── formatrix-pipeline/  # Nickel executor
-├── tui/                     # Ada TUI (matches gitvisor)
+├── tui/                     # Ada TUI (matches git-hud)
 ├── ui/                      # ReScript frontend
 └── pipelines/               # Nickel transform definitions
 ----

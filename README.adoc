@@ -1,5 +1,5 @@
-image:https://img.shields.io/badge/license-PMPL--1.0-blue.svg[License,link="https://github.com/hyperpolymath/palimpsest-license"]
-// SPDX-License-Identifier: PMPL-1.0
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
+// SPDX-License-Identifier: MPL-2.0-or-later
 = DocMatrix
 
 
@@ -9,7 +9,13 @@ image:https://img.shields.io/badge/license-PMPL--1.0-blue.svg[License,link="http
 :icons: font
 :source-highlighter: rouge
 
-image:https://img.shields.io/badge/Philosophy-Palimpsest-purple.svg[Philosophy: Palimpsest, link=https://github.com/hyperpolymath/palimpsest-licence]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+== License & Philosophy
+
+This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
+
+Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
 
 Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). Tauri 2.0 GUI + Ada TUI. Graph visualization, OCR, TTS/STT, Nickel pipelines.
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: MPL-2.0-or-later
 = Seam Check Report: MUST Requirements
 :author: Claude Code
 :revdate: 2025-01-03

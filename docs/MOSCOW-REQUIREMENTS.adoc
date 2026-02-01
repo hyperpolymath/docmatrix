@@ -3,7 +3,7 @@
 :toclevels: 4
 :icons: font
 :source-highlighter: highlightjs
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: MPL-2.0-or-later
 
 == Overview
 

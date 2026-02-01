@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0-or-later
 [package]
 name = "formatrix-pipeline"
 description = "Nickel-based content pipeline engine for Formatrix Docs"

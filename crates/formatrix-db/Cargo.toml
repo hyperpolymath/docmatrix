@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0-or-later
 [package]
 name = "formatrix-db"
 description = "ArangoDB client for Formatrix Docs gist library and graph storage"

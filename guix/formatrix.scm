@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: AGPL-3.0-or-later
+;; SPDX-License-Identifier: MPL-2.0-or-later
 ;; Formatrix Docs - Guix Package Definition
 ;; Copyright (C) 2025 Jonathan D.A. Jewell
 
