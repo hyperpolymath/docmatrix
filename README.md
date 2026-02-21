@@ -9,3 +9,8 @@ image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,l
 
 
 Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). Tauri 2.0 GUI + Ada TUI. Graph visualization, OCR, TTS/STT, Nickel pipelines.
+
+
+## Architecture
+
+See [TOPOLOGY.md](TOPOLOGY.md) for a visual architecture map and completion dashboard.
