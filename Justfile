@@ -450,3 +450,8 @@ combinations:
     @echo "Build Matrix: just build-matrix [debug|release] [core|gui|tui|ui|all]"
     @echo "Container:    just container-build [tag]"
     @echo "Run:          just run-gui|run-tui|run-debug"
+
+# [AUTO-GENERATED] Multi-arch / RISC-V target
+build-riscv:
+	@echo "Building for RISC-V..."
+	cross build --target riscv64gc-unknown-linux-gnu
