@@ -1,34 +1,34 @@
-= RSR-template-repo - Citation Guide
+= docmatrix - Citation Guide
 :toc:
 
 == BibTeX
 
 [source,bibtex]
 ----
-@software{rsr-template-repo_2025,
-  author = {Polymath, Hyper},
-  title = {RSR-template-repo},
-  year = {2025},
-  url = {https://github.com/hyperpolymath/RSR-template-repo},
-  license = {AGPL-3.0-or-later}
+@software{docmatrix_2026,
+  author = {Jewell, Jonathan D.A.},
+  title = {docmatrix},
+  year = {2026},
+  url = {https://github.com/hyperpolymath/docmatrix},
+  license = {PMPL-1.0-or-later}
 }
 ----
 
 == Harvard Style
 
-Polymath, H. (2025) _RSR-template-repo_ [Computer software]. Available at: https://github.com/hyperpolymath/RSR-template-repo
+Jewell, J.D.A. (2026) _docmatrix_ [Computer software]. Available at: https://github.com/hyperpolymath/docmatrix
 
 == OSCOLA
 
-Hyper Polymath, 'RSR-template-repo' (2025) <https://github.com/hyperpolymath/RSR-template-repo>
+Jonathan D.A. Jewell, 'docmatrix' (2026) <https://github.com/hyperpolymath/docmatrix>
 
 == MLA
 
-Polymath, Hyper. "RSR-template-repo." 2025, github.com/hyperpolymath/RSR-template-repo.
+Jewell, Jonathan D.A. "docmatrix." 2026, github.com/hyperpolymath/docmatrix.
 
 == APA 7
 
-Polymath, H. (2025). _RSR-template-repo_ [Computer software]. GitHub. https://github.com/hyperpolymath/RSR-template-repo
+Jewell, J.D.A. (2026). _docmatrix_ [Computer software]. GitHub. https://github.com/hyperpolymath/docmatrix
 
 == See Also
 

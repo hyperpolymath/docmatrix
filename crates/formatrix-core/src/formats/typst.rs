@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: PMPL-1.0-or-later
 //! Typst format handler using typst-syntax
 //! FD-S03: SHOULD requirement
 
