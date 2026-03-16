@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: PMPL-1.0-or-later
 //! Build configuration for formatrix Zig bindings
 //!
 //! Links against libformatrix_core from the Rust crate.
