@@ -6,6 +6,7 @@
 //! - Steps: Ordered list of transforms
 //! - Output: Target format and filename pattern
 
+#![forbid(unsafe_code)]
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 

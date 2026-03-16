@@ -7,6 +7,7 @@
 //! - Tag and collection management
 //! - Full-text search across documents
 
+#![forbid(unsafe_code)]
 use arangors::client::reqwest::ReqwestClient;
 use arangors::{AqlQuery, ClientError, Connection, Database};
 use serde::{Deserialize, Serialize};
