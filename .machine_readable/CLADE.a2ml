@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Clade declaration — part of the gv-clade-index registry
+# See: https://github.com/hyperpolymath/gv-clade-index
+
+[identity]
+uuid = "d7466904-3d92-5663-a780-9438eba87b47"
+primary-forge = "github"
+primary-owner = "hyperpolymath"
+canonical-name = "docmatrix"
+prefixed-name = "ap-docmatrix"
+
+[clade]
+primary = "ap"
+secondary = []
+assigned = "2026-03-16"
+rationale = ""
+
+[forges]
+github = "hyperpolymath/docmatrix"
+gitlab = "hyperpolymath/docmatrix"
+bitbucket = "hyperpolymath/docmatrix"
+
+[lineage]
+type = "standalone"
+parent = "Document matrix tool"
+born = "2026-03-16"
