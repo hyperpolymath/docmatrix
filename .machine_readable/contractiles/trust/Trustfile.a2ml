@@ -1,0 +1,50 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Trustfile — Integrity and provenance verification
+# Author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
+@abstract:
+Integrity invariants for this repository. These verify that the repo
+has not been tampered with, secrets are not leaked, and provenance
+is traceable.
+@end
+
+## Secrets
+
+### no-secrets-committed
+- description: No credential files in repo
+- run: test ! -f .env && test ! -f credentials.json && test ! -f .env.local && test ! -f .env.production
+- severity: critical
+
+### no-private-keys
+- description: No private key files committed
+- run: "! find . -name '*.pem' -o -name '*.key' -o -name 'id_rsa' -o -name 'id_ed25519' 2>/dev/null | grep -v node_modules | head -1 | grep -q ."
+- severity: critical
+
+### no-tokens-in-source
+- description: No hardcoded API tokens in source
+- run: "! grep -rE '(api[_-]?key|secret|token|password)\s*[:=]\s*[\"'\\''][A-Za-z0-9]{16,}' --include='*.js' --include='*.ts' --include='*.res' --include='*.py' . 2>/dev/null | grep -v node_modules | head -1 | grep -q ."
+- severity: critical
+
+## Provenance
+
+### author-correct
+- description: Git author matches expected identity
+- run: "git log -1 --format='%ae' | grep -qE '(hyperpolymath|j\\.d\\.a\\.jewell)'"
+- severity: warning
+
+### license-content
+- description: LICENSE contains expected identifier
+- run: grep -q 'PMPL\|MPL\|MIT\|Apache\|LGPL' LICENSE
+- severity: warning
+
+## Container Security
+
+### container-images-pinned
+- description: Containerfile uses pinned base images
+- run: test ! -f Containerfile || grep -q 'cgr.dev\|@sha256:' Containerfile
+- severity: warning
+
+### no-dockerfile
+- description: No Dockerfile (use Containerfile)
+- run: test ! -f Dockerfile
+- severity: warning
