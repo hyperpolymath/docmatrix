@@ -61,12 +61,12 @@ just lint            # Lint all code
 ## Checkpoint Files
 
 Read at session start:
-- `STATE.scm` - Project state and milestones
-- `ECOSYSTEM.scm` - Position in ecosystem
-- `META.scm` - Architecture decisions
-- `PLAYBOOK.scm` - Operational procedures
-- `AGENTIC.scm` - AI interaction patterns
-- `NEUROSYM.scm` - Neurosymbolic config
+- `.machine_readable/6a2/STATE.a2ml` - Project state and milestones
+- `.machine_readable/6a2/ECOSYSTEM.a2ml` - Position in ecosystem
+- `.machine_readable/6a2/META.a2ml` - Architecture decisions
+- `.machine_readable/6a2/PLAYBOOK.a2ml` - Operational procedures
+- `.machine_readable/6a2/AGENTIC.a2ml` - AI interaction patterns
+- `.machine_readable/6a2/NEUROSYM.a2ml` - Neurosymbolic config
 
 ## Format Conversion
 

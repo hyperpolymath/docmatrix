@@ -140,7 +140,7 @@ PMPL-1.0 with Palimpsest philosophy.
 
 == Links
 
-* link:STATE.scm[Project State]
-* link:ECOSYSTEM.scm[Ecosystem Position]
-* link:META.scm[Architecture Decisions]
+* link:.machine_readable/6a2/STATE.a2ml[Project State]
+* link:.machine_readable/6a2/ECOSYSTEM.a2ml[Ecosystem Position]
+* link:.machine_readable/6a2/META.a2ml[Architecture Decisions]
 * link:PALIMPSEST.adoc[Palimpsest Philosophy]
