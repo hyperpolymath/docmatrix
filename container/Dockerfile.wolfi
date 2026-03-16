@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: PMPL-1.0-or-later
 # Formatrix Docs - Wolfi Container Image
 # Copyright (C) 2025 Jonathan D.A. Jewell
 
@@ -70,5 +70,5 @@ ENTRYPOINT ["/usr/local/bin/formatrix-gui"]
 LABEL org.opencontainers.image.title="Formatrix Docs"
 LABEL org.opencontainers.image.description="Cross-platform document editor with format tabs"
 LABEL org.opencontainers.image.source="https://github.com/hyperpolymath/formatrix-docs"
-LABEL org.opencontainers.image.licenses="AGPL-3.0-or-later"
+LABEL org.opencontainers.image.licenses="PMPL-1.0-or-later"
 LABEL org.opencontainers.image.vendor="Hyperpolymath"
