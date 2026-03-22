@@ -1,0 +1,156 @@
+{
+  "$schema": "https://gossamer.dev/schemas/config/v1",
+  "productName": "Formatrix Docs",
+  "version": "0.1.0",
+  "identifier": "com.hyperpolymath.formatrix-docs",
+  "build": {
+    "frontendDist": "../../ui",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "cd ../../ui && deno task build:res",
+    "beforeBuildCommand": "cd ../../ui && deno task build:res"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Formatrix Docs",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600,
+        "maxWidth": null,
+        "maxHeight": null,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "transparent": false,
+        "center": true,
+        "alwaysOnTop": false,
+        "visible": true,
+        "url": "/"
+      }
+    ],
+    "security": {
+      "csp": null,
+      "capabilities": [
+        "filesystem",
+        "network",
+        "shell",
+        "clipboard"
+      ],
+      "capabilityTokens": {
+        "enabled": false,
+        "issuer": "gossamer-runtime",
+        "ttl": 3600
+      },
+      "sandbox": {
+        "enabled": true,
+        "allowExec": false,
+        "allowNetwork": true,
+        "allowFilesystem": true
+      }
+    },
+    "ipc": {
+      "protocol": "json",
+      "bridgeInjection": true,
+      "maxMessageSize": 16777216,
+      "timeout": 30000
+    },
+    "tray": {
+      "enabled": false,
+      "icon": null,
+      "tooltip": null,
+      "menuOnLeftClick": true
+    }
+  },
+  "plugins": {
+    "dialog": {
+      "all": true
+    },
+    "fs": {
+      "all": true,
+      "scope": ["$HOME/**", "$DOCUMENT/**", "$DOWNLOAD/**"]
+    },
+    "shell": {
+      "all": false,
+      "open": true
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "deb",
+      "appimage",
+      "dmg",
+      "nsis"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [],
+    "copyright": "Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath)",
+    "license": "PMPL-1.0-or-later",
+    "shortDescription": "Cross-platform document editor with format tabs",
+    "longDescription": "View and edit documents in multiple markup formats (TXT, MD, ADOC, DJOT, ORG, RST, TYP) with a unified AST for format conversion.",
+    "linux": {
+      "desktopEntry": true,
+      "category": "Office",
+      "section": "text",
+      "depends": [],
+      "appimage": {
+        "bundleMediaFramework": true
+      }
+    },
+    "macos": {
+      "bundleIdentifier": "com.hyperpolymath.formatrix-docs",
+      "minimumSystemVersion": "10.15",
+      "frameworks": [],
+      "entitlements": null,
+      "signingIdentity": null,
+      "notarization": {
+        "enabled": false,
+        "teamId": null
+      }
+    },
+    "windows": {
+      "webview2": "embed",
+      "certificateThumbprint": null,
+      "wix": {
+        "language": "en-US"
+      },
+      "nsis": {
+        "displayLanguageSelector": false,
+        "installerIcon": null
+      }
+    },
+    "mobile": {
+      "ios": {
+        "minimumVersion": "14.0",
+        "deviceFamily": [
+          "iphone",
+          "ipad"
+        ],
+        "capabilities": [],
+        "frameworks": [],
+        "entitlements": {}
+      },
+      "android": {
+        "minimumSdk": 24,
+        "targetSdk": 34,
+        "permissions": [],
+        "features": []
+      }
+    }
+  },
+  "ephapax": {
+    "modules": [],
+    "region": "app",
+    "linearVerification": true,
+    "regionBoundary": "strict",
+    "preload": []
+  }
+}
