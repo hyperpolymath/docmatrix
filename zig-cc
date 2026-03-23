@@ -1,0 +1,12 @@
+#!/bin/sh
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Zig CC wrapper — uses zig as a drop-in C compiler
+# Filters out --target flags that zig doesn't understand
+ARGS=""
+for arg in "$@"; do
+    case "$arg" in
+        --target=*) ;; # Skip Rust-style target triples
+        *) ARGS="$ARGS $arg" ;;
+    esac
+done
+exec zig cc $ARGS
