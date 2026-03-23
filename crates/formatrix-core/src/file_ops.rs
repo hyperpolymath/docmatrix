@@ -127,7 +127,9 @@ pub fn format_from_content(content: &str) -> SourceFormat {
     if trimmed.lines().any(|line| {
         let chars: Vec<char> = line.chars().collect();
         chars.len() > 3
-            && chars.iter().all(|&c| c == '=' || c == '-' || c == '~' || c == '^')
+            && chars
+                .iter()
+                .all(|&c| c == '=' || c == '-' || c == '~' || c == '^')
     }) {
         return SourceFormat::ReStructuredText;
     }
@@ -222,7 +224,11 @@ pub fn open_file_as(
 }
 
 /// Parse content string to Document
-fn parse_content(content: &str, format: SourceFormat, config: &ParseConfig) -> FileResult<Document> {
+fn parse_content(
+    content: &str,
+    format: SourceFormat,
+    config: &ParseConfig,
+) -> FileResult<Document> {
     let doc = match format {
         SourceFormat::PlainText => PlainTextHandler::new().parse(content, config)?,
         SourceFormat::Markdown => MarkdownHandler::new().parse(content, config)?,
@@ -276,7 +282,11 @@ pub fn save_file_as(
 }
 
 /// Render document to string
-fn render_content(doc: &Document, format: SourceFormat, config: &RenderConfig) -> FileResult<String> {
+fn render_content(
+    doc: &Document,
+    format: SourceFormat,
+    config: &RenderConfig,
+) -> FileResult<String> {
     let output = match format {
         SourceFormat::PlainText => PlainTextHandler::new().render(doc, config)?,
         SourceFormat::Markdown => MarkdownHandler::new().render(doc, config)?,
@@ -290,10 +300,7 @@ fn render_content(doc: &Document, format: SourceFormat, config: &RenderConfig) -
 }
 
 /// Convert a file from one format to another
-pub fn convert_file(
-    input_path: impl AsRef<Path>,
-    output_path: impl AsRef<Path>,
-) -> FileResult<()> {
+pub fn convert_file(input_path: impl AsRef<Path>, output_path: impl AsRef<Path>) -> FileResult<()> {
     convert_file_with_config(
         input_path,
         output_path,
@@ -326,8 +333,23 @@ pub fn extension_for_format(format: SourceFormat) -> &'static str {
 /// Get all supported file extensions
 pub fn supported_extensions() -> &'static [&'static str] {
     &[
-        "txt", "text", "md", "markdown", "mdown", "mkd", "adoc", "asciidoc", "asc", "dj", "djot",
-        "org", "rst", "rest", "restructuredtext", "typ", "typst",
+        "txt",
+        "text",
+        "md",
+        "markdown",
+        "mdown",
+        "mkd",
+        "adoc",
+        "asciidoc",
+        "asc",
+        "dj",
+        "djot",
+        "org",
+        "rst",
+        "rest",
+        "restructuredtext",
+        "typ",
+        "typst",
     ]
 }
 

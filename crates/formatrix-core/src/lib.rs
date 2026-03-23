@@ -19,9 +19,9 @@ pub mod ffi;
 pub use ast::{Block, Document, DocumentMeta, Inline, SourceFormat};
 pub use file_ops::{
     convert_file, convert_file_with_config, extension_for_format, format_from_content,
-    format_from_extension, is_supported_extension, open_file, open_file_as,
-    open_file_with_config, save_file, save_file_as, save_file_with_config, supported_extensions,
-    FileError, FileInfo, FileResult, OpenedDocument,
+    format_from_extension, is_supported_extension, open_file, open_file_as, open_file_with_config,
+    save_file, save_file_as, save_file_with_config, supported_extensions, FileError, FileInfo,
+    FileResult, OpenedDocument,
 };
 pub use traits::{ConversionError, ParseConfig, Parser, RenderConfig, Renderer, Result};
 

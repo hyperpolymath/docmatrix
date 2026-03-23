@@ -2,12 +2,12 @@
 //! Org-mode format handler using orgize
 
 use crate::ast::{
-    Block, ColumnAlignment, ColumnSpec, Document, DocumentMeta, Inline,
-    ListItem, ListKind, SourceFormat, TableCell, TableRow,
+    Block, ColumnAlignment, ColumnSpec, Document, DocumentMeta, Inline, ListItem, ListKind,
+    SourceFormat, TableCell, TableRow,
 };
 use crate::traits::{FormatHandler, ParseConfig, Parser, RenderConfig, Renderer, Result};
-use orgize::Org;
 use orgize::elements::Element;
+use orgize::Org;
 
 /// Org-mode format handler using orgize
 pub struct OrgModeHandler;
@@ -176,7 +176,8 @@ where
         Element::Table(_) => {
             let (header, body) = collect_table_content(events);
 
-            let col_count = header.as_ref()
+            let col_count = header
+                .as_ref()
                 .map(|h| h.cells.len())
                 .or_else(|| body.first().map(|r| r.cells.len()))
                 .unwrap_or(0);
@@ -217,15 +218,23 @@ where
             }
             Event::Start(Element::Bold) => {
                 let bold_content = collect_inline_until_end(events, |e| matches!(e, Element::Bold));
-                inlines.push(Inline::Strong { content: bold_content });
+                inlines.push(Inline::Strong {
+                    content: bold_content,
+                });
             }
             Event::Start(Element::Italic) => {
-                let italic_content = collect_inline_until_end(events, |e| matches!(e, Element::Italic));
-                inlines.push(Inline::Emphasis { content: italic_content });
+                let italic_content =
+                    collect_inline_until_end(events, |e| matches!(e, Element::Italic));
+                inlines.push(Inline::Emphasis {
+                    content: italic_content,
+                });
             }
             Event::Start(Element::Strike) => {
-                let strike_content = collect_inline_until_end(events, |e| matches!(e, Element::Strike));
-                inlines.push(Inline::Strikethrough { content: strike_content });
+                let strike_content =
+                    collect_inline_until_end(events, |e| matches!(e, Element::Strike));
+                inlines.push(Inline::Strikethrough {
+                    content: strike_content,
+                });
             }
             Event::Start(Element::Code { value }) | Event::End(Element::Code { value }) => {
                 inlines.push(Inline::Code {
@@ -240,7 +249,8 @@ where
                 });
             }
             Event::Start(Element::Link(link)) => {
-                let link_text = link.desc
+                let link_text = link
+                    .desc
                     .as_ref()
                     .map(|d| d.to_string())
                     .unwrap_or_else(|| link.path.to_string());
@@ -419,8 +429,8 @@ fn collect_table_content<'a: 'b, 'b, I>(events: &mut I) -> (Option<TableRow>, Ve
 where
     I: Iterator<Item = orgize::Event<'a, 'b>>,
 {
-    use orgize::Event;
     use orgize::elements::TableRow as OrgTableRow;
+    use orgize::Event;
 
     let mut header_row: Option<TableRow> = None;
     let mut body_rows: Vec<TableRow> = Vec::new();
@@ -481,8 +491,8 @@ fn collect_table_row_cells<'a: 'b, 'b, I>(events: &mut I) -> Vec<TableCell>
 where
     I: Iterator<Item = orgize::Event<'a, 'b>>,
 {
-    use orgize::Event;
     use orgize::elements::TableCell as OrgTableCell;
+    use orgize::Event;
 
     let mut cells = Vec::new();
 
@@ -593,7 +603,9 @@ fn render_block(output: &mut String, block: &Block) {
             output.push_str("#+END_QUOTE");
         }
 
-        Block::List { kind, items, start, .. } => {
+        Block::List {
+            kind, items, start, ..
+        } => {
             for (i, item) in items.iter().enumerate() {
                 match kind {
                     ListKind::Bullet => output.push_str("- "),
@@ -695,11 +707,7 @@ fn render_inline(output: &mut String, inline: &Inline) {
             output.push('~');
         }
 
-        Inline::Link {
-            url,
-            content,
-            ..
-        } => {
+        Inline::Link { url, content, .. } => {
             output.push_str("[[");
             output.push_str(url);
             output.push_str("][");
@@ -788,7 +796,10 @@ mod tests {
             .unwrap();
 
         // Find the heading in the parsed content
-        let has_heading = doc.content.iter().any(|b| matches!(b, Block::Heading { level: 1, .. }));
+        let has_heading = doc
+            .content
+            .iter()
+            .any(|b| matches!(b, Block::Heading { level: 1, .. }));
         assert!(has_heading || doc.content.is_empty()); // orgize may parse differently
     }
 
@@ -843,7 +854,10 @@ This is a quote.
 #+END_QUOTE"#;
         let doc = handler.parse(input, &ParseConfig::default()).unwrap();
 
-        let has_quote = doc.content.iter().any(|b| matches!(b, Block::BlockQuote { .. }));
+        let has_quote = doc
+            .content
+            .iter()
+            .any(|b| matches!(b, Block::BlockQuote { .. }));
         assert!(has_quote, "Should parse quote block");
     }
 

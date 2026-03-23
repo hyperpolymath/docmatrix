@@ -1,7 +1,7 @@
-# SPDX-License-Identifier: MPL-2.0-or-later
+# SPDX-License-Identifier: PMPL-1.0-or-later
 [package]
 name = "formatrix-gui"
-description = "Tauri 2.0 GUI for Formatrix Docs"
+description = "Gossamer GUI for Formatrix Docs"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -16,27 +16,16 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 name = "formatrix-gui"
 path = "src/main.rs"
 
-[build-dependencies]
-tauri-build = { workspace = true, features = [] }
-
 [dependencies]
 formatrix-core = { path = "../formatrix-core" }
 
-tauri.workspace = true
-tauri-plugin-dialog = "2"
-tauri-plugin-fs = "2"
-tauri-plugin-shell = "2"
+gossamer-rs = { path = "../../../gossamer/bindings/rust" }
 
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
-tokio.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
 
 # Hashing for document events
 sha2 = "0.10"
-
-[features]
-default = ["custom-protocol"]
-custom-protocol = ["tauri/custom-protocol"]

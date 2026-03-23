@@ -2,11 +2,11 @@
 //! AsciiDoc format handler using asciidoc-parser
 //! FD-S01: SHOULD requirement
 
-use crate::ast::{
-    Block, Document, DocumentMeta, Inline, ListKind, SourceFormat,
+use crate::ast::{Block, Document, DocumentMeta, Inline, ListKind, SourceFormat};
+use crate::traits::{
+    FormatHandler, ParseConfig, Parser as ParserTrait, RenderConfig, Renderer, Result,
 };
-use crate::traits::{FormatHandler, ParseConfig, Parser as ParserTrait, RenderConfig, Renderer, Result};
-use asciidoc_parser::{Document as AdocDocument, Parser as AdocParser, blocks::IsBlock};
+use asciidoc_parser::{blocks::IsBlock, Document as AdocDocument, Parser as AdocParser};
 
 /// AsciiDoc format handler
 pub struct AsciidocHandler;
@@ -88,7 +88,9 @@ fn convert_block(block: &asciidoc_parser::blocks::Block<'_>) -> Option<Block> {
             // Create heading
             Some(Block::Heading {
                 level,
-                content: vec![Inline::Text { content: title_text }],
+                content: vec![Inline::Text {
+                    content: title_text,
+                }],
                 id: None,
                 span: None,
             })
@@ -101,7 +103,8 @@ fn convert_block(block: &asciidoc_parser::blocks::Block<'_>) -> Option<Block> {
             match context.as_ref() {
                 "listing" | "source" => {
                     // Try to get language from attributes
-                    let language = raw.attrlist()
+                    let language = raw
+                        .attrlist()
                         .and_then(|a| a.named_or_positional_attribute("language", 1))
                         .map(|attr| attr.value().to_string());
 
@@ -113,20 +116,16 @@ fn convert_block(block: &asciidoc_parser::blocks::Block<'_>) -> Option<Block> {
                         span: None,
                     })
                 }
-                "literal" => {
-                    Some(Block::Raw {
-                        format: SourceFormat::AsciiDoc,
-                        content,
-                        span: None,
-                    })
-                }
-                "pass" | "passthrough" => {
-                    Some(Block::Raw {
-                        format: SourceFormat::AsciiDoc,
-                        content,
-                        span: None,
-                    })
-                }
+                "literal" => Some(Block::Raw {
+                    format: SourceFormat::AsciiDoc,
+                    content,
+                    span: None,
+                }),
+                "pass" | "passthrough" => Some(Block::Raw {
+                    format: SourceFormat::AsciiDoc,
+                    content,
+                    span: None,
+                }),
                 _ => {
                     // Comment blocks are skipped
                     None
@@ -199,16 +198,16 @@ fn convert_block(block: &asciidoc_parser::blocks::Block<'_>) -> Option<Block> {
             }
         }
 
-        AdocBlock::Break(_) => {
-            Some(Block::ThematicBreak { span: None })
-        }
+        AdocBlock::Break(_) => Some(Block::ThematicBreak { span: None }),
 
         AdocBlock::Media(media) => {
             // Media blocks for images, video, audio
-            let target = media.target()
+            let target = media
+                .target()
                 .map(|t| t.data().to_string())
                 .unwrap_or_default();
-            let alt = media.attrlist()
+            let alt = media
+                .attrlist()
                 .and_then(|a| a.named_or_positional_attribute("alt", 1))
                 .map(|attr| attr.value().to_string())
                 .unwrap_or_default();
@@ -281,7 +280,9 @@ fn render_block(output: &mut String, block: &Block) {
             }
         }
 
-        Block::Heading { level, content, id, .. } => {
+        Block::Heading {
+            level, content, id, ..
+        } => {
             // AsciiDoc uses = for headings (= for level 1, == for level 2, etc.)
             output.push_str(&"=".repeat(*level as usize));
             output.push(' ');
@@ -296,7 +297,9 @@ fn render_block(output: &mut String, block: &Block) {
             }
         }
 
-        Block::CodeBlock { language, content, .. } => {
+        Block::CodeBlock {
+            language, content, ..
+        } => {
             if let Some(ref lang) = language {
                 output.push_str(&format!("[source,{}]\n", lang));
             }
@@ -308,7 +311,11 @@ fn render_block(output: &mut String, block: &Block) {
             output.push_str("----");
         }
 
-        Block::BlockQuote { content, attribution, .. } => {
+        Block::BlockQuote {
+            content,
+            attribution,
+            ..
+        } => {
             output.push_str("[quote");
             if let Some(ref attr) = attribution {
                 output.push_str(", ");
@@ -324,7 +331,9 @@ fn render_block(output: &mut String, block: &Block) {
             output.push_str("____");
         }
 
-        Block::List { kind, items, start, .. } => {
+        Block::List {
+            kind, items, start, ..
+        } => {
             for (i, item) in items.iter().enumerate() {
                 match kind {
                     ListKind::Bullet => output.push_str("* "),
@@ -357,7 +366,9 @@ fn render_block(output: &mut String, block: &Block) {
             output.push_str("++++");
         }
 
-        Block::Container { classes, content, .. } => {
+        Block::Container {
+            classes, content, ..
+        } => {
             // Render as sidebar if it has sidebar class
             if classes.contains(&"sidebar".to_string()) {
                 output.push_str("****\n");
@@ -375,7 +386,12 @@ fn render_block(output: &mut String, block: &Block) {
             }
         }
 
-        Block::Table { header, body, caption, .. } => {
+        Block::Table {
+            header,
+            body,
+            caption,
+            ..
+        } => {
             output.push_str("|===\n");
 
             if let Some(h) = header {
@@ -457,7 +473,12 @@ fn render_inline(output: &mut String, inline: &Inline) {
             output.push('`');
         }
 
-        Inline::Link { url, content, title, .. } => {
+        Inline::Link {
+            url,
+            content,
+            title,
+            ..
+        } => {
             output.push_str(&format!("link:{}[", url));
             for i in content {
                 render_inline(output, i);
@@ -468,7 +489,9 @@ fn render_inline(output: &mut String, inline: &Inline) {
             output.push(']');
         }
 
-        Inline::Image { url, alt, title, .. } => {
+        Inline::Image {
+            url, alt, title, ..
+        } => {
             output.push_str(&format!("image::{}[{}", url, alt));
             if let Some(ref t) = title {
                 output.push_str(&format!(", title=\"{}\"", t));
@@ -568,7 +591,9 @@ mod tests {
             meta: DocumentMeta::default(),
             content: vec![Block::Heading {
                 level: 2,
-                content: vec![Inline::Text { content: "Section Title".to_string() }],
+                content: vec![Inline::Text {
+                    content: "Section Title".to_string(),
+                }],
                 id: None,
                 span: None,
             }],

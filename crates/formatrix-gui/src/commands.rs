@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-//! Tauri commands for document operations
+//! Gossamer commands for document operations
+//!
+//! Each public function is registered as a Gossamer IPC command in main.rs.
+//! All functions are synchronous — gossamer-rs command handlers run on the
+//! main thread, so we use std::fs instead of tokio::fs.
 
 use formatrix_core::{ParseConfig, RenderConfig};
 use serde::{Deserialize, Serialize};
-use sha2::{Sha256, Digest};
+use sha2::{Digest, Sha256};
 
 // =============================================================================
 // FD-M12: Document event emission
@@ -135,21 +139,15 @@ pub fn emit_event(event: DocumentEvent) {
 }
 
 /// Get recent document events
-#[tauri::command]
 pub fn get_document_events(limit: usize) -> Vec<DocumentEvent> {
     if let Ok(log) = EVENT_LOG.lock() {
-        log.iter()
-            .rev()
-            .take(limit)
-            .cloned()
-            .collect()
+        log.iter().rev().take(limit).cloned().collect()
     } else {
         Vec::new()
     }
 }
 
 /// Clear document event log
-#[tauri::command]
 pub fn clear_document_events() {
     if let Ok(mut log) = EVENT_LOG.lock() {
         log.clear();
@@ -177,11 +175,9 @@ pub struct ConversionResult {
     pub warnings: Vec<String>,
 }
 
-/// Load a document from the filesystem
-#[tauri::command]
-pub async fn load_document(path: String) -> Result<DocumentData, String> {
-    let content = tokio::fs::read_to_string(&path)
-        .await
+/// Load a document from the filesystem (synchronous — uses std::fs)
+pub fn load_document(path: String) -> Result<DocumentData, String> {
+    let content = std::fs::read_to_string(&path)
         .map_err(|e| format!("Failed to read file: {}", e))?;
 
     // Detect format from extension
@@ -216,15 +212,13 @@ pub async fn load_document(path: String) -> Result<DocumentData, String> {
     })
 }
 
-/// Save a document to the filesystem
-#[tauri::command]
-pub async fn save_document(
+/// Save a document to the filesystem (synchronous — uses std::fs)
+pub fn save_document(
     path: String,
     content: String,
     format: String,
 ) -> Result<DocumentMeta, String> {
-    tokio::fs::write(&path, &content)
-        .await
+    std::fs::write(&path, &content)
         .map_err(|e| format!("Failed to write file: {}", e))?;
 
     let word_count = content.split_whitespace().count();
@@ -240,8 +234,7 @@ pub async fn save_document(
 }
 
 /// Convert document content from one format to another
-#[tauri::command]
-pub async fn convert_to_format(
+pub fn convert_to_format(
     content: String,
     from_format: String,
     to_format: String,
@@ -320,7 +313,12 @@ pub async fn convert_to_format(
     };
 
     // Emit conversion event
-    emit_event(DocumentEvent::converted(&content, &output, &from_format, &to_format));
+    emit_event(DocumentEvent::converted(
+        &content,
+        &output,
+        &from_format,
+        &to_format,
+    ));
 
     Ok(ConversionResult {
         content: output,
@@ -337,8 +335,7 @@ pub struct ParsedDocument {
 }
 
 /// Parse a document and return metadata
-#[tauri::command]
-pub async fn parse_document(content: String, format: String) -> Result<ParsedDocument, String> {
+pub fn parse_document(content: String, format: String) -> Result<ParsedDocument, String> {
     use formatrix_core::formats::{
         AsciidocHandler, DjotHandler, MarkdownHandler, OrgModeHandler, PlainTextHandler,
         RstHandler, TypstHandler,
@@ -382,8 +379,7 @@ pub async fn parse_document(content: String, format: String) -> Result<ParsedDoc
 }
 
 /// Render a document from AST JSON (for advanced use)
-#[tauri::command]
-pub async fn render_document(content: String, to_format: String) -> Result<String, String> {
+pub fn render_document(content: String, to_format: String) -> Result<String, String> {
     use formatrix_core::formats::{
         AsciidocHandler, DjotHandler, MarkdownHandler, OrgModeHandler, PlainTextHandler,
         RstHandler, TypstHandler,
@@ -429,7 +425,6 @@ pub async fn render_document(content: String, to_format: String) -> Result<Strin
 }
 
 /// Detect format from content using heuristics
-#[tauri::command]
 pub fn detect_format(content: String) -> String {
     use formatrix_core::file_ops::format_from_content;
 
@@ -446,7 +441,6 @@ pub struct FormatInfo {
 }
 
 /// Get list of supported formats
-#[tauri::command]
 pub fn get_supported_formats() -> Vec<FormatInfo> {
     vec![
         FormatInfo {

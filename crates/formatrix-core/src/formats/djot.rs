@@ -2,8 +2,8 @@
 //! Djot format handler using jotdown
 
 use crate::ast::{
-    AdmonitionType, Block, Document, DocumentMeta, Inline,
-    ListItem, ListKind, SourceFormat, TableCell, TableRow,
+    AdmonitionType, Block, Document, DocumentMeta, Inline, ListItem, ListKind, SourceFormat,
+    TableCell, TableRow,
 };
 use crate::traits::{FormatHandler, ParseConfig, Parser, RenderConfig, Renderer, Result};
 use jotdown::{Container, Event, Parser as JotdownParser};
@@ -306,17 +306,11 @@ fn container_to_block(
             None
         }
 
-        Container::Strong => {
-            None
-        }
+        Container::Strong => None,
 
-        Container::Link(_url, _link_type) => {
-            None
-        }
+        Container::Link(_url, _link_type) => None,
 
-        Container::Image(_url, _link_type) => {
-            None
-        }
+        Container::Image(_url, _link_type) => None,
 
         Container::Footnote { label } => Some(Block::FootnoteDefinition {
             label: label.to_string(),
@@ -381,7 +375,9 @@ fn render_block(output: &mut String, block: &Block, indent: usize) {
             }
         }
 
-        Block::Heading { level, content, id, .. } => {
+        Block::Heading {
+            level, content, id, ..
+        } => {
             output.push_str(&prefix);
             output.push_str(&"#".repeat(*level as usize));
             output.push(' ');
@@ -411,7 +407,11 @@ fn render_block(output: &mut String, block: &Block, indent: usize) {
             output.push_str("```");
         }
 
-        Block::BlockQuote { content, admonition, .. } => {
+        Block::BlockQuote {
+            content,
+            admonition,
+            ..
+        } => {
             if let Some(admon) = admonition {
                 output.push_str(&prefix);
                 output.push_str("::: ");
@@ -441,7 +441,9 @@ fn render_block(output: &mut String, block: &Block, indent: usize) {
             }
         }
 
-        Block::List { kind, items, start, .. } => {
+        Block::List {
+            kind, items, start, ..
+        } => {
             for (i, item) in items.iter().enumerate() {
                 output.push_str(&prefix);
                 match kind {
@@ -573,7 +575,9 @@ fn render_inline(output: &mut String, inline: &Inline) {
             output.push(')');
         }
 
-        Inline::Image { url, alt, title, .. } => {
+        Inline::Image {
+            url, alt, title, ..
+        } => {
             output.push_str("![");
             output.push_str(alt);
             output.push_str("](");

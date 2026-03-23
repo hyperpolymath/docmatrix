@@ -3,15 +3,17 @@
 //! FD-S02: SHOULD requirement
 
 use crate::ast::{
-    AdmonitionType, Block, Document, DocumentMeta, Inline,
-    LinkType, ListItem, ListKind, MathNotation, SourceFormat,
+    AdmonitionType, Block, Document, DocumentMeta, Inline, LinkType, ListItem, ListKind,
+    MathNotation, SourceFormat,
 };
-use crate::traits::{ConversionError, FormatHandler, ParseConfig, Parser, RenderConfig, Renderer, Result};
-use rst_parser::parse;
+use crate::traits::{
+    ConversionError, FormatHandler, ParseConfig, Parser, RenderConfig, Renderer, Result,
+};
 use document_tree::{
-    Document as RstDoc, HasChildren,
     element_categories::{BodyElement, StructuralSubElement, SubStructure, TextOrInlineElement},
+    Document as RstDoc, HasChildren,
 };
+use rst_parser::parse;
 
 /// reStructuredText format handler
 pub struct RstHandler;
@@ -34,12 +36,10 @@ impl Parser for RstHandler {
     }
 
     fn parse(&self, input: &str, config: &ParseConfig) -> Result<Document> {
-        let rst_doc = parse(input).map_err(|e| {
-            ConversionError::ParseError {
-                line: 0,
-                column: 0,
-                message: format!("RST parse error: {:?}", e),
-            }
+        let rst_doc = parse(input).map_err(|e| ConversionError::ParseError {
+            line: 0,
+            column: 0,
+            message: format!("RST parse error: {:?}", e),
         })?;
 
         let content = convert_rst_document(&rst_doc);
@@ -159,17 +159,23 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
         }
 
         BodyElement::BulletList(bl) => {
-            let items: Vec<ListItem> = bl.children().iter().filter_map(|item| {
-                let item_blocks: Vec<Block> = item.children().iter().filter_map(|child| {
-                    convert_body_element(child)
-                }).collect();
+            let items: Vec<ListItem> = bl
+                .children()
+                .iter()
+                .filter_map(|item| {
+                    let item_blocks: Vec<Block> = item
+                        .children()
+                        .iter()
+                        .filter_map(|child| convert_body_element(child))
+                        .collect();
 
-                Some(ListItem {
-                    content: item_blocks,
-                    checked: None,
-                    marker: None,
+                    Some(ListItem {
+                        content: item_blocks,
+                        checked: None,
+                        marker: None,
+                    })
                 })
-            }).collect();
+                .collect();
 
             Some(Block::List {
                 kind: ListKind::Bullet,
@@ -180,17 +186,23 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
         }
 
         BodyElement::EnumeratedList(el) => {
-            let items: Vec<ListItem> = el.children().iter().filter_map(|item| {
-                let item_blocks: Vec<Block> = item.children().iter().filter_map(|child| {
-                    convert_body_element(child)
-                }).collect();
+            let items: Vec<ListItem> = el
+                .children()
+                .iter()
+                .filter_map(|item| {
+                    let item_blocks: Vec<Block> = item
+                        .children()
+                        .iter()
+                        .filter_map(|child| convert_body_element(child))
+                        .collect();
 
-                Some(ListItem {
-                    content: item_blocks,
-                    checked: None,
-                    marker: None,
+                    Some(ListItem {
+                        content: item_blocks,
+                        checked: None,
+                        marker: None,
+                    })
                 })
-            }).collect();
+                .collect();
 
             Some(Block::List {
                 kind: ListKind::Ordered,
@@ -201,7 +213,11 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
         }
 
         BodyElement::Note(n) => {
-            let inner_blocks: Vec<Block> = n.children().iter().filter_map(convert_body_element).collect();
+            let inner_blocks: Vec<Block> = n
+                .children()
+                .iter()
+                .filter_map(convert_body_element)
+                .collect();
             Some(Block::BlockQuote {
                 content: inner_blocks,
                 attribution: None,
@@ -211,7 +227,11 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
         }
 
         BodyElement::Warning(w) => {
-            let inner_blocks: Vec<Block> = w.children().iter().filter_map(convert_body_element).collect();
+            let inner_blocks: Vec<Block> = w
+                .children()
+                .iter()
+                .filter_map(convert_body_element)
+                .collect();
             Some(Block::BlockQuote {
                 content: inner_blocks,
                 attribution: None,
@@ -221,7 +241,11 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
         }
 
         BodyElement::Tip(t) => {
-            let inner_blocks: Vec<Block> = t.children().iter().filter_map(convert_body_element).collect();
+            let inner_blocks: Vec<Block> = t
+                .children()
+                .iter()
+                .filter_map(convert_body_element)
+                .collect();
             Some(Block::BlockQuote {
                 content: inner_blocks,
                 attribution: None,
@@ -231,7 +255,11 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
         }
 
         BodyElement::Important(i) => {
-            let inner_blocks: Vec<Block> = i.children().iter().filter_map(convert_body_element).collect();
+            let inner_blocks: Vec<Block> = i
+                .children()
+                .iter()
+                .filter_map(convert_body_element)
+                .collect();
             Some(Block::BlockQuote {
                 content: inner_blocks,
                 attribution: None,
@@ -241,7 +269,11 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
         }
 
         BodyElement::Caution(c) => {
-            let inner_blocks: Vec<Block> = c.children().iter().filter_map(convert_body_element).collect();
+            let inner_blocks: Vec<Block> = c
+                .children()
+                .iter()
+                .filter_map(convert_body_element)
+                .collect();
             Some(Block::BlockQuote {
                 content: inner_blocks,
                 attribution: None,
@@ -251,7 +283,11 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
         }
 
         BodyElement::Danger(d) => {
-            let inner_blocks: Vec<Block> = d.children().iter().filter_map(convert_body_element).collect();
+            let inner_blocks: Vec<Block> = d
+                .children()
+                .iter()
+                .filter_map(convert_body_element)
+                .collect();
             Some(Block::BlockQuote {
                 content: inner_blocks,
                 attribution: None,
@@ -261,7 +297,12 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
         }
 
         BodyElement::MathBlock(m) => {
-            let content = m.children().iter().map(|s| s.as_str()).collect::<Vec<_>>().join("");
+            let content = m
+                .children()
+                .iter()
+                .map(|s| s.as_str())
+                .collect::<Vec<_>>()
+                .join("");
             Some(Block::MathBlock {
                 content,
                 notation: MathNotation::LaTeX,
@@ -293,7 +334,12 @@ fn convert_text_elements(elements: &[TextOrInlineElement]) -> Vec<Inline> {
                 inlines.push(Inline::Strong { content: inner });
             }
             TextOrInlineElement::Literal(l) => {
-                let content = l.children().iter().map(|s| s.as_str()).collect::<Vec<_>>().join("");
+                let content = l
+                    .children()
+                    .iter()
+                    .map(|s| s.as_str())
+                    .collect::<Vec<_>>()
+                    .join("");
                 inlines.push(Inline::Code {
                     content,
                     language: None,
@@ -318,7 +364,12 @@ fn convert_text_elements(elements: &[TextOrInlineElement]) -> Vec<Inline> {
                 inlines.push(Inline::Subscript { content: inner });
             }
             TextOrInlineElement::Math(m) => {
-                let content = m.children().iter().map(|s| s.as_str()).collect::<Vec<_>>().join("");
+                let content = m
+                    .children()
+                    .iter()
+                    .map(|s| s.as_str())
+                    .collect::<Vec<_>>()
+                    .join("");
                 inlines.push(Inline::Math {
                     content,
                     notation: MathNotation::LaTeX,
@@ -333,12 +384,14 @@ fn convert_text_elements(elements: &[TextOrInlineElement]) -> Vec<Inline> {
 
 /// Extract plain text content from TextOrInlineElement list
 fn extract_text_content(elements: &[TextOrInlineElement]) -> String {
-    elements.iter().map(|elem| {
-        match elem {
+    elements
+        .iter()
+        .map(|elem| match elem {
             TextOrInlineElement::String(s) => (**s).clone(),
             _ => String::new(),
-        }
-    }).collect::<Vec<_>>().join("")
+        })
+        .collect::<Vec<_>>()
+        .join("")
 }
 
 impl Renderer for RstHandler {
@@ -384,7 +437,9 @@ fn render_block(output: &mut String, block: &Block, _depth: usize) {
             output.push_str(&underline.to_string().repeat(len.max(1)));
         }
 
-        Block::CodeBlock { content, language, .. } => {
+        Block::CodeBlock {
+            content, language, ..
+        } => {
             if let Some(lang) = language {
                 output.push_str(&format!(".. code-block:: {}\n\n", lang));
             } else {
@@ -397,7 +452,11 @@ fn render_block(output: &mut String, block: &Block, _depth: usize) {
             }
         }
 
-        Block::BlockQuote { content, admonition, .. } => {
+        Block::BlockQuote {
+            content,
+            admonition,
+            ..
+        } => {
             if let Some(admon) = admonition {
                 let directive = match admon {
                     AdmonitionType::Note => "note",
@@ -603,7 +662,9 @@ mod tests {
             meta: DocumentMeta::default(),
             content: vec![Block::Heading {
                 level: 1,
-                content: vec![Inline::Text { content: "Title".to_string() }],
+                content: vec![Inline::Text {
+                    content: "Title".to_string(),
+                }],
                 id: None,
                 span: None,
             }],
