@@ -312,7 +312,9 @@ impl FormatrixDb {
             info!("Creating documents collection");
             db.create_collection(collections::DOCUMENTS)
                 .await
-                .map_err(|e| DbError::Query(format!("Failed to create documents collection: {}", e)))?;
+                .map_err(|e| {
+                    DbError::Query(format!("Failed to create documents collection: {}", e))
+                })?;
         }
 
         // Check and create edge collection via AQL (arangors limitation)
@@ -357,7 +359,9 @@ impl FormatrixDb {
                 .map_err(|e| DbError::Query(format!("Failed to insert document: {}", e)))?
         };
 
-        let header = result.header().ok_or_else(|| DbError::Query("No header in response".to_string()))?;
+        let header = result
+            .header()
+            .ok_or_else(|| DbError::Query("No header in response".to_string()))?;
         let key = header._key.clone();
         info!(key = %key, "Document saved successfully");
 
@@ -427,12 +431,14 @@ impl FormatrixDb {
 
         let db = self.get_db().await?;
         let aql = AqlQuery::builder()
-            .query(r#"
+            .query(
+                r#"
                 FOR doc IN documents
                     FILTER LENGTH(INTERSECTION(doc.tags, @tags)) == LENGTH(@tags)
                     SORT doc.updated_at DESC
                     RETURN doc
-            "#)
+            "#,
+            )
             .bind_var("tags", serde_json::json!(tags))
             .build();
 
@@ -456,7 +462,8 @@ impl FormatrixDb {
     pub async fn search_fulltext(&self, query: &str, limit: u32) -> Result<Vec<SearchResult>> {
         let db = self.get_db().await?;
         let aql = AqlQuery::builder()
-            .query(r#"
+            .query(
+                r#"
                 FOR doc IN documents
                     LET title_match = CONTAINS(LOWER(doc.title), LOWER(@query))
                     LET content_match = CONTAINS(LOWER(doc.content), LOWER(@query))
@@ -469,7 +476,8 @@ impl FormatrixDb {
                         score: score,
                         snippets: content_match ? [SUBSTRING(doc.content, 0, 200)] : []
                     }
-            "#)
+            "#,
+            )
             .bind_var("query", serde_json::json!(query))
             .bind_var("limit", serde_json::json!(limit))
             .build();
@@ -490,11 +498,13 @@ impl FormatrixDb {
         let doc_id = format!("documents/{}", doc_key);
 
         let aql = AqlQuery::builder()
-            .query(r#"
+            .query(
+                r#"
                 FOR link IN links
                     FILTER link._from == @doc_id OR link._to == @doc_id
                     RETURN link
-            "#)
+            "#,
+            )
             .bind_var("doc_id", serde_json::json!(doc_id))
             .build();
 
@@ -514,11 +524,13 @@ impl FormatrixDb {
         let doc_id = format!("documents/{}", doc_key);
 
         let aql = AqlQuery::builder()
-            .query(r#"
+            .query(
+                r#"
                 FOR link IN links
                     FILTER link._from == @doc_id
                     RETURN link
-            "#)
+            "#,
+            )
             .bind_var("doc_id", serde_json::json!(doc_id))
             .build();
 
@@ -537,11 +549,13 @@ impl FormatrixDb {
         let doc_id = format!("documents/{}", doc_key);
 
         let aql = AqlQuery::builder()
-            .query(r#"
+            .query(
+                r#"
                 FOR link IN links
                     FILTER link._to == @doc_id
                     RETURN link
-            "#)
+            "#,
+            )
             .bind_var("doc_id", serde_json::json!(doc_id))
             .build();
 
@@ -567,7 +581,9 @@ impl FormatrixDb {
             .await
             .map_err(|e| DbError::Query(format!("Failed to create link: {}", e)))?;
 
-        let header = result.header().ok_or_else(|| DbError::Query("No header in response".to_string()))?;
+        let header = result
+            .header()
+            .ok_or_else(|| DbError::Query("No header in response".to_string()))?;
         let key = header._key.clone();
         info!(key = %key, from = %link.from, to = %link.to, "Link created");
         Ok(key)
@@ -598,7 +614,8 @@ impl FormatrixDb {
         let start_id = format!("documents/{}", start_key);
 
         let aql = AqlQuery::builder()
-            .query(r#"
+            .query(
+                r#"
                 FOR v, e, p IN 0..@depth ANY @start GRAPH @graph
                     OPTIONS { uniqueVertices: "global", uniqueEdges: "path" }
                     LET inbound = (
@@ -617,7 +634,8 @@ impl FormatrixDb {
                         inbound: inbound,
                         outbound: outbound
                     }
-            "#)
+            "#,
+            )
             .bind_var("start", serde_json::json!(start_id))
             .bind_var("depth", serde_json::json!(depth))
             .bind_var("graph", serde_json::json!(collections::GRAPH))
@@ -637,11 +655,13 @@ impl FormatrixDb {
     pub async fn get_all_tags(&self) -> Result<Vec<Tag>> {
         let db = self.get_db().await?;
         let aql = AqlQuery::builder()
-            .query(r#"
+            .query(
+                r#"
                 FOR tag IN tags
                     SORT tag.count DESC
                     RETURN tag
-            "#)
+            "#,
+            )
             .build();
 
         let tags: Vec<Tag> = db
@@ -658,12 +678,14 @@ impl FormatrixDb {
         let now = chrono::Utc::now().to_rfc3339();
 
         let aql = AqlQuery::builder()
-            .query(r#"
+            .query(
+                r#"
                 UPSERT { _key: @tag }
                 INSERT { _key: @tag, count: 1, last_used: @now }
                 UPDATE { count: OLD.count + 1, last_used: @now }
                 IN tags
-            "#)
+            "#,
+            )
             .bind_var("tag", serde_json::json!(tag_name))
             .bind_var("now", serde_json::json!(now))
             .build();
@@ -681,12 +703,14 @@ impl FormatrixDb {
     pub async fn get_recent(&self, limit: u32) -> Result<Vec<StoredDocument>> {
         let db = self.get_db().await?;
         let aql = AqlQuery::builder()
-            .query(r#"
+            .query(
+                r#"
                 FOR doc IN documents
                     SORT doc.updated_at DESC
                     LIMIT @limit
                     RETURN doc
-            "#)
+            "#,
+            )
             .bind_var("limit", serde_json::json!(limit))
             .build();
 
@@ -703,12 +727,14 @@ impl FormatrixDb {
     pub async fn get_by_format(&self, format: &str) -> Result<Vec<StoredDocument>> {
         let db = self.get_db().await?;
         let aql = AqlQuery::builder()
-            .query(r#"
+            .query(
+                r#"
                 FOR doc IN documents
                     FILTER doc.format == @format
                     SORT doc.updated_at DESC
                     RETURN doc
-            "#)
+            "#,
+            )
             .bind_var("format", serde_json::json!(format))
             .build();
 

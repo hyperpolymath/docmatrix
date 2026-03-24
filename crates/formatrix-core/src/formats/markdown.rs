@@ -2,8 +2,8 @@
 //! Markdown format handler using comrak
 
 use crate::ast::{
-    AdmonitionType, Block, Document, DocumentMeta, Inline, LinkType,
-    ListItem, ListKind, SourceFormat, TableCell, TableRow,
+    AdmonitionType, Block, Document, DocumentMeta, Inline, LinkType, ListItem, ListKind,
+    SourceFormat, TableCell, TableRow,
 };
 use crate::traits::{FormatHandler, ParseConfig, Parser, RenderConfig, Renderer, Result};
 use comrak::nodes::{AstNode, NodeValue};
@@ -109,12 +109,9 @@ fn parse_node<'a>(node: &'a AstNode<'a>) -> Option<Block> {
                 ListKind::Ordered
             } else {
                 // Check if it's a task list
-                let is_task = node.children().any(|child| {
-                    matches!(
-                        child.data.borrow().value,
-                        NodeValue::TaskItem { .. }
-                    )
-                });
+                let is_task = node
+                    .children()
+                    .any(|child| matches!(child.data.borrow().value, NodeValue::TaskItem { .. }));
                 if is_task {
                     ListKind::Task
                 } else {
@@ -497,7 +494,9 @@ fn render_inline(output: &mut String, inline: &Inline) {
             output.push(')');
         }
 
-        Inline::Image { url, alt, title, .. } => {
+        Inline::Image {
+            url, alt, title, ..
+        } => {
             output.push_str("![");
             output.push_str(alt);
             output.push_str("](");

@@ -4,7 +4,8 @@ on:
   pull_request:
     paths:
       - '**/*.rs'
-permissions: read-all
+permissions:
+  contents: read
 jobs:
   PR:
     runs-on: ubuntu-latest

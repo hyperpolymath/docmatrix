@@ -57,7 +57,10 @@ pub enum PipelineStep {
     /// Render to a format
     Render { format: String },
     /// Convert to output format
-    Convert { format: String, engine: Option<String> },
+    Convert {
+        format: String,
+        engine: Option<String>,
+    },
     /// Custom Nickel transform
     Custom { script: String },
 }
@@ -87,14 +90,11 @@ impl PipelineExecutor {
     }
 
     /// Execute a pipeline
-    pub fn execute(
-        &self,
-        pipeline_name: &str,
-        input: &str,
-    ) -> Result<String> {
-        let _pipeline = self.pipelines.get(pipeline_name).ok_or_else(|| {
-            PipelineError::TransformNotFound(pipeline_name.to_string())
-        })?;
+    pub fn execute(&self, pipeline_name: &str, input: &str) -> Result<String> {
+        let _pipeline = self
+            .pipelines
+            .get(pipeline_name)
+            .ok_or_else(|| PipelineError::TransformNotFound(pipeline_name.to_string()))?;
 
         // TODO: Execute pipeline steps
         Ok(input.to_string())

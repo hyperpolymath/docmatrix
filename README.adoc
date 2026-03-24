@@ -17,13 +17,13 @@ This project must declare **MPL-2.0-or-later** for platform/tooling compatibilit
 
 Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
 
-Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). Tauri 2.0 GUI + Ada TUI. Graph visualization, OCR, TTS/STT, Nickel pipelines.
+Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). Gossamer GUI + Ada TUI. Graph visualization, OCR, TTS/STT, Nickel pipelines.
 
 == Features
 
 * *Format Tabs* - View and edit the same document in multiple markup formats
 * *Unified AST* - Lossless conversion between formats
-* *GUI* - Tauri 2.0 with ReScript frontend
+* *GUI* - Gossamer with ReScript frontend
 * *TUI* - Ada with AdaCurses for terminal usage
 * *Graph Visualization* - ArangoDB for document relationships
 * *Accessibility* - OCR, TTS, STT support
@@ -67,7 +67,7 @@ just run-tui
 ----
 crates/
 ├── formatrix-core/     # AST, parsers, renderers
-├── formatrix-gui/      # Tauri commands
+├── formatrix-gui/      # Gossamer commands
 ├── formatrix-db/       # ArangoDB client
 └── formatrix-pipeline/ # Nickel executor
 

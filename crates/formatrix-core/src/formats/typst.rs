@@ -3,11 +3,10 @@
 //! FD-S03: SHOULD requirement
 
 use crate::ast::{
-    Block, Document, DocumentMeta, Inline,
-    ListItem, ListKind, MathNotation, SourceFormat,
+    Block, Document, DocumentMeta, Inline, ListItem, ListKind, MathNotation, SourceFormat,
 };
 use crate::traits::{FormatHandler, ParseConfig, Parser, RenderConfig, Renderer, Result};
-use typst_syntax::{SyntaxKind, SyntaxNode, parse};
+use typst_syntax::{parse, SyntaxKind, SyntaxNode};
 
 /// Typst format handler
 pub struct TypstHandler;
@@ -112,7 +111,12 @@ fn parse_syntax_tree(root: &SyntaxNode) -> Vec<Block> {
 
             SyntaxKind::EnumItem => {
                 if let Some(item) = parse_list_item(&child) {
-                    if let Some(Block::List { kind: ListKind::Ordered, items, .. }) = blocks.last_mut() {
+                    if let Some(Block::List {
+                        kind: ListKind::Ordered,
+                        items,
+                        ..
+                    }) = blocks.last_mut()
+                    {
                         items.push(item);
                     } else {
                         blocks.push(Block::List {
@@ -310,7 +314,9 @@ fn render_block(output: &mut String, block: &Block) {
             }
         }
 
-        Block::CodeBlock { language, content, .. } => {
+        Block::CodeBlock {
+            language, content, ..
+        } => {
             output.push_str("```");
             if let Some(lang) = language {
                 output.push_str(lang);
@@ -367,7 +373,12 @@ fn render_block(output: &mut String, block: &Block) {
             output.push(']');
         }
 
-        Block::Table { header, body, caption, .. } => {
+        Block::Table {
+            header,
+            body,
+            caption,
+            ..
+        } => {
             output.push_str("#table(\n");
 
             if let Some(h) = header {
@@ -549,7 +560,9 @@ mod tests {
             meta: DocumentMeta::default(),
             content: vec![Block::Heading {
                 level: 1,
-                content: vec![Inline::Text { content: "Title".to_string() }],
+                content: vec![Inline::Text {
+                    content: "Title".to_string(),
+                }],
                 id: None,
                 span: None,
             }],

@@ -254,17 +254,21 @@ impl Block {
         match self {
             Block::Paragraph { content, .. } => content.iter().map(|i| i.word_count()).sum(),
             Block::Heading { content, .. } => content.iter().map(|i| i.word_count()).sum(),
-            Block::CodeBlock { content, .. } => {
-                content.split_whitespace().count()
-            }
+            Block::CodeBlock { content, .. } => content.split_whitespace().count(),
             Block::BlockQuote { content, .. } => content.iter().map(|b| b.word_count()).sum(),
-            Block::List { items, .. } => {
-                items.iter().flat_map(|i| &i.content).map(|b| b.word_count()).sum()
-            }
+            Block::List { items, .. } => items
+                .iter()
+                .flat_map(|i| &i.content)
+                .map(|b| b.word_count())
+                .sum(),
             Block::Container { content, .. } => content.iter().map(|b| b.word_count()).sum(),
-            Block::Figure { content, caption, .. } => {
+            Block::Figure {
+                content, caption, ..
+            } => {
                 let content_count: usize = content.iter().map(|b| b.word_count()).sum();
-                let caption_count: usize = caption.as_ref().map_or(0, |c| c.iter().map(|i| i.word_count()).sum());
+                let caption_count: usize = caption
+                    .as_ref()
+                    .map_or(0, |c| c.iter().map(|i| i.word_count()).sum());
                 content_count + caption_count
             }
             _ => 0,
@@ -278,9 +282,11 @@ impl Block {
             Block::Heading { content, .. } => content.iter().map(|i| i.char_count()).sum(),
             Block::CodeBlock { content, .. } => content.chars().count(),
             Block::BlockQuote { content, .. } => content.iter().map(|b| b.char_count()).sum(),
-            Block::List { items, .. } => {
-                items.iter().flat_map(|i| &i.content).map(|b| b.char_count()).sum()
-            }
+            Block::List { items, .. } => items
+                .iter()
+                .flat_map(|i| &i.content)
+                .map(|b| b.char_count())
+                .sum(),
             Block::Container { content, .. } => content.iter().map(|b| b.char_count()).sum(),
             _ => 0,
         }
@@ -385,10 +391,16 @@ pub enum Inline {
     SmallCaps { content: Vec<Inline> },
 
     /// Inline code
-    Code { content: String, language: Option<String> },
+    Code {
+        content: String,
+        language: Option<String>,
+    },
 
     /// Inline math
-    Math { content: String, notation: MathNotation },
+    Math {
+        content: String,
+        notation: MathNotation,
+    },
 
     /// Hyperlink
     Link {
@@ -435,10 +447,16 @@ pub enum Inline {
     },
 
     /// Raw inline content from source format
-    RawInline { format: SourceFormat, content: String },
+    RawInline {
+        format: SourceFormat,
+        content: String,
+    },
 
     /// Quoted text
-    Quoted { quote_type: QuoteType, content: Vec<Inline> },
+    Quoted {
+        quote_type: QuoteType,
+        content: Vec<Inline>,
+    },
 
     /// Keyboard input
     Keyboard { content: String },
@@ -574,21 +592,24 @@ mod proptests {
 
     // Strategy for generating Paragraphs
     fn paragraph_strategy() -> impl Strategy<Value = Block> {
-        prop::collection::vec(simple_inline_strategy(), 0..5).prop_map(|content| {
-            Block::Paragraph { content, span: None }
+        prop::collection::vec(simple_inline_strategy(), 0..5).prop_map(|content| Block::Paragraph {
+            content,
+            span: None,
         })
     }
 
     // Strategy for generating Headings
     fn heading_strategy() -> impl Strategy<Value = Block> {
-        (1u8..=6, prop::collection::vec(simple_inline_strategy(), 1..4)).prop_map(
-            |(level, content)| Block::Heading {
+        (
+            1u8..=6,
+            prop::collection::vec(simple_inline_strategy(), 1..4),
+        )
+            .prop_map(|(level, content)| Block::Heading {
                 level,
                 content,
                 id: None,
                 span: None,
-            },
-        )
+            })
     }
 
     // Strategy for generating CodeBlocks

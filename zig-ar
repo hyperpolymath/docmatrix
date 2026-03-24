@@ -1,0 +1,4 @@
+#!/bin/sh
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Zig AR wrapper — uses zig as a drop-in archiver
+exec zig ar "$@"

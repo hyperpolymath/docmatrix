@@ -434,7 +434,9 @@ pub unsafe extern "C" fn formatrix_open_file(
     match file_ops::open_file(path_str) {
         Ok(opened) => {
             *out_format = opened.file_info.format.into();
-            let handle = Box::new(DocumentHandle { doc: opened.document });
+            let handle = Box::new(DocumentHandle {
+                doc: opened.document,
+            });
             *out_handle = Box::into_raw(handle);
             FfiResult::Success
         }

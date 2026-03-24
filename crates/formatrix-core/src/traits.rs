@@ -16,7 +16,10 @@ pub enum ConversionError {
     },
 
     #[error("Unsupported feature: {feature} in format {format:?}")]
-    UnsupportedFeature { format: SourceFormat, feature: String },
+    UnsupportedFeature {
+        format: SourceFormat,
+        feature: String,
+    },
 
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),
@@ -155,12 +158,12 @@ impl FormatRegistry {
             return Ok(input.to_string());
         }
 
-        let from_handler =
-            self.get(from)
-                .ok_or_else(|| ConversionError::UnsupportedFeature {
-                    format: from,
-                    feature: "parsing".to_string(),
-                })?;
+        let from_handler = self
+            .get(from)
+            .ok_or_else(|| ConversionError::UnsupportedFeature {
+                format: from,
+                feature: "parsing".to_string(),
+            })?;
 
         let to_handler = self
             .get(to)
