@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# k9iser manifest for docmatrix
+# Generates K9 contracts from repo configuration files.
+# docmatrix is a Rust document transformation tool — workspace with formatrix-core, -db, -gui, -pipeline crates
+
+[project]
+name = "docmatrix"
+safety_tier = "hunt"
+
+[[source]]
+path = "Cargo.toml"
+type = "cargo"
+output = "generated/k9iser/cargo-manifest.k9"
+
+[[source]]
+path = "Justfile"
+type = "justfile"
+output = "generated/k9iser/justfile-recipes.k9"
+
+[[source]]
+path = ".github/workflows/hypatia-scan.yml"
+type = "workflow"
+output = "generated/k9iser/ci-security.k9"
+
+[[source]]
+path = ".github/workflows/codeql.yml"
+type = "workflow"
+output = "generated/k9iser/ci-codeql.k9"
+
+[[constraint]]
+rule = "build.dependencies has no banned_packages"
+severity = "error"
+
+[[constraint]]
+rule = "build.workspace.members all have [lib] or [[bin]] sections"
+severity = "warn"
+
+[[constraint]]
+rule = "workflows includes hypatia-scan"
+severity = "error"
+
+[[constraint]]
+rule = "abi.definitions exist in src/abi/ when ffi/ is present"
+severity = "warn"
