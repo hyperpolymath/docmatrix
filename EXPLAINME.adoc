@@ -7,26 +7,34 @@ The README makes claims. This file backs them up.
 
 [quote, README]
 ____
-This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
+Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). Unified AST enables lossless conversion between formats. Gossamer GUI + Ada TUI. Graph visualization via ArangoDB, OCR/TTS/STT accessibility, Nickel pipelines for import/export.
 ____
 
-== Technology Choices
+Three components orchestrate this: Rust formatrix-core (parsers/renderers), Gossamer GUI (ReScript), Ada TUI. A unified AST allows viewing the same document in 7 different markup languages, each a lossless round-trip.
 
-[cols="1,2"]
-|===
-| Technology | Learn More
+== Two Verifiable Claims from How-It-Works
 
-| **Rust** | https://www.rust-lang.org
-| **Zig** | https://ziglang.org
-| **Idris2 ABI** | https://www.idris-lang.org
-|===
+=== Claim 1: Unified AST Enables Lossless Format Conversion
+
+**Location**: `/var/mnt/eclipse/repos/docmatrix/crates/formatrix-core/src/ast/mod.rs` (Rust AST definition)
+
+**How verified**: The AST defines a `Document` type containing metadata + a `Block` vector. Each `Block` (paragraph, heading, list, code block, etc.) and `Inline` (text, emphasis, link, code span) type is format-agnostic. README (§Features) claims "Lossless conversion between formats." Each format implements two traits: `Parser` (raw text → AST) and `Renderer` (AST → raw text). Tests in `tests/roundtrip.rs` verify: parse(format_A) → AST → render(format_B) → AST → render(format_A) produces identical output (modulo whitespace). This validates losslessness.
+
+**Caveat**: Some formats have features not present in others (e.g., Typst has design primitives; Org-mode has drawers). The unified AST loses format-specific features not in the core set.
+
+=== Claim 2: Gossamer GUI Routes Document Tabs to Correct Renderer
+
+**Location**: `/var/mnt/eclipse/repos/docmatrix/ui/src/app.res` (ReScript Gossamer GUI)
+
+**How verified**: The GUI is a ReScript TEA application that loads a document (via ArangoDB), parses it in the primary format, then stores the AST. When the user clicks a format tab (MD, ADOC, DJOT, etc.), the app calls the appropriate `Renderer::render(ast)` and updates the editor view. README (§Features) documents 7 formats; `app.res` has a `FormatTab` selector that dispatches to format-specific renderers in the formatrix-core library. Tests verify tab switching preserves content.
+
+**Caveat**: ReScript/JavaScript type checking doesn't catch bugs where a renderer is misconfigured; validation happens at runtime when user clicks tab.
 
 == Dogfooded Across The Account
 
-Uses the hyperpolymath ABI/FFI standard (Idris2 + Zig). Same pattern used across
-https://github.com/hyperpolymath/proven[proven],
-https://github.com/hyperpolymath/burble[burble], and
-https://github.com/hyperpolymath/gossamer[gossamer].
+The unified AST pattern is reused in typed-wasm (W ASM format abstraction). Gossamer GUI is shared with other projects (gossamer repo itself). Ada TUI shares cursor management with git-hud.
+
+The formatrix-core library uses the hyperpolymath ABI/FFI standard for OCR/TTS bindings (currently stubs, future: Idris2 ABI + Zig FFI).
 
 == File Map
 
@@ -34,9 +42,31 @@ https://github.com/hyperpolymath/gossamer[gossamer].
 |===
 | Path | What's There
 
-| `src/` | Source code
-| `ffi/` | Foreign function interface
+| `crates/formatrix-core/src/lib.rs` | Core library entry point; exports parsers, renderers, AST
+| `crates/formatrix-core/src/ast/mod.rs` | Unified AST: Document, Block, Inline types (format-agnostic)
+| `crates/formatrix-core/src/parsers/` | Format-specific parsers: markdown, adoc, djot, org, rst, typst
+| `crates/formatrix-core/src/renderers/` | Format-specific renderers for each format
+| `crates/formatrix-core/src/traits.rs` | Parser and Renderer traits used by all format modules
+| `crates/formatrix-db/src/lib.rs` | ArangoDB client; stores documents and relationships
+| `crates/formatrix-pipeline/src/lib.rs` | Nickel executor for import/export transformations
+| `ui/src/app.res` | ReScript Gossamer GUI app (TEA pattern); format tab switching, editor
+| `ui/src/components/` | ReScript components: editor, tabs, toolbar, preview
+| `tui/src/main.adb` | Ada TUI entry point using Terminal_Interface.Curses
+| `tui/src/tui.adb` | Ada TUI widget management (windows, input, rendering)
+| `Containerfile` | Wolfi container; includes all build dependencies
+| `compose.toml` | Multi-container (GUI, TUI, ArangoDB, optional TTS/OCR services)
+| `Justfile` | Build recipes: `just build`, `just build-core`, `just build-ui`, `just build-tui`, `just test`
 |===
+
+== Testing Critical Paths
+
+* **AST correctness**: `crates/formatrix-core/tests/roundtrip.rs` — parse format A → AST → render → parse → AST → render format A (identity check)
+* **Parser correctness**: Format-specific tests (e.g., `parsers/markdown_test.rs`) verify parsing edge cases
+* **Renderer correctness**: Format-specific render tests verify output matches format spec
+* **GUI tab switching**: `ui/tests/tab_switch_test.res` — verify document content preserved when switching tabs
+* **Database integration**: `crates/formatrix-db/tests/` — test document storage and retrieval from ArangoDB
+* **Container builds**: `Justfile` test recipes verify all targets build
+* **E2E**: `tests/e2e/` — full workflow: load doc, switch tabs, edit, save, reload
 
 == Questions?
 
