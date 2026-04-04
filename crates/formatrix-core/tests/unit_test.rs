@@ -3,7 +3,7 @@
 
 use formatrix_core::{
     ast::{Block, Document, DocumentMeta, Inline, SourceFormat, MetaValue},
-    traits::{FormatHandler, Parser, ParseConfig, RenderConfig, Renderer, FormatRegistry},
+    traits::{FormatHandler, Parser, ParseConfig, RenderConfig, Renderer},
     formats::PlainTextHandler,
 };
 use std::collections::HashMap;
@@ -68,7 +68,7 @@ fn test_parser_trims_paragraphs() {
 #[test]
 fn test_parser_format_identification() {
     let parser = PlainTextHandler::new();
-    assert_eq!(parser.format(), SourceFormat::PlainText);
+    assert_eq!(Parser::format(&parser), SourceFormat::PlainText);
 }
 
 // ============================================================================
@@ -146,6 +146,7 @@ fn test_renderer_heading() {
             content: vec![Inline::Text {
                 content: "Title".to_string(),
             }],
+            id: None,
             span: None,
         }],
         raw_source: None,
@@ -158,7 +159,7 @@ fn test_renderer_heading() {
 #[test]
 fn test_renderer_format_identification() {
     let renderer = PlainTextHandler::new();
-    assert_eq!(renderer.format(), SourceFormat::PlainText);
+    assert_eq!(Renderer::format(&renderer), SourceFormat::PlainText);
 }
 
 // ============================================================================
@@ -310,6 +311,7 @@ fn test_block_heading_creation() {
         content: vec![Inline::Text {
             content: "Heading".to_string(),
         }],
+        id: None,
         span: None,
     };
 
@@ -443,12 +445,13 @@ fn test_metavalue_list() {
 #[test]
 fn test_parse_never_panics_on_input() {
     let parser = PlainTextHandler::new();
-    let malformed_inputs = vec![
+    let large_str = "A".repeat(100_000);
+    let malformed_inputs: Vec<&str> = vec![
         "",
         " ",
         "\n",
         "\0",
-        "A".repeat(100_000).as_str(),
+        &large_str,
         "\u{FFFD}",
     ];
 

@@ -3,7 +3,7 @@
 
 use formatrix_core::{
     ast::{Block, Document, DocumentMeta, Inline, SourceFormat},
-    traits::{FormatHandler, Parser, ParseConfig, RenderConfig, Renderer},
+    traits::{Parser, ParseConfig, RenderConfig, Renderer},
     formats::PlainTextHandler,
 };
 
@@ -134,14 +134,14 @@ fn test_plaintext_round_trip() {
 #[test]
 fn test_parser_format_identification() {
     let parser = PlainTextHandler::new();
-    assert_eq!(parser.format(), SourceFormat::PlainText);
+    assert_eq!(Parser::format(&parser), SourceFormat::PlainText);
 }
 
 /// Test renderer format identification
 #[test]
 fn test_renderer_format_identification() {
     let renderer = PlainTextHandler::new();
-    assert_eq!(renderer.format(), SourceFormat::PlainText);
+    assert_eq!(Renderer::format(&renderer), SourceFormat::PlainText);
 }
 
 /// Test document metadata handling
@@ -154,7 +154,7 @@ fn test_document_metadata() {
             authors: vec!["Author One".to_string(), "Author Two".to_string()],
             date: Some("2026-04-04".to_string()),
             language: Some("en".to_string()),
-            ..Default::default()
+            custom: Default::default(),
         },
         content: vec![],
         raw_source: None,
@@ -247,4 +247,14 @@ fn test_render_config_customization() {
     assert_eq!(config.line_width, 120);
     assert_eq!(config.indent, "\t");
     assert!(config.hard_breaks);
+}
+
+/// Test plaintext with special characters
+#[test]
+fn test_plaintext_special_chars() {
+    let parser = PlainTextHandler::new();
+    let input = "Special chars: @#$%^&*()";
+    let config = ParseConfig::default();
+
+    let _doc = parser.parse(input, &config).expect("parse failed");
 }
