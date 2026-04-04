@@ -11,6 +11,10 @@ repository.workspace = true
 [lib]
 crate-type = ["lib", "cdylib", "staticlib"]
 
+[[bench]]
+name = "format_bench"
+harness = false
+
 [dependencies]
 # Format parsers
 comrak.workspace = true
@@ -35,6 +39,7 @@ unicode-segmentation.workspace = true
 pretty_assertions = "1.4"
 proptest = "1.5"
 tempfile = "3.14"
+criterion = "0.5"
 
 [features]
 default = ["markdown", "djot", "orgmode", "rst", "typst", "asciidoc"]

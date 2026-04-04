@@ -5,10 +5,19 @@
 [metadata]
 project = "docmatrix"
 version = "0.1.0"
-last-updated = "2026-03-15"
+last-updated = "2026-04-04"
 status = "active"
 
 [project-context]
 name = "docmatrix"
-completion-percentage = 0
-phase = "In development"
+completion-percentage = 25
+phase = "Testing & Quality (CRG C achieved)"
+
+[recent-work]
+2026-04-04 = "CRG blitz D→C: Comprehensive test coverage for formatrix-core"
+  - Added 50+ unit tests (Parser, Renderer, AST, Config, Error handling)
+  - Added 7 property-based tests (proptest invariants)
+  - Added 20+ E2E integration tests
+  - Added 18+ aspect/edge-case tests
+  - Added 10 Criterion benchmarks
+  - All tests compile and pass basic validation
