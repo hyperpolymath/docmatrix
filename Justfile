@@ -7,6 +7,8 @@ set dotenv-load := true
 set positional-arguments := true
 
 # Use Zig as C compiler/linker (avoids gcc dependency)
+import? "contractile.just"
+
 export CC := env_var_or_default("CC", justfile_directory() / "zig-cc")
 export AR := env_var_or_default("AR", justfile_directory() / "zig-ar")
 
