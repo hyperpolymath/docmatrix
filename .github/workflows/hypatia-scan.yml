@@ -87,24 +87,72 @@ jobs:
 
       - name: Submit findings to gitbot-fleet (Phase 2)
         if: steps.scan.outputs.findings_count > 0
+        # Phase 2 is the collaborative LEARNING side-channel ("bots share
+        # findings via gitbot-fleet"), not the security gate. The gate is
+        # the baseline-aware "Check for critical or high-severity issues"
+        # step below. A fleet-side regression (e.g. the submit script being
+        # moved/removed) must NEVER hard-fail every consuming repo's scan.
+        # Same reasoning as the "Comment on PR with findings" step.
+        # See hyperpolymath/hypatia#213 (gate decoupling) and the exit-127
+        # estate-wide breakage when gitbot-fleet/scripts/submit-finding.sh
+        # no longer existed on the default branch.
+        continue-on-error: true
         env:
+          # All GitHub context values surface as env vars so the run
+          # block never interpolates `${{ … }}` inline (closes the
+          # workflow_audit/unsafe_curl_payload + actions_expression_injection
+          # findings).
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FLEET_PUSH_TOKEN: ${{ secrets.HYPATIA_DISPATCH_PAT }}
+          FLEET_DISPATCH_TOKEN: ${{ secrets.HYPATIA_DISPATCH_PAT }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_SHA: ${{ github.sha }}
+          FINDINGS_COUNT: ${{ steps.scan.outputs.findings_count }}
         run: |
-          echo "📤 Submitting ${{ steps.scan.outputs.findings_count }} findings to gitbot-fleet..."
+          echo "📤 Submitting $FINDINGS_COUNT findings to gitbot-fleet..."
 
-          # Clone gitbot-fleet to temp directory
+          # Clone gitbot-fleet to temp directory. A clone failure (network,
+          # repo gone) is non-fatal: learning submission is best-effort.
           FLEET_DIR="/tmp/gitbot-fleet-$$"
-          git clone https://github.com/hyperpolymath/gitbot-fleet.git "$FLEET_DIR"
+          if ! git clone --depth 1 https://github.com/hyperpolymath/gitbot-fleet.git "$FLEET_DIR"; then
+            echo "::warning::Could not clone gitbot-fleet — skipping Phase 2 learning submission (non-fatal)."
+            exit 0
+          fi
 
-          # Run submission script
-          bash "$FLEET_DIR/scripts/submit-finding.sh" hypatia-findings.json
+          # The submission script's location in gitbot-fleet has drifted
+          # before (it was absent from the default branch, which exit-127'd
+          # every consuming repo's scan). Probe known locations rather than
+          # hard-coding one path, and skip gracefully if none is present.
+          SUBMIT_SCRIPT=""
+          for cand in \
+            "$FLEET_DIR/scripts/submit-finding.sh" \
+            "$FLEET_DIR/scripts/submit_finding.sh" \
+            "$FLEET_DIR/bin/submit-finding.sh" \
+            "$FLEET_DIR/submit-finding.sh"; do
+            if [ -f "$cand" ]; then
+              SUBMIT_SCRIPT="$cand"
+              break
+            fi
+          done
+
+          if [ -z "$SUBMIT_SCRIPT" ]; then
+            echo "::warning::gitbot-fleet submit-finding script not found at any known path — skipping Phase 2 learning submission (non-fatal). Findings are still uploaded as an artifact and gated below."
+            rm -rf "$FLEET_DIR"
+            exit 0
+          fi
+
+          # Run submission script. Pass the findings path as ABSOLUTE —
+          # the script cd's into its own working dir before reading the
+          # file, so a relative path would resolve to the wrong place.
+          # A submission-script failure is logged but non-fatal.
+          if bash "$SUBMIT_SCRIPT" "$GITHUB_WORKSPACE/hypatia-findings.json"; then
+            echo "✅ Finding submission complete"
+          else
+            echo "::warning::gitbot-fleet submission script exited non-zero — Phase 2 learning submission skipped (non-fatal)."
+          fi
 
           # Cleanup
           rm -rf "$FLEET_DIR"
-
-          echo "✅ Finding submission complete"
 
       - name: Check for critical issues
         if: steps.scan.outputs.critical > 0
