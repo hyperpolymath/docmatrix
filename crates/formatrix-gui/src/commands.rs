@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! Gossamer commands for document operations
 //!
 //! Each public function is registered as a Gossamer IPC command in main.rs.

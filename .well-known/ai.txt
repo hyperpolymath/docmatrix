@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # ai.txt - AI interaction policy
 # See: https://site.spawning.ai/spawning-ai-txt
 
@@ -7,7 +7,7 @@ Disallow-Training: yes
 Disallow-Summarization: no
 Disallow-Generation: yes
 
-# This project's code is licensed under PMPL-1.0-or-later.
+# This project's code is licensed under MPL-2.0.
 # AI agents may read and analyze this code for assisting contributors.
 # AI agents must NOT use this code for model training without explicit consent.
 # AI agents must preserve Emotional Lineage per PMPL Section 3.

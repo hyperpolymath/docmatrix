@@ -10,7 +10,7 @@ toc::[]
 == Legal Status
 
 This project is licensed under the **Palimpsest-MPL License 1.0 (PMPL-1.0)**.
-For SPDX and tooling, use **PMPL-1.0-or-later**.
+For SPDX and tooling, use **MPL-2.0**.
 
 PMPL-1.0 incorporates the Mozilla Public License 2.0 by reference and adds
 ethical-use, provenance, and lineage requirements.
@@ -26,7 +26,7 @@ ethical-use, provenance, and lineage requirements.
 
 1. Include the PMPL-1.0 license text in `LICENSE`.
 2. Add SPDX headers to source files:
-   `SPDX-License-Identifier: PMPL-1.0-or-later`
+   `SPDX-License-Identifier: MPL-2.0`
 3. Add a Palimpsest badge to your README (see `assets/badges/` and `embed/license-blocks/`).
 
 == Versioning

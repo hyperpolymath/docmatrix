@@ -11,6 +11,6 @@ See README.adoc for overview.
 - `just heal` — attempt auto-repair
 
 ## Quick Context
-- License: PMPL-1.0-or-later
+- License: MPL-2.0
 - Part of hyperpolymath ecosystem
 - See EXPLAINME.adoc for architecture

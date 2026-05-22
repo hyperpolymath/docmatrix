@@ -185,7 +185,7 @@ Criterion-based performance baselines with 10 benchmarks:
 - **Error paths** - Malformed input testing
 
 ### Quality
-- **SPDX headers** - All test files marked PMPL-1.0-or-later
+- **SPDX headers** - All test files marked MPL-2.0
 - **Documentation** - Each test has clear intent
 - **Maintainability** - Organized by concern (unit, property, e2e, aspect, bench)
 

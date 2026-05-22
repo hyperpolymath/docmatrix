@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! Formatrix Pipeline - Nickel-based content transformation engine
 //!
 //! Pipelines define content transformations for import/export:

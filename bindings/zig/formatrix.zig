@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! Zig bindings for formatrix-core
 //!
 //! Provides a type-safe Zig interface to the Formatrix document library.

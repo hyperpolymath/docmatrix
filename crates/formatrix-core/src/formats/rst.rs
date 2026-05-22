@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! reStructuredText format handler using rst_parser
 //! FD-S02: SHOULD requirement
 

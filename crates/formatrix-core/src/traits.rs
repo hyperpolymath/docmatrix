@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! Parser and Renderer traits for format handlers
 
 use crate::ast::{Document, SourceFormat};

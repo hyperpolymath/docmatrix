@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! C FFI exports for Ada TUI integration (FD-M10)
 //!
 //! These functions provide a C-compatible interface for the Ada TUI

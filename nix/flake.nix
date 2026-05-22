@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Formatrix Docs - Nix Flake (Fallback for non-Guix systems)
 # Copyright (C) 2025 Jonathan D.A. Jewell
 {

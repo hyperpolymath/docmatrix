@@ -93,7 +93,7 @@
     ],
     "resources": [],
     "copyright": "Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath)",
-    "license": "PMPL-1.0-or-later",
+    "license": "MPL-2.0",
     "shortDescription": "Cross-platform document editor with format tabs",
     "longDescription": "View and edit documents in multiple markup formats (TXT, MD, ADOC, DJOT, ORG, RST, TYP) with a unified AST for format conversion.",
     "linux": {
