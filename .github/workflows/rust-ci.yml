@@ -1,69 +1,17 @@
 # SPDX-License-Identifier: MPL-2.0
-# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
-#
-# rust-ci.yml — Cargo build, test, clippy, and fmt for Rust projects.
-# Only runs if Cargo.toml exists in the repo root.
+# Rust CI — thin wrapper calling the shared estate reusable in
+# hyperpolymath/standards. Configure once, propagate everywhere.
+# See: docs/CI-REUSABLE-WORKFLOWS.adoc in standards.
 name: Rust CI
 
 on:
-  pull_request:
-    branches: ['**']
   push:
     branches: [main, master]
+  pull_request:
 
 permissions:
   contents: read
 
 jobs:
-  check:
-    name: Cargo check + clippy + fmt
-    runs-on: ubuntu-latest
-    if: hashFiles('Cargo.toml') != ''
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@4be9e76fd7c4901c61fb841f559994984270fce7 # stable
-        with:
-          components: clippy, rustfmt
-
-      - name: Cache cargo registry and build
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
-
-      - name: Cargo check
-        run: cargo check --all-targets 2>&1
-
-      - name: Cargo fmt
-        run: cargo fmt --all -- --check
-
-      - name: Cargo clippy
-        run: cargo clippy --all-targets -- -D warnings
-
-  test:
-    name: Cargo test
-    runs-on: ubuntu-latest
-    needs: check
-    if: hashFiles('Cargo.toml') != ''
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@4be9e76fd7c4901c61fb841f559994984270fce7 # stable
-
-      - name: Cache cargo registry and build
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
-
-      - name: Run tests
-        run: cargo test --all-targets
-
-      - name: Write summary
-        if: always()
-        run: |
-          echo "## Rust CI Results" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **cargo check**: passed" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **cargo test**: completed" >> "$GITHUB_STEP_SUMMARY"
+  rust-ci:
+    uses: hyperpolymath/standards/.github/workflows/rust-ci-reusable.yml@4fdf4314b4ab54269adbaff10e30e483b5e86845
