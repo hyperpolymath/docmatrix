@@ -1,0 +1,148 @@
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-pink?logo=github)](https://github.com/sponsors/hyperpolymath)
+
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
+// SPDX-License-Identifier: MPL-2.0-or-later
+= DocMatrix
+
+
+
+:toc: left
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+== License & Philosophy
+
+This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
+
+Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
+
+Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). Gossamer GUI + Ada TUI. Graph visualization, OCR, TTS/STT, Nickel pipelines.
+
+== Features
+
+* *Format Tabs* - View and edit the same document in multiple markup formats
+* *Unified AST* - Lossless conversion between formats
+* *GUI* - Gossamer with ReScript frontend
+* *TUI* - Ada with AdaCurses for terminal usage
+* *Graph Visualization* - ArangoDB for document relationships
+* *Accessibility* - OCR, TTS, STT support
+* *Pipelines* - Nickel-based import/export transformations
+
+== Supported Formats
+
+[cols="1,2", options="header"]
+|===
+| Format | Description
+
+| TXT | Plain text
+| MD | Markdown (CommonMark)
+| ADOC | AsciiDoc
+| DJOT | Djot markup
+| ORG | Org-mode
+| RST | reStructuredText
+| TYP | Typst
+|===
+
+== Quick Start
+
+[source,bash]
+----
+# Check dependencies
+just deps
+
+# Build all components
+just build
+
+# Run GUI
+just run-gui
+
+# Run TUI
+just run-tui
+----
+
+== Architecture
+
+[source]
+----
+crates/
+├── formatrix-core/     # AST, parsers, renderers
+├── formatrix-gui/      # Gossamer commands
+├── formatrix-db/       # ArangoDB client
+└── formatrix-pipeline/ # Nickel executor
+
+tui/src/                # Ada TUI source
+ui/src/                 # ReScript components
+pipelines/              # Nickel pipeline definitions
+container/              # Wolfi container configs
+----
+
+== Development
+
+=== Prerequisites
+
+* Rust (stable)
+* Deno
+* GNAT + gprbuild (for TUI)
+* GTK4 + WebKit2GTK (for GUI)
+
+=== Build Commands
+
+[source,bash]
+----
+just build           # Build all
+just build-core      # Build Rust core only
+just build-tui       # Build Ada TUI only
+just build-ui        # Build ReScript UI only
+just test            # Run all tests
+just fmt             # Format all code
+just lint            # Lint all code
+----
+
+=== Containers
+
+[source,bash]
+----
+just container-build           # Build Wolfi image
+just compose-up                # Start with ArangoDB
+just container-run-tui         # Run TUI in container
+----
+
+== RSR Compliance
+
+This project follows the Rhodium Standard Repositories specification:
+
+* *Tier 2* - Full-featured multi-language project
+* See link:RSR_COMPLIANCE.adoc[RSR_COMPLIANCE.adoc] for details
+
+== Related Scripts
+
+Automation scripts from https://github.com/hyperpolymath/scripts[hyperpolymath/scripts]:
+
+[cols="1,2", options="header"]
+|===
+| Script | Purpose
+
+| `asdfman.sh` | Manage asdf plugins and versions
+| `init_bashrc_three_ply.sh` | Modular bashrc setup (three-layer architecture)
+| `k-check.sh` | Kinoite cluster validation
+| `k-intune.sh` | Kinoite tuning scripts
+| `langstrap.sh` | Mass language install utilities
+| `sysenv.sh` | System environment setup
+| `touchscreen_hunter_killer.sh` | Touchscreen calibration/management
+|===
+
+These scripts follow the same language policy (Bash, Rust, ReScript, Deno, Gleam, Guile Scheme) and multi-forge mirroring strategy.
+
+== License
+
+PMPL-1.0 with Palimpsest philosophy.
+
+== Links
+
+* link:.machine_readable/6a2/STATE.a2ml[Project State]
+* link:.machine_readable/6a2/ECOSYSTEM.a2ml[Ecosystem Position]
+* link:.machine_readable/6a2/META.a2ml[Architecture Decisions]
+* link:PALIMPSEST.adoc[Palimpsest Philosophy]
