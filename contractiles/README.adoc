@@ -18,4 +18,4 @@ This directory contains the generalized contractiles templates. Copy the `contra
 * `must/Mustfile` - required invariants and validations.
 * `trust/Trustfile.hs` - cryptographic verification steps.
 * `dust/Dustfile` - rollback and recovery semantics.
-* `lust/Intentfile` - future intent and roadmap direction.
+* `intend/Intentfile` - future intent and roadmap direction.
