@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //! Formatrix Pipeline - Nickel-based content transformation engine
 //!
 //! Pipelines define content transformations for import/export:

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = K9 Contractiles
 :toc: left
 :icons: font
@@ -71,13 +72,13 @@ Choose the appropriate security level for your use case:
 [source,bash]
 ----
 # Kennel: Pure configuration
-cp contractiles/k9/examples/project-metadata.k9.ncl config/metadata.k9.ncl
+cp contractiles/self-validating/examples/project-metadata.k9.ncl config/metadata.k9.ncl
 
 # Yard: Validated configuration
-cp contractiles/k9/examples/ci-config.k9.ncl .github/ci.k9.ncl
+cp contractiles/self-validating/examples/ci-config.k9.ncl .github/ci.k9.ncl
 
 # Hunt: Full automation
-cp contractiles/k9/examples/setup-repo.k9.ncl scripts/setup.k9.ncl
+cp contractiles/self-validating/examples/setup-repo.k9.ncl scripts/setup.k9.ncl
 ----
 
 === 2. Validate Components
@@ -130,7 +131,7 @@ K9 contractiles integrate with other RSR standards:
 ⚠️ **Never run as root unless required** +
 ⚠️ **Sandbox external components**
 
-**See:** https://github.com/hyperpolymath/standards/blob/main/k9-svc/docs/SECURITY-BEST-PRACTICES.adoc
+**See:** https://github.com/hyperpolymath/standards/blob/main/self-validating/docs/SECURITY-BEST-PRACTICES.adoc
 
 == Template Files
 
@@ -160,9 +161,9 @@ git clone https://github.com/hyperpolymath/standards.git
 
 == Learn More
 
-- **K9-SVC Specification:** https://github.com/hyperpolymath/standards/blob/main/k9-svc/SPEC.adoc
-- **K9 User Guide:** https://github.com/hyperpolymath/standards/blob/main/k9-svc/GUIDE.adoc
-- **Security Documentation:** https://github.com/hyperpolymath/standards/blob/main/k9-svc/docs/SECURITY-FAQ.adoc
+- **K9-SVC Specification:** https://github.com/hyperpolymath/standards/blob/main/self-validating/SPEC.adoc
+- **K9 User Guide:** https://github.com/hyperpolymath/standards/blob/main/self-validating/GUIDE.adoc
+- **Security Documentation:** https://github.com/hyperpolymath/standards/blob/main/self-validating/docs/SECURITY-FAQ.adoc
 - **IANA Media Type:** `application/vnd.k9+nickel`
 
 == Contributing

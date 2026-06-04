@@ -1,9 +1,10 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Documentation System Architecture
 :toc: left
 :toclevels: 3
 :icons: font
 :source-highlighter: highlightjs
-// SPDX-License-Identifier: MPL-2.0-or-later
 
 == Overview
 

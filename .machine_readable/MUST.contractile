@@ -26,7 +26,7 @@
 ;     remain active until the feature is fully removed.
 ;
 ; Enforcement:
-;   K9 validators in contractiles/k9/ machine-check MUST constraints.
+;   K9 validators in contractiles/self-validating/ machine-check MUST constraints.
 ;   CI runs these on every PR. Violations block merge.
 ;
 ; ── End Definitions ──────────────────────────────────────────────
@@ -85,7 +85,7 @@
   ; (must "# Add project-specific invariants here")
 
   (enforcement
-    (k9-validator "contractiles/k9/must-check.k9.ncl")
+    (k9-validator "contractiles/self-validating/must-check.k9.ncl")
     (ci "quality.yml runs must-check on every PR")
   )
 )

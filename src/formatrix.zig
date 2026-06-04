@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //! Zig bindings for formatrix-core
 //!
 //! Provides a type-safe Zig interface to the Formatrix document library.

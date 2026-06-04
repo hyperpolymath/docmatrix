@@ -1,0 +1,21 @@
+# AI Manifest for Anchor Directory
+
+## Purpose
+
+This manifest declares the AI-assistant context for the anchor machine-readable metadata directory.
+
+## Canonical Locations
+
+ANCHOR.a2ml files MUST exist in this directory.
+
+## Multiple Versions
+
+Unlike other A2ML files, multiple versions of ANCHOR.a2ml with different dates MAY exist.
+Each version represents a specific recalibration point.
+
+## Invariants
+
+- Multiple versions with different dates are permitted
+- No other A2ML files in this directory
+- Single source of truth for anchor documents
+

@@ -1,0 +1,31 @@
+# AI Manifest for 6a2 Directory
+
+## Purpose
+
+This manifest declares the AI-assistant context for the 6a2 machine-readable metadata directory.
+
+## Canonical Locations
+
+The 6 core A2ML files MUST exist in this directory:
+1. AGENTIC.a2ml
+2. ECOSYSTEM.a2ml
+3. META.a2ml
+4. NEUROSYM.a2ml
+5. PLAYBOOK.a2ml
+6. STATE.a2ml
+
+## Invariants
+
+- No duplicate files in root directory
+- Single source of truth: this directory is authoritative
+- No stale metadata
+
+## Protocol
+
+When multiple agents may write to A2ML files concurrently:
+1. Read file and record git-sha-at-read in [provenance] section
+2. Lock by creating .lock-<FILENAME>
+3. Write updated file with new [provenance] metadata
+4. Release by removing lock file
+5. On conflict: re-read and retry if git-sha-at-read does not match HEAD
+
