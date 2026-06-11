@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+# A2ML Anchor Directory
+
+This directory contains ANCHOR.a2ml files for project recalibration and scope intervention.
+
+## Files
+
+- `ANCHOR.a2ml` - Project recalibration, scope intervention, canonical authority
+
+## Multiple Versions
+
+Unlike other A2ML files, multiple versions of ANCHOR.a2ml with different dates may exist.
+Each version represents a specific recalibration point in the project history.
+
+## Standards Compliance
+
+These files follow the ANCHOR.a2ml specification from:
+https://github.com/hyperpolymath/standards/tree/main/anchor-a2ml
+
+## See Also
+
+- [A2ML Repository Template](https://github.com/hyperpolymath/standards/blob/main/A2ML-REPO-TEMPLATE.adoc)
+- [Anchor A2ML Spec](https://github.com/hyperpolymath/standards/tree/main/anchor-a2ml)
+

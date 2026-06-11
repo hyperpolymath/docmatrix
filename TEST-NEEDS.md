@@ -1,3 +1,7 @@
+<!--
+SPDX-License-Identifier: MPL-2.0
+Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+-->
 # Test Coverage Report: CRG Blitz D→C
 
 ## CRG Grade: C — ACHIEVED 2026-04-04

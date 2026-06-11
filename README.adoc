@@ -1,6 +1,9 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
-// SPDX-License-Identifier: MPL-2.0-or-later
 = DocMatrix
+image:https://img.shields.io/badge/OpenSSF-Best_Practices-green?logo=openssourcesecurity[OpenSSF Best Practices,link="https://www.bestpractices.dev/en/projects/new?repo_url=https://github.com/hyperpolymath/docmatrix"]
+
 
 
 
@@ -15,7 +18,7 @@ image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,l
 
 This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
 
-Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
+Philosophy: **Palimpsest**. The MPL-2.0 (PMPL) text is provided in `license/MPL-2.0.txt`, and the canonical source is the palimpsest-license repository.
 
 Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). Gossamer GUI + Ada TUI. Graph visualization, OCR, TTS/STT, Nickel pipelines.
 
@@ -136,7 +139,7 @@ These scripts follow the same language policy (Bash, Rust, ReScript, Deno, Gleam
 
 == License
 
-PMPL-1.0 with Palimpsest philosophy.
+MPL-2.0 with Palimpsest philosophy.
 
 == Links
 

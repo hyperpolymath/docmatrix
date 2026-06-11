@@ -1,4 +1,5 @@
 # Formatrix Docs - RSR Standard Justfile
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 # SPDX-License-Identifier: MPL-2.0
 # https://just.systems/man/en/
 
@@ -321,7 +322,6 @@ install-hooks:
 # Run security audit
 security: deps-audit
     @echo "=== Security Audit ==="
-    @command -v gitleaks >/dev/null && gitleaks detect --source . --verbose || true
     @command -v trivy >/dev/null && trivy fs --severity HIGH,CRITICAL . || true
     @echo "Security audit complete"
 
@@ -591,3 +591,6 @@ crg-badge:
       D) color="orange" ;; E) color="red" ;; F) color="critical" ;; \
       *) color="lightgrey" ;; esac; \
     echo "[![CRG $$grade](https://img.shields.io/badge/CRG-$$grade-$$color?style=flat-square)](https://github.com/hyperpolymath/standards/tree/main/component-readiness-grades)"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

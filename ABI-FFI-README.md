@@ -1,3 +1,7 @@
+<!--
+SPDX-License-Identifier: MPL-2.0
+Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+-->
 {{~ Aditionally delete this line and fill out the template below ~}}
 
 # {{PROJECT}} ABI/FFI Documentation

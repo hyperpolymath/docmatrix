@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //! Build configuration for formatrix Zig bindings
 //!
 //! Links against libformatrix_core from the Rust crate.
