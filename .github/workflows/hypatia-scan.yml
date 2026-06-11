@@ -1,3 +1,4 @@
+# // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 # SPDX-License-Identifier: MPL-2.0
 # Thin wrapper around hyperpolymath/standards hypatia-scan-reusable.yml.
 # See standards#191 for the reusable's purpose and design.

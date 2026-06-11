@@ -1,3 +1,4 @@
+# // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 # SPDX-License-Identifier: MPL-2.0
 name: Mirror to Git Forges
 on:
@@ -15,7 +16,8 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+      - if: ${{ env.SSH_PRIVATE_KEY != '' }}
+        uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
         with:
           ssh-private-key: ${{ secrets.GITLAB_SSH_KEY }}
       - name: Mirror to GitLab
@@ -31,7 +33,8 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+      - if: ${{ env.SSH_PRIVATE_KEY != '' }}
+        uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
         with:
           ssh-private-key: ${{ secrets.BITBUCKET_SSH_KEY }}
       - name: Mirror to Bitbucket
@@ -47,7 +50,8 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+      - if: ${{ env.SSH_PRIVATE_KEY != '' }}
+        uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
         with:
           ssh-private-key: ${{ secrets.CODEBERG_SSH_KEY }}
       - name: Mirror to Codeberg
@@ -63,7 +67,8 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+      - if: ${{ env.SSH_PRIVATE_KEY != '' }}
+        uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
         with:
           ssh-private-key: ${{ secrets.SOURCEHUT_SSH_KEY }}
       - name: Mirror to SourceHut
@@ -79,7 +84,8 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+      - if: ${{ env.SSH_PRIVATE_KEY != '' }}
+        uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
         with:
           ssh-private-key: ${{ secrets.DISROOT_SSH_KEY }}
       - name: Mirror to Disroot
@@ -95,7 +101,8 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+      - if: ${{ env.SSH_PRIVATE_KEY != '' }}
+        uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
         with:
           ssh-private-key: ${{ secrets.GITEA_SSH_KEY }}
       - name: Mirror to Gitea
