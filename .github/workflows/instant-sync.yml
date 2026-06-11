@@ -1,16 +1,13 @@
 # SPDX-License-Identifier: MPL-2.0
 # Instant Forge Sync - Triggers propagation to all forges on push/release
 name: Instant Sync
-
 on:
   push:
     branches: [main, master]
   release:
     types: [published]
-
 permissions:
   contents: read
-
 jobs:
   dispatch:
     runs-on: ubuntu-latest
@@ -29,6 +26,5 @@ jobs:
               "sha": "${{ github.sha }}",
               "forges": ""
             }
-
       - name: Confirm
         run: echo "::notice::Propagation triggered for ${{ github.event.repository.name }}"

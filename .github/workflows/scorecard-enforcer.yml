@@ -1,14 +1,12 @@
 # SPDX-License-Identifier: MPL-2.0
 # Prevention workflow - runs OpenSSF Scorecard and fails on low scores
 name: OpenSSF Scorecard Enforcer
-
 on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 6 * * 1'  # Weekly on Monday
+    - cron: '0 6 * * 1' # Weekly on Monday
   workflow_dispatch:
-
 # Estate guardrail: cancel superseded runs so re-pushes / rebased PR
 # updates do not pile up queued runs against the shared account-wide
 # Actions concurrency pool. Applied only to read-only check workflows
@@ -16,34 +14,29 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   scorecard:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
       security-events: write
-      id-token: write  # For OIDC
+      id-token: write # For OIDC
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-
       - name: Run Scorecard
         uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.4.3
         with:
           results_file: results.sarif
           results_format: sarif
           publish_results: true
-
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@c6f931105cb2c34c8f901cc885ba1e2e259cf745 # v4
         with:
           sarif_file: results.sarif
-
       - name: Check minimum score
         run: |
           # Parse score from results
@@ -58,21 +51,18 @@ jobs:
             echo "::error::Scorecard score $SCORE is below minimum $MIN_SCORE"
             exit 1
           fi
-
   # Check specific high-priority items
   check-critical:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
       - name: Check SECURITY.md exists
         run: |
           if [ ! -f "SECURITY.md" ]; then
             echo "::error::SECURITY.md is required"
             exit 1
           fi
-
       - name: Check for pinned dependencies
         run: |
           # Check workflows for unpinned actions
