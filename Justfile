@@ -1,4 +1,5 @@
 # Formatrix Docs - RSR Standard Justfile
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 # SPDX-License-Identifier: MPL-2.0
 # https://just.systems/man/en/
 
