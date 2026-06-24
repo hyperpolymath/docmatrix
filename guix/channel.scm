@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: MPL-2.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; Formatrix Docs - Guix Channel Definition
 ;; Copyright (C) 2025 Jonathan D.A. Jewell
 
