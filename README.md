@@ -2,7 +2,7 @@
 <!-- Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk> -->
 
 image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
-// SPDX-License-Identifier: MPL-2.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 = DocMatrix
 
 
