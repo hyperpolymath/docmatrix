@@ -12,5 +12,5 @@ permissions:
   contents: read
 jobs:
   rust-ci:
-    uses: hyperpolymath/standards/.github/workflows/rust-ci-reusable.yml@f5f0506a6ec88e574753eee701a268e0d4b3a7f2
+    uses: hyperpolymath/standards/.github/workflows/rust-ci-reusable.yml@d135b05bfc647d0c0fbfedc7e80f37ea50f49236
     timeout-minutes: 10
