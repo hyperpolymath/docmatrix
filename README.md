@@ -1,56 +1,57 @@
-[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-pink?logo=github)](https://github.com/sponsors/hyperpolymath)
-<!-- Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk> -->
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+-->
 
-image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
-// SPDX-License-Identifier: CC-BY-SA-4.0
-= DocMatrix
+[![MPL-2](https://img.shields.io/badge/License-MPL_2.0-blue.svg)](https://opensource.org/licenses/MPL-2.0) = DocMatrix [![OpenSSF Best Practices](https://img.shields.io/badge/OpenSSF-Best_Practices-green?logo=openssourcesecurity)](https://www.bestpractices.dev/en/projects/new?repo_url=https://github.com/hyperpolymath/docmatrix)
 
+[![Palimpsest](https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg)](https://github.com/hyperpolymath/palimpsest-license)
 
+# License & Philosophy
 
-:toc: left
-:toclevels: 3
-:icons: font
-:source-highlighter: rouge
+This project must declare **MPL-2.0-or-later** for platform/tooling
+compatibility.
 
-image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+Philosophy: **Palimpsest**. The MPL-2.0 (PMPL) text is provided in
+`license/MPL-2.0.txt`, and the canonical source is the
+palimpsest-license repository.
 
-== License & Philosophy
+Cross-platform document editor with format tabs
+(TXT/MD/ADOC/DJOT/ORG/RST/TYP). Gossamer GUI + Ada TUI. Graph
+visualization, OCR, TTS/STT, Nickel pipelines.
 
-This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
+# Features
 
-Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
+- **Format Tabs** - View and edit the same document in multiple markup
+  formats
 
-Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). Gossamer GUI + Ada TUI. Graph visualization, OCR, TTS/STT, Nickel pipelines.
+- **Unified AST** - Lossless conversion between formats
 
-== Features
+- **GUI** - Gossamer with ReScript frontend
 
-* *Format Tabs* - View and edit the same document in multiple markup formats
-* *Unified AST* - Lossless conversion between formats
-* *GUI* - Gossamer with ReScript frontend
-* *TUI* - Ada with AdaCurses for terminal usage
-* *Graph Visualization* - ArangoDB for document relationships
-* *Accessibility* - OCR, TTS, STT support
-* *Pipelines* - Nickel-based import/export transformations
+- **TUI** - Ada with AdaCurses for terminal usage
 
-== Supported Formats
+- **Graph Visualization** - ArangoDB for document relationships
 
-[cols="1,2", options="header"]
-|===
-| Format | Description
+- **Accessibility** - OCR, TTS, STT support
 
-| TXT | Plain text
-| MD | Markdown (CommonMark)
-| ADOC | AsciiDoc
-| DJOT | Djot markup
-| ORG | Org-mode
-| RST | reStructuredText
-| TYP | Typst
-|===
+- **Pipelines** - Nickel-based import/export transformations
 
-== Quick Start
+# Supported Formats
 
-[source,bash]
-----
+| Format | Description           |
+|--------|-----------------------|
+| TXT    | Plain text            |
+| MD     | Markdown (CommonMark) |
+| ADOC   | AsciiDoc              |
+| DJOT   | Djot markup           |
+| ORG    | Org-mode              |
+| RST    | reStructuredText      |
+| TYP    | Typst                 |
+
+# Quick Start
+
+```bash
 # Check dependencies
 just deps
 
@@ -62,37 +63,36 @@ just run-gui
 
 # Run TUI
 just run-tui
-----
+```
 
-== Architecture
+# Architecture
 
-[source]
-----
-crates/
-├── formatrix-core/     # AST, parsers, renderers
-├── formatrix-gui/      # Gossamer commands
-├── formatrix-db/       # ArangoDB client
-└── formatrix-pipeline/ # Nickel executor
+    crates/
+    ├── formatrix-core/     # AST, parsers, renderers
+    ├── formatrix-gui/      # Gossamer commands
+    ├── formatrix-db/       # ArangoDB client
+    └── formatrix-pipeline/ # Nickel executor
 
-tui/src/                # Ada TUI source
-ui/src/                 # ReScript components
-pipelines/              # Nickel pipeline definitions
-container/              # Wolfi container configs
-----
+    tui/src/                # Ada TUI source
+    ui/src/                 # ReScript components
+    pipelines/              # Nickel pipeline definitions
+    container/              # Wolfi container configs
 
-== Development
+# Development
 
-=== Prerequisites
+## Prerequisites
 
-* Rust (stable)
-* Deno
-* GNAT + gprbuild (for TUI)
-* GTK4 + WebKit2GTK (for GUI)
+- Rust (stable)
 
-=== Build Commands
+- Deno
 
-[source,bash]
-----
+- GNAT + gprbuild (for TUI)
+
+- GTK4 + WebKit2GTK (for GUI)
+
+## Build Commands
+
+```bash
 just build           # Build all
 just build-core      # Build Rust core only
 just build-tui       # Build Ada TUI only
@@ -100,50 +100,53 @@ just build-ui        # Build ReScript UI only
 just test            # Run all tests
 just fmt             # Format all code
 just lint            # Lint all code
-----
+```
 
-=== Containers
+## Containers
 
-[source,bash]
-----
+```bash
 just container-build           # Build Wolfi image
 just compose-up                # Start with ArangoDB
 just container-run-tui         # Run TUI in container
-----
+```
 
-== RSR Compliance
+# RSR Compliance
 
 This project follows the Rhodium Standard Repositories specification:
 
-* *Tier 2* - Full-featured multi-language project
-* See link:RSR_COMPLIANCE.adoc[RSR_COMPLIANCE.adoc] for details
+- **Tier 2** - Full-featured multi-language project
 
-== Related Scripts
+- See <a href="RSR_COMPLIANCE.adoc" class="adoc">RSR_COMPLIANCE</a> for
+  details
 
-Automation scripts from https://github.com/hyperpolymath/scripts[hyperpolymath/scripts]:
+# Related Scripts
 
-[cols="1,2", options="header"]
-|===
-| Script | Purpose
+Automation scripts from
+[hyperpolymath/scripts](https://github.com/hyperpolymath/scripts):
 
-| `asdfman.sh` | Manage asdf plugins and versions
-| `init_bashrc_three_ply.sh` | Modular bashrc setup (three-layer architecture)
-| `k-check.sh` | Kinoite cluster validation
-| `k-intune.sh` | Kinoite tuning scripts
-| `langstrap.sh` | Mass language install utilities
-| `sysenv.sh` | System environment setup
-| `touchscreen_hunter_killer.sh` | Touchscreen calibration/management
-|===
+| Script | Purpose |
+|----|----|
+| `asdfman.sh` | Manage asdf plugins and versions |
+| `init_bashrc_three_ply.sh` | Modular bashrc setup (three-layer architecture) |
+| `k-check.sh` | Kinoite cluster validation |
+| `k-intune.sh` | Kinoite tuning scripts |
+| `langstrap.sh` | Mass language install utilities |
+| `sysenv.sh` | System environment setup |
+| `touchscreen_hunter_killer.sh` | Touchscreen calibration/management |
 
-These scripts follow the same language policy (Bash, Rust, ReScript, Deno, Gleam, Guile Scheme) and multi-forge mirroring strategy.
+These scripts follow the same language policy (Bash, Rust, ReScript,
+Deno, Gleam, Guile Scheme) and multi-forge mirroring strategy.
 
-== License
+# License
 
-PMPL-1.0 with Palimpsest philosophy.
+MPL-2.0 with Palimpsest philosophy.
 
-== Links
+# Links
 
-* link:.machine_readable/6a2/STATE.a2ml[Project State]
-* link:.machine_readable/6a2/ECOSYSTEM.a2ml[Ecosystem Position]
-* link:.machine_readable/6a2/META.a2ml[Architecture Decisions]
-* link:PALIMPSEST.adoc[Palimpsest Philosophy]
+- [Project State](.machine_readable/6a2/STATE.a2ml)
+
+- [Ecosystem Position](.machine_readable/6a2/ECOSYSTEM.a2ml)
+
+- [Architecture Decisions](.machine_readable/6a2/META.a2ml)
+
+- [Palimpsest Philosophy](PALIMPSEST.adoc)
