@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: vars.GITLAB_MIRROR_ENABLED == 'true'
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.GITLAB_SSH_KEY }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -29,6 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: vars.BITBUCKET_MIRROR_ENABLED == 'true'
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.BITBUCKET_SSH_KEY }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -46,6 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: vars.CODEBERG_MIRROR_ENABLED == 'true'
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.CODEBERG_SSH_KEY }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -63,6 +69,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: vars.SOURCEHUT_MIRROR_ENABLED == 'true'
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.SOURCEHUT_SSH_KEY }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -80,6 +88,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: vars.DISROOT_MIRROR_ENABLED == 'true'
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.DISROOT_SSH_KEY }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -97,6 +107,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: vars.GITEA_MIRROR_ENABLED == 'true'
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.GITEA_SSH_KEY }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
