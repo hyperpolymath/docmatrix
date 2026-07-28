@@ -10,6 +10,7 @@ on:
     branches: [main, master]
   pull_request:
 permissions:
+  actions: read
   contents: read
 jobs:
   rust-ci:
