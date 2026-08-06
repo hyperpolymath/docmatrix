@@ -30,7 +30,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - language: javascript-typescript
+          - language: actions
+            build-mode: none
+          - language: rust
             build-mode: none
     steps:
       - name: Checkout
