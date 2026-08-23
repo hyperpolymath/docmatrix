@@ -65,7 +65,7 @@ This document certifies that *formatrix-docs* complies with the Rhodium Standard
 | TUI implementation
 | COMPLIANT
 
-| ReScript
+| AffineScript
 | UI components
 | COMPLIANT
 
@@ -94,7 +94,7 @@ No banned languages (TypeScript, Node.js, npm, Go, Python) are present in this r
 - `build-core` - Rust core
 - `build-gui` - Tauri GUI
 - `build-tui` - Ada TUI
-- `build-ui` - ReScript UI
+- `build-ui` - AffineScript UI
 - `build-release` - Release mode
 
 === Quality Recipes

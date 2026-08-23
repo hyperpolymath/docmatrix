@@ -11,7 +11,7 @@ ____
 Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). Unified AST enables lossless conversion between formats. Gossamer GUI + Ada TUI. Graph visualization via ArangoDB, OCR/TTS/STT accessibility, Nickel pipelines for import/export.
 ____
 
-Three components orchestrate this: Rust formatrix-core (parsers/renderers), Gossamer GUI (ReScript), Ada TUI. A unified AST allows viewing the same document in 7 different markup languages, each a lossless round-trip.
+Three components orchestrate this: Rust formatrix-core (parsers/renderers), Gossamer GUI (AffineScript), Ada TUI. A unified AST allows viewing the same document in 7 different markup languages, each a lossless round-trip.
 
 == Two Verifiable Claims from How-It-Works
 
@@ -25,11 +25,11 @@ Three components orchestrate this: Rust formatrix-core (parsers/renderers), Goss
 
 === Claim 2: Gossamer GUI Routes Document Tabs to Correct Renderer
 
-**Location**: `/var/mnt/eclipse/repos/docmatrix/ui/src/app.res` (ReScript Gossamer GUI)
+**Location**: `/var/mnt/eclipse/repos/docmatrix/ui/src/app.res` (AffineScript Gossamer GUI)
 
-**How verified**: The GUI is a ReScript TEA application that loads a document (via ArangoDB), parses it in the primary format, then stores the AST. When the user clicks a format tab (MD, ADOC, DJOT, etc.), the app calls the appropriate `Renderer::render(ast)` and updates the editor view. README (§Features) documents 7 formats; `app.res` has a `FormatTab` selector that dispatches to format-specific renderers in the formatrix-core library. Tests verify tab switching preserves content.
+**How verified**: The GUI is a AffineScript TEA application that loads a document (via ArangoDB), parses it in the primary format, then stores the AST. When the user clicks a format tab (MD, ADOC, DJOT, etc.), the app calls the appropriate `Renderer::render(ast)` and updates the editor view. README (§Features) documents 7 formats; `app.res` has a `FormatTab` selector that dispatches to format-specific renderers in the formatrix-core library. Tests verify tab switching preserves content.
 
-**Caveat**: ReScript/JavaScript type checking doesn't catch bugs where a renderer is misconfigured; validation happens at runtime when user clicks tab.
+**Caveat**: AffineScript/JavaScript type checking doesn't catch bugs where a renderer is misconfigured; validation happens at runtime when user clicks tab.
 
 == Dogfooded Across The Account
 
@@ -50,8 +50,8 @@ The formatrix-core library uses the hyperpolymath ABI/FFI standard for OCR/TTS b
 | `crates/formatrix-core/src/traits.rs` | Parser and Renderer traits used by all format modules
 | `crates/formatrix-db/src/lib.rs` | ArangoDB client; stores documents and relationships
 | `crates/formatrix-pipeline/src/lib.rs` | Nickel executor for import/export transformations
-| `ui/src/app.res` | ReScript Gossamer GUI app (TEA pattern); format tab switching, editor
-| `ui/src/components/` | ReScript components: editor, tabs, toolbar, preview
+| `ui/src/app.res` | AffineScript Gossamer GUI app (TEA pattern); format tab switching, editor
+| `ui/src/components/` | AffineScript components: editor, tabs, toolbar, preview
 | `tui/src/main.adb` | Ada TUI entry point using Terminal_Interface.Curses
 | `tui/src/tui.adb` | Ada TUI widget management (windows, input, rendering)
 | `Containerfile` | Wolfi container; includes all build dependencies

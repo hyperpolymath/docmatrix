@@ -82,7 +82,7 @@ For v1 publish, the following are **required**:
 
 === Phase 2: GUI/TUI Implementation
 
-.Formatrix GUI (Tauri 2.0 + ReScript)
+.Formatrix GUI (Tauri 2.0 + AffineScript)
 * [ ] Basic shell with format tabs
 * [ ] Editor component (CodeMirror 6)
 * [ ] File operations dialog
@@ -112,7 +112,7 @@ For v1 publish, the following are **required**:
 * [ ] Wolfi container image for all components
 * [ ] nerdctl-compose.yml for full stack
 * [ ] Guix channel with packages
-* [ ] Nix flake (fallback)
+* [ ] Guix flake (fallback)
 * [ ] CI/CD pipelines
 
 .Documentation
@@ -178,7 +178,7 @@ For v1 publish, the following are **required**:
 ----
 formatrix-core
     ├── formatrix-gui (Tauri)
-    │   └── ui/ (ReScript)
+    │   └── ui/ (AffineScript)
     ├── formatrix-tui (Ada)
     ├── formatrix-db
     │   └── arangodb
@@ -288,7 +288,7 @@ docudactyl
 |Abstract provider layer
 |Planned
 
-|ReScript ecosystem
+|AffineScript ecosystem
 |Low
 |Fallback to JS if needed
 |Monitor

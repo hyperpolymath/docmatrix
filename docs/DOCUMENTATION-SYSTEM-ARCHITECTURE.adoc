@@ -77,7 +77,7 @@ formatrix-docs/
 │   ├── formatrix-db/        # ArangoDB client
 │   └── formatrix-pipeline/  # Nickel executor
 ├── tui/                     # Ada TUI (matches git-hud)
-├── ui/                      # ReScript frontend
+├── ui/                      # AffineScript frontend
 └── pipelines/               # Nickel transform definitions
 ----
 
@@ -122,7 +122,7 @@ pub struct Document {
 ----
 recon-silly-ation/
 ├── src/
-│   ├── ReconForth.res       # ReScript bindings to WASM
+│   ├── ReconForth.res       # AffineScript bindings to WASM
 │   ├── EnforcementBot.res   # Policy enforcement
 │   ├── PackShipper.res      # Bundle distribution
 │   ├── LogicEngine.res      # Datalog-style inference
@@ -351,7 +351,7 @@ Collections:
 
 Components communicate via structured messages:
 
-[source,rescript]
+[source,affinescript]
 ----
 type DocumentEvent =
   | DocumentCreated(hash, path, format)
@@ -447,7 +447,7 @@ services:
   [ "Missing SPDX header" emit-warning ] unless ;
 ----
 
-2. Add to EnforcementBot schedule in ReScript
+2. Add to EnforcementBot schedule in AffineScript
 3. Configure in Docudactyl pipeline
 
 === Adding a New Pack Specification

@@ -47,7 +47,7 @@ This document defines Must/Should/Could requirements for each component of the d
 |✅ Done
 
 |FD-M08
-|Format tabs component (ReScript)
+|Format tabs component (AffineScript)
 |🔲 Pending
 
 |FD-M09
@@ -242,7 +242,7 @@ This document defines Must/Should/Could requirements for each component of the d
 |✅ Done
 
 |RSA-M13
-|WASM bindings for ReScript
+|WASM bindings for AffineScript
 |✅ Done
 
 |RSA-M14
@@ -365,7 +365,7 @@ This document defines Must/Should/Could requirements for each component of the d
 |ID |Requirement |Status
 
 |DB-M01
-|Module structure with ReScript types
+|Module structure with AffineScript types
 |🔲 Pending
 
 |DB-M02
@@ -484,7 +484,7 @@ This document defines Must/Should/Could requirements for each component of the d
 |ID |Requirement |Status
 
 |DD-M01
-|Module structure with ReScript types
+|Module structure with AffineScript types
 |🔲 Pending
 
 |DD-M02

@@ -18,7 +18,7 @@ Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
                                    ▼                   ▼
                         ┌───────────────────┐  ┌───────────────────┐
                         │   GUI (TAURI 2.0) │  │   TUI (ADA)       │
-                        │ (ReScript / React)│  │ (AdaCurses)       │
+                        │ (AffineScript / React)│  │ (AdaCurses)       │
                         └──────────┬────────┘  └──────────┬────────┘
                                    │                      │
                                    └──────────┬───────────┘
@@ -66,7 +66,7 @@ CORE ENGINE (RUST)
   ArangoDB Client                   ██████████ 100%    Document persistence stable
 
 USER INTERFACES
-  Tauri 2.0 GUI                     ████████░░  80%    ReScript UI components active
+  Tauri 2.0 GUI                     ████████░░  80%    AffineScript UI components active
   Ada TUI (AdaCurses)               ██████░░░░  60%    Layout logic in progress
   Graph Visualization               ████░░░░░░  40%    Initial D3.js prototyping
 

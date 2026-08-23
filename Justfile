@@ -51,7 +51,7 @@ info:
 # BUILD & COMPILE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# Build all components (Rust + Ada + ReScript)
+# Build all components (Rust + Ada + AffineScript)
 build: build-core build-gui build-tui build-ui
     @echo "All components built!"
 
@@ -92,9 +92,9 @@ build-tui:
     fi
     cd tui && gprbuild -P formatrix_tui.gpr -XMODE=debug
 
-# Build ReScript UI
+# Build AffineScript UI
 build-ui:
-    @echo "Building ReScript UI..."
+    @echo "Building AffineScript UI..."
     @cd ui && deno task build:res 2>&1 | tail -5
 
 # Build in release mode
@@ -129,7 +129,7 @@ test-tui: build-tui
     @echo "Testing formatrix-tui..."
     @[ -f tui/bin/formatrix-tui ] && echo "TUI binary exists" || echo "SKIP: TUI not built (missing dependencies)"
 
-# Test ReScript UI
+# Test AffineScript UI
 test-ui:
     @echo "Testing UI..."
     cd ui && deno task test 2>/dev/null || echo "UI tests not configured yet"
@@ -377,7 +377,7 @@ state-phase:
     @grep -oP '\(phase\s+\.\s+\K[^)]+' STATE.scm 2>/dev/null | head -1 || echo "unknown"
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# GUIX & NIX
+# GUIX & GUIX
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # Enter Guix development shell (primary)
@@ -388,9 +388,9 @@ guix-shell:
 guix-build:
     guix build -f guix/formatrix.scm
 
-# Enter Nix development shell (fallback)
-nix-shell:
-    @if [ -f "nix/flake.nix" ]; then cd nix && nix develop; else echo "No flake.nix"; fi
+# Enter Guix development shell (fallback)
+guix-shell:
+    @if [ -f "guix/flake.guix" ]; then cd guix && guix develop; else echo "No flake.guix"; fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # RELEASE

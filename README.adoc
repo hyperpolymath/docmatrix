@@ -26,7 +26,7 @@ Cross-platform document editor with format tabs (TXT/MD/ADOC/DJOT/ORG/RST/TYP). 
 
 * *Format Tabs* - View and edit the same document in multiple markup formats
 * *Unified AST* - Lossless conversion between formats
-* *GUI* - Gossamer with ReScript frontend
+* *GUI* - Gossamer with AffineScript frontend
 * *TUI* - Ada with AdaCurses for terminal usage
 * *Graph Visualization* - ArangoDB for document relationships
 * *Accessibility* - OCR, TTS, STT support
@@ -75,7 +75,7 @@ crates/
 └── formatrix-pipeline/ # Nickel executor
 
 tui/src/                # Ada TUI source
-ui/src/                 # ReScript components
+ui/src/                 # AffineScript components
 pipelines/              # Nickel pipeline definitions
 container/              # Wolfi container configs
 ----
@@ -96,7 +96,7 @@ container/              # Wolfi container configs
 just build           # Build all
 just build-core      # Build Rust core only
 just build-tui       # Build Ada TUI only
-just build-ui        # Build ReScript UI only
+just build-ui        # Build AffineScript UI only
 just test            # Run all tests
 just fmt             # Format all code
 just lint            # Lint all code
@@ -135,7 +135,7 @@ Automation scripts from https://github.com/hyperpolymath/scripts[hyperpolymath/s
 | `touchscreen_hunter_killer.sh` | Touchscreen calibration/management
 |===
 
-These scripts follow the same language policy (Bash, Rust, ReScript, Deno, Gleam, Guile Scheme) and multi-forge mirroring strategy.
+These scripts follow the same language policy (Bash, Rust, AffineScript, Deno, Gleam, Guile Scheme) and multi-forge mirroring strategy.
 
 == License
 

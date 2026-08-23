@@ -14,9 +14,9 @@
     "force-graph": "npm:force-graph@1/"
   },
   "tasks": {
-    "setup": "deno install npm:rescript@11 npm:@rescript/core npm:@rescript/react && deno run -A npm:rescript@11 build",
-    "build:res": "deno run -A npm:rescript@11 build || echo 'ReScript build skipped (run: deno task setup)'",
-    "watch:res": "deno run -A npm:rescript@11 build -w",
+    "setup": "deno install npm:affinescript@11 npm:@affinescript/core npm:@affinescript/react && deno run -A npm:affinescript@11 build",
+    "build:res": "deno run -A npm:affinescript@11 build || echo 'AffineScript build skipped (run: deno task setup)'",
+    "watch:res": "deno run -A npm:affinescript@11 build -w",
     "dev": "deno task watch:res & cd ../crates/formatrix-gui && gossamer dev",
     "build": "deno task build:res && cd ../crates/formatrix-gui && gossamer build",
     "fmt": "deno fmt",
