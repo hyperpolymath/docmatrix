@@ -28,7 +28,7 @@ This document validates integration seams between ecosystem components after imp
 
 [cols="2,2,1"]
 |===
-| Rust (commands.rs) | ReScript (Protocol.res) | Status
+| Rust (commands.rs) | AffineScript (Protocol.res) | Status
 
 | `DocumentEvent::Created { hash, path, format, timestamp }` | `documentEvent { id, eventType: Created, hash, path, format, timestamp, source }` | ⚠️ GAP
 | `DocumentEvent::Modified { hash, old_hash, path, format, timestamp }` | Uses `oldHash: option<string>` | ✓ ALIGNED
@@ -46,7 +46,7 @@ The Rust `DocumentEvent` lacks `id` and `source` fields that Protocol.res expect
 
 [cols="2,2,1"]
 |===
-| Rust (ffi.rs) | ReScript Usage | Status
+| Rust (ffi.rs) | AffineScript Usage | Status
 
 | `FfiFormat` enum (7 variants) | `Protocol.documentAst.format: string` | ⚠️ GAP
 |===
@@ -61,7 +61,7 @@ Rust uses enum `FfiFormat`, Protocol uses plain strings. Need mapping layer.
 
 [cols="2,2,1"]
 |===
-| Rust (ast.rs) | ReScript (Protocol.res) | Status
+| Rust (ast.rs) | AffineScript (Protocol.res) | Status
 
 | `Document` struct | `documentAst` type | ⚠️ NEEDS BRIDGE
 | `Block` enum | `blockElement` type | ✓ ALIGNED (conceptually)
@@ -76,7 +76,7 @@ Direct AST interchange requires serialization/deserialization. Current implement
 
 [cols="2,2,1"]
 |===
-| Rust (commands.rs) | ReScript (Protocol.res) | Status
+| Rust (commands.rs) | AffineScript (Protocol.res) | Status
 
 | SHA-256 via `sha2` crate | `hashAlgorithm = "sha256"` constant | ✓ ALIGNED
 |===

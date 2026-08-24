@@ -11,7 +11,7 @@ Cross-platform document editor with format tabs, allowing users to view and edit
 ## Architecture
 
 - **Core**: Rust library with unified AST for format conversion
-- **GUI**: Gossamer (own webview shell) with ReScript frontend (not TypeScript!)
+- **GUI**: Gossamer (own webview shell) with AffineScript frontend (not TypeScript!)
 - **TUI**: Ada with AdaCurses (matches git-hud pattern)
 - **Storage**: ArangoDB for graph + document hybrid
 - **Pipelines**: Nickel for import/export transformations
@@ -19,7 +19,7 @@ Cross-platform document editor with format tabs, allowing users to view and edit
 ## Language Policy
 
 ### ALLOWED
-- ReScript (UI components)
+- AffineScript (UI components)
 - Rust (core, GUI backend)
 - Ada (TUI)
 - Nickel (pipelines, config)
@@ -27,7 +27,7 @@ Cross-platform document editor with format tabs, allowing users to view and edit
 - Deno (runtime)
 
 ### BANNED - Do Not Use
-- TypeScript (use ReScript)
+- TypeScript (use AffineScript)
 - Node.js/npm/bun (use Deno)
 - Go (use Rust)
 - Python (not applicable here)
@@ -44,11 +44,11 @@ crates/
 └── formatrix-pipeline/ # Nickel executor
 
 tui/src/               # Ada TUI source
-ui/src/                # ReScript components
+ui/src/                # AffineScript components
 pipelines/             # Nickel pipeline definitions
 container/             # Wolfi container configs
 guix/                  # Guix channel + packages
-nix/                   # Nix flake (fallback)
+guix/                   # Guix flake (fallback)
 ```
 
 ## Build Commands
@@ -57,7 +57,7 @@ nix/                   # Nix flake (fallback)
 just build           # Build all
 just build-core      # Build Rust core only
 just build-tui       # Build Ada TUI only
-just build-ui        # Build ReScript UI only
+just build-ui        # Build AffineScript UI only
 just test            # Run all tests
 just fmt             # Format all code
 just lint            # Lint all code
@@ -84,9 +84,9 @@ Each format implements:
 - `Parser` trait: raw content → AST
 - `Renderer` trait: AST → raw content
 
-## ReScript Conventions
+## AffineScript Conventions
 
-- Use `@rescript/core` for stdlib
+- Use `@affinescript/core` for stdlib
 - TEA pattern: Model.res, Msg.res, Update logic in App.res
 - Components in `src/components/`
 - Bindings in `src/bindings/`
@@ -103,7 +103,7 @@ Each format implements:
 ```bash
 just test-core       # Rust unit tests
 just test-tui        # Ada compilation check
-just test-ui         # ReScript tests
+just test-ui         # AffineScript tests
 just test-integration # Full integration tests
 ```
 
