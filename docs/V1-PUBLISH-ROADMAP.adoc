@@ -10,8 +10,10 @@
 
 This roadmap outlines the path to publishing v1 of the Formatrix documentation ecosystem, comprising four components:
 
-1. **Formatrix Docs** - Human document editor with multi-format tabs
-2. **Recon-Silly-Ation** - Document reconciliation engine (ReconForth VM)
+1. **Formatrix Docs** - Multi-format viewer being developed into an editor with
+   synchronised format tabs
+2. **Recon-Silly-Ation** - Cross-document consistency reconciler; proposed
+   bounded rule layer named ForthWall
 3. **Docubot** - AI document generation assistant
 4. **Docudactyl** - Orchestration and pipeline management
 
@@ -22,15 +24,15 @@ This roadmap outlines the path to publishing v1 of the Formatrix documentation e
 |Component |Description |MUSTs |SHOULDs |COULDs
 
 |Formatrix Docs
-|Multi-format document editor
+|Multi-format viewer; editor under development
 |9/14 (64%)
 |6/12 (50%)
 |1/12 (8%)
 
 |Recon-Silly-Ation
-|ReconForth reconciliation engine
-|17/17 (100%)
-|2/12 (17%)
+|Consistency reconciler with proposed ForthWall rule engine
+|1/17 (6%)
+|0/12 (0%)
 |0/8 (0%)
 
 |Docubot
@@ -61,9 +63,9 @@ For v1 publish, the following are **required**:
 * [ ] File open/save operations
 
 .Recon-Silly-Ation Core
-* [x] ReconForth VM complete
-* [x] All core word sets
-* [x] WASM bindings
+* [ ] ForthWall VM specified, implemented, and proved
+* [ ] All core and document word sets implemented and individually evidenced
+* [ ] Bounded WASM bindings with capability-confinement tests
 * [ ] 7-stage pipeline implementation
 * [ ] CLI interface
 
@@ -133,7 +135,8 @@ For v1 publish, the following are **required**:
 
 * Basic document editing with format tabs (7 formats)
 * Document storage in ArangoDB with graph links
-* ReconForth-based reconciliation with format detection
+* ForthWall-based reconciliation with format detection, only if its safety and
+  proof gates are implemented and independently reproducible
 * Basic orchestration for pipeline execution
 * TUI for terminal-based editing
 * Container deployment
@@ -210,9 +213,9 @@ docudactyl
 |Large
 
 |Recon-Silly-Ation
-|0 items
-|10 items
-|Medium
+|16 items
+|12 items
+|Large
 
 |Docubot
 |10 items
@@ -227,11 +230,11 @@ docudactyl
 
 == Milestones
 
-=== M1: Core Complete (Current)
+=== M1: Core Complete (Not Yet Reached)
 * [x] All format handlers implemented
 * [x] FFI exports for Ada TUI
 * [x] ArangoDB client functional
-* [x] ReconForth VM operational
+* [ ] ForthWall VM operational, capability-confined, and proved
 
 === M2: Basic GUI Functional
 * [ ] Tauri shell running
