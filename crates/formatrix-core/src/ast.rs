@@ -683,16 +683,18 @@ mod proptests {
             prop_assert!(format.extension() != format.label() || format.extension() == format.label().to_lowercase());
         }
 
-        // Property: Document word_count is non-negative
+        // Property: Document word_count composes from its blocks
         #[test]
-        fn prop_document_word_count_nonnegative(doc in document_strategy()) {
-            prop_assert!(doc.word_count() >= 0);
+        fn prop_document_word_count_composes(doc in document_strategy()) {
+            let expected: usize = doc.content.iter().map(Block::word_count).sum();
+            prop_assert_eq!(doc.word_count(), expected);
         }
 
-        // Property: Document char_count is non-negative
+        // Property: Document char_count composes from its blocks
         #[test]
-        fn prop_document_char_count_nonnegative(doc in document_strategy()) {
-            prop_assert!(doc.char_count() >= 0);
+        fn prop_document_char_count_composes(doc in document_strategy()) {
+            let expected: usize = doc.content.iter().map(Block::char_count).sum();
+            prop_assert_eq!(doc.char_count(), expected);
         }
 
         // Property: Empty document has zero word count
@@ -742,7 +744,7 @@ mod proptests {
                 span: None,
             };
             if let Block::Heading { level: l, .. } = block {
-                prop_assert!(l >= 1 && l <= 6);
+                prop_assert!((1..=6).contains(&l));
             }
         }
 

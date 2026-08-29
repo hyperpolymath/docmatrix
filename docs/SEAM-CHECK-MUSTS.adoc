@@ -8,7 +8,12 @@
 
 == Overview
 
-This document validates integration seams between ecosystem components after implementing all MUST requirements.
+WARNING: This is a historical design-time seam report. It does not validate the
+current checkouts and must not be used as evidence that the listed components
+or seams are implemented. In particular, the current recon-silly-ation state
+records its actual reconciliation engine and proposed ForthWall VM as 0%
+complete. Every status below requires revalidation against executable code and
+independently reproducible tests.
 
 == Components Checked
 
@@ -17,9 +22,9 @@ This document validates integration seams between ecosystem components after imp
 | Component | Repository | Status
 
 | Formatrix Docs | formatrix-docs | ✓ Implemented
-| Recon-Silly-Ation | recon-silly-ation | ✓ Implemented
-| Docubot | recon-silly-ation/Docubot.res | ✓ Implemented
-| Docudactyl | recon-silly-ation/Docudactyl.res | ✓ Implemented
+| Recon-Silly-Ation | recon-silly-ation | ✗ Reconciliation engine not implemented
+| Docubot | recon-silly-ation/Docubot.res | ? Historical path; revalidation required
+| Docudactyl | recon-silly-ation/Docudactyl.res | ? Historical path; revalidation required
 |===
 
 == SEAM-1: Formatrix ↔ RSA

@@ -159,29 +159,26 @@ fn parse_node<'a>(node: &'a AstNode<'a>) -> Option<Block> {
             let columns = Vec::new(); // Would need to extract from table alignments
 
             for child in node.children() {
-                match child.data.borrow().value {
-                    NodeValue::TableRow(is_header) => {
-                        let cells: Vec<TableCell> = child
-                            .children()
-                            .map(|cell| TableCell {
-                                content: vec![Block::Paragraph {
-                                    content: parse_inlines(cell),
-                                    span: None,
-                                }],
-                                colspan: 1,
-                                rowspan: 1,
-                                alignment: None,
-                            })
-                            .collect();
+                if let NodeValue::TableRow(is_header) = child.data.borrow().value {
+                    let cells: Vec<TableCell> = child
+                        .children()
+                        .map(|cell| TableCell {
+                            content: vec![Block::Paragraph {
+                                content: parse_inlines(cell),
+                                span: None,
+                            }],
+                            colspan: 1,
+                            rowspan: 1,
+                            alignment: None,
+                        })
+                        .collect();
 
-                        let row = TableRow { cells };
-                        if is_header {
-                            header = Some(row);
-                        } else {
-                            body.push(row);
-                        }
+                    let row = TableRow { cells };
+                    if is_header {
+                        header = Some(row);
+                    } else {
+                        body.push(row);
                     }
-                    _ => {}
                 }
             }
 

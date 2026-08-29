@@ -194,68 +194,68 @@ This document defines Must/Should/Could requirements for each component of the d
 |ID |Requirement |Status
 
 |RSA-M01
-|ReconForth lexer (tokenization)
-|✅ Done
+|ForthWall lexer (tokenization)
+|🔲 Pending
 
 |RSA-M02
-|ReconForth VM (stack, dictionary)
-|✅ Done
+|ForthWall VM (stack, dictionary)
+|🔲 Pending
 
 |RSA-M03
 |Stack manipulation words (dup, drop, swap, over, rot)
-|✅ Done
+|🔲 Pending
 
 |RSA-M04
 |Arithmetic words (+, -, *, /, mod)
-|✅ Done
+|🔲 Pending
 
 |RSA-M05
 |Comparison words (=, <, >, <=, >=, <>)
-|✅ Done
+|🔲 Pending
 
 |RSA-M06
 |Logic words (and, or, not)
-|✅ Done
+|🔲 Pending
 
 |RSA-M07
 |Control flow words (if/else/then, call)
-|✅ Done
+|🔲 Pending
 
 |RSA-M08
 |Document words (new-doc, doc-hash, doc-content)
-|✅ Done
+|🔲 Pending
 
 |RSA-M09
 |Bundle words (new-bundle, bundle-add, bundle-count)
-|✅ Done
+|🔲 Pending
 
 |RSA-M10
 |Pack words (new-pack, require-doc, optional-doc)
-|✅ Done
+|🔲 Pending
 
 |RSA-M11
 |Validation words (emit-error, emit-warning, emit-suggestion)
-|✅ Done
+|🔲 Pending
 
 |RSA-M12
 |Format detection (detect-format)
-|✅ Done
+|🔲 Pending
 
 |RSA-M13
-|WASM bindings for AffineScript
-|✅ Done
+|Capability-bounded WASM bindings for AffineScript
+|🔲 Pending
 
 |RSA-M14
 |EnforcementBot rule definitions
-|✅ Done
+|🔲 Pending
 
 |RSA-M15
 |PackShipper manifest creation
-|✅ Done
+|🔲 Pending
 
 |RSA-M16
 |Content hashing (SHA-256)
-|✅ Done
+|🔲 Pending
 
 |RSA-M17
 |RSR compliance files
@@ -270,7 +270,7 @@ This document defines Must/Should/Could requirements for each component of the d
 
 |RSA-S01
 |Format parsing words (parse-content, get-headings)
-|✅ Done
+|🔲 Pending
 
 |RSA-S02
 |EnforcementBot job scheduling
@@ -290,7 +290,7 @@ This document defines Must/Should/Could requirements for each component of the d
 
 |RSA-S06
 |LogicEngine Datalog rules
-|✅ Done
+|🔲 Pending
 
 |RSA-S07
 |Conflict detection algorithms
