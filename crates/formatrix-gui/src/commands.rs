@@ -178,8 +178,8 @@ pub struct ConversionResult {
 
 /// Load a document from the filesystem (synchronous — uses std::fs)
 pub fn load_document(path: String) -> Result<DocumentData, String> {
-    let content = std::fs::read_to_string(&path)
-        .map_err(|e| format!("Failed to read file: {}", e))?;
+    let content =
+        std::fs::read_to_string(&path).map_err(|e| format!("Failed to read file: {}", e))?;
 
     // Detect format from extension
     let format = std::path::Path::new(&path)
@@ -219,8 +219,7 @@ pub fn save_document(
     content: String,
     format: String,
 ) -> Result<DocumentMeta, String> {
-    std::fs::write(&path, &content)
-        .map_err(|e| format!("Failed to write file: {}", e))?;
+    std::fs::write(&path, &content).map_err(|e| format!("Failed to write file: {}", e))?;
 
     let word_count = content.split_whitespace().count();
     let char_count = content.chars().count();

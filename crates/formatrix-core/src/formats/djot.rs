@@ -280,7 +280,7 @@ fn container_to_block(
 
         Container::Div { class } => {
             // Check if it's an admonition
-            let admonition = match class.as_ref() {
+            let admonition = match class {
                 "note" => Some(AdmonitionType::Note),
                 "tip" => Some(AdmonitionType::Tip),
                 "warning" => Some(AdmonitionType::Warning),
@@ -537,11 +537,11 @@ fn render_inline(output: &mut String, inline: &Inline) {
         }
 
         Inline::Strong { content } => {
-            output.push_str("*");
+            output.push('*');
             for i in content {
                 render_inline(output, i);
             }
-            output.push_str("*");
+            output.push('*');
         }
 
         Inline::Strikethrough { content } => {
@@ -602,9 +602,9 @@ fn render_inline(output: &mut String, inline: &Inline) {
         }
 
         Inline::RawInline { content, .. } => {
-            output.push_str("`");
+            output.push('`');
             output.push_str(content);
-            output.push_str("`");
+            output.push('`');
         }
 
         _ => {}
