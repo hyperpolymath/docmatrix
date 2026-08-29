@@ -19,7 +19,10 @@ path = "src/main.rs"
 [dependencies]
 formatrix-core = { path = "../formatrix-core" }
 
-gossamer-rs = { path = "../../../gossamer/bindings/rust" }
+# A sibling checkout exists in the developer estate but not on CI runners or in
+# published source archives. Pin the actual upstream repository so this
+# workspace is self-resolving and reproducible outside that local layout.
+gossamer-rs = { git = "https://github.com/metadatastician/gossamer.git", rev = "4d360f9f02d96a5b17a0590af9595af61db153be" }
 
 serde.workspace = true
 serde_json.workspace = true
