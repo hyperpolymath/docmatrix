@@ -3,20 +3,27 @@
 # PUSH_EMAIL_ENABLED=true (the single on/off switch). Addresses are pre-filled;
 # sending needs the org SMTP secrets (SMTP_HOST/PORT/USER/PASS). Inherited by
 # new repos from the template; placed on existing repos by the farm sweep.
+#
+# Re-landed after the 2026-07-20 notification-storm freeze (removed in
+# 09f94c5), now on hyperpolymath/smtp-notify-action: Node-free, the SMTP
+# session is Idris2-specified and machine-checked, the binary is Zig-built,
+# byte-reproducible, and SHA-256-pinned inside the action itself.
 name: Push email notification
 on:
-  push: {}
+  push:
+    # Branch pushes only: tag and deletion payloads mislabel Branch:/head_commit.
+    branches: ['**']
 permissions:
-  actions: read
   contents: read
 jobs:
   notify:
     name: Email on push
     if: ${{ vars.PUSH_EMAIL_ENABLED == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Send push notification email
-        uses: dawidd6/action-send-mail@6e502825a508b867ab2954ad6343b68787624c01 # pinned
+        uses: hyperpolymath/smtp-notify-action@1b3b752d39a4fe4c0f28f10905e4608789d3e050 # v0.1.0
         with:
           server_address: ${{ secrets.SMTP_HOST }}
           server_port: ${{ secrets.SMTP_PORT }}
