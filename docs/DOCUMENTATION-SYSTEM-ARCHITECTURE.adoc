@@ -61,15 +61,19 @@ PS --> ARANGO : Pack manifests
 
 *Location*: `~/repos/formatrix-docs`
 
-*Current purpose*: Multi-format document viewing and conversion through a
-unified AST
+*Conversion dependency*: DocMatrix supplies the independently tested parsers,
+renderers, format identification, and unified AST conversion core.
 
-*Target purpose*: Cross-platform document editor with synchronised format tabs
+*Proposed application purpose*: Cross-platform multi-format viewer/editor with
+synchronised format tabs. Editor behaviour is not a current DocMatrix
+capability.
 
 *Current and proposed capabilities*:
 
-* Current: view, parse, and render supported formats through a unified AST
-* Proposed: view/edit the same document in 7 synchronised format views
+* Current dependency: DocMatrix parses and renders supported formats through a
+  unified AST
+* Proposed Formatrix Docs: view/edit the same document in 7 synchronised format
+  views
 * Proposed: graph visualisation, OCR, TTS/STT, spell checking, Git integration,
   and Nickel-based content pipelines
 
@@ -77,9 +81,10 @@ unified AST
 
 [source]
 ----
+DocMatrix (external conversion core) ──> Formatrix Docs
+
 formatrix-docs/
 ├── crates/
-│   ├── formatrix-core/      # Unified AST + converters (Rust)
 │   ├── formatrix-gui/       # Tauri 2.0 commands
 │   ├── formatrix-db/        # ArangoDB client
 │   └── formatrix-pipeline/  # Nickel executor
@@ -447,10 +452,22 @@ services:
 
 === Adding a New Document Type
 
-1. *formatrix-docs*: Add parser and renderer to formatrix-core
-2. *recon-silly-ation*: Add and prove format detection in ForthWall
-3. *Docubot*: Update templates for the new format
-4. *Docudactyl*: Add format to pipeline configuration
+1. *DocMatrix conversion core (required)*: implement and independently prove
+   the parser, renderer, format identification, and declared round-trip/loss
+   behaviour.
+2. *Optional reconciliation composition*: only when reconciliation is explicitly
+   enabled, add ForthWall detection after its capability-confinement, semantic
+   refusal, replay, and independent-proof gates pass.
+3. *Optional Docubot integration*: update templates only when generation for the
+   new format is enabled.
+4. *Optional Docudactyl integration*: add the format only to pipelines that
+   explicitly enable it.
+
+Format conversion, reconciliation detection, and automatic repair are separate
+capabilities and must be composed explicitly. Detection alone does not enable
+repair: automatic repair requires its own implementation evidence plus proofs
+of bounded edits, exact input/evidence binding, refusal on ambiguity or drift,
+replayability, and independent output verification.
 
 === Adding a New Enforcement Rule
 
@@ -505,8 +522,9 @@ services:
 |Component |Role
 
 |*Formatrix Docs*
-|Multi-format converter being developed into a human-facing editor; format tabs
-and graph view remain delivery-gated targets
+|Multi-format viewer and proposed human-facing editor that depends on DocMatrix
+for conversion; format tabs, editing, and graph view remain delivery-gated
+targets
 
 |*Recon-Silly-Ation*
 |Cross-document consistency reconciliation with an optional, proposed
@@ -519,8 +537,10 @@ capability-bounded ForthWall DSL
 |Orchestrator connecting all components
 |===
 
-The four proposed components are intended to form a complete documentation
-lifecycle once their implementation and evidence gates are satisfied:
+The four proposed components are intended to cover the following logical-document
+lifecycle once their implementation and evidence gates are satisfied. Fixed-layout
+form filling and coordinate-aware authoring remain the responsibility of Blocky
+Writer:
 
 ----
 Edit (formatrix) → Reconcile (RSA) → Enforce (bot) → Ship (packs)

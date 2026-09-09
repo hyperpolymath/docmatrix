@@ -104,7 +104,15 @@ just test-core
 # GUI and TUI recipes are ecosystem scaffolding, not DocMatrix capability proof
 ----
 
+`just test-core` covers core parsing, rendering, format identification, round
+trips, and no-panic handling. It is not the complete conversion delivery gate:
+the suite does not yet provide dedicated loss-reporting or end-to-end ambiguous
+format-identification rejection coverage.
+
 == Architecture
+
+The following tree is ecosystem/Formatrix Docs scaffolding retained in this
+checkout; it is not the DocMatrix suite boundary:
 
 [source]
 ----

@@ -8,9 +8,18 @@
 
 == Overview
 
-This document defines Must/Should/Could requirements for each component of the documentation ecosystem, organized for systematic implementation with integration seam checks.
+This document defines Must/Should/Could requirements for each component of the
+documentation ecosystem, organized for systematic implementation with
+integration seam checks. “Done” identifies a current implementation status
+recorded by this requirements source; readiness still requires independently
+reproducible evidence. Viewer/editor targets still marked pending are proposed
+capabilities and are not implied by the component heading.
 
-== Component 1: Formatrix Docs (Human Editor)
+== Component 1: Formatrix Docs (Multi-Format Viewer; Proposed Editor)
+
+DocMatrix provides the current conversion core. Formatrix Docs viewer/editor
+requirements are current only where their individual status is `Done`; pending
+format-tab and editor requirements describe the proposed application.
 
 === MUST Have
 
