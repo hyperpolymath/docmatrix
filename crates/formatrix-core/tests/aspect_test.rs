@@ -3,9 +3,9 @@
 //! Aspect and cross-cutting concern tests
 
 use formatrix_core::{
-    ast::{Document, DocumentMeta, SourceFormat},
-    traits::{Parser, ParseConfig},
+    ast::{DocumentMeta, SourceFormat},
     formats::PlainTextHandler,
+    traits::{ParseConfig, Parser},
 };
 
 /// Test handling of oversized documents (1MB+)
@@ -18,7 +18,10 @@ fn test_large_document_handling() {
     let config = ParseConfig::default();
 
     let result = parser.parse(&large_content, &config);
-    assert!(result.is_ok(), "should handle large documents without panic");
+    assert!(
+        result.is_ok(),
+        "should handle large documents without panic"
+    );
 }
 
 /// Test handling of extremely deep nesting
@@ -34,7 +37,10 @@ fn test_deeply_nested_elements() {
 
     let config = ParseConfig::default();
     let result = parser.parse(&nested, &config);
-    assert!(result.is_ok(), "should handle deep nesting without stack overflow");
+    assert!(
+        result.is_ok(),
+        "should handle deep nesting without stack overflow"
+    );
 }
 
 /// Test handling of null bytes (safety aspect)
@@ -73,7 +79,10 @@ fn test_unicode_cjk_preservation() {
     let config = ParseConfig::default();
 
     let doc = parser.parse(input, &config).expect("parse failed");
-    assert!(!doc.content.is_empty(), "CJK text should parse successfully");
+    assert!(
+        !doc.content.is_empty(),
+        "CJK text should parse successfully"
+    );
 }
 
 /// Test Unicode emoji preservation
@@ -97,7 +106,10 @@ fn test_unicode_rtl_preservation() {
     let config = ParseConfig::default();
 
     let doc = parser.parse(input, &config).expect("parse failed");
-    assert!(!doc.content.is_empty(), "RTL text should parse successfully");
+    assert!(
+        !doc.content.is_empty(),
+        "RTL text should parse successfully"
+    );
 }
 
 /// Test zero-width characters
@@ -122,7 +134,11 @@ fn test_empty_document_no_panic() {
     let config = ParseConfig::default();
 
     let doc = parser.parse(input, &config).expect("parse failed");
-    assert_eq!(doc.content.len(), 0, "empty input should produce empty content");
+    assert_eq!(
+        doc.content.len(),
+        0,
+        "empty input should produce empty content"
+    );
 }
 
 /// Test single whitespace character
@@ -171,7 +187,10 @@ fn test_consecutive_blank_lines() {
 
     let doc = parser.parse(input, &config).expect("parse failed");
     // Should handle multiple blank lines gracefully
-    assert!(doc.content.len() <= 2, "consecutive blanks should not create extra blocks");
+    assert!(
+        doc.content.len() <= 2,
+        "consecutive blanks should not create extra blocks"
+    );
 }
 
 /// Test document with only punctuation
@@ -216,9 +235,7 @@ fn test_document_metadata_large_values() {
     let large_title = "A".repeat(100_000);
     let meta = DocumentMeta {
         title: Some(large_title.clone()),
-        authors: (0..1000)
-            .map(|i| format!("Author {}", i))
-            .collect(),
+        authors: (0..1000).map(|i| format!("Author {}", i)).collect(),
         ..Default::default()
     };
 
@@ -233,10 +250,9 @@ fn test_parse_config_large_options() {
 
     // Add many options
     for i in 0..1000 {
-        config.format_options.insert(
-            format!("option_{}", i),
-            format!("value_{}", i),
-        );
+        config
+            .format_options
+            .insert(format!("option_{}", i), format!("value_{}", i));
     }
 
     assert_eq!(config.format_options.len(), 1000);

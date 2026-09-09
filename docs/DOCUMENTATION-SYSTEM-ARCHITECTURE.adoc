@@ -10,6 +10,12 @@
 
 The Hyperpolymath Documentation System consists of four integrated components that handle document creation, reconciliation, enforcement, and distribution.
 
+WARNING: This document describes a target architecture, not the currently
+delivered system. Boxes, source trees, examples, and arrows are proposals unless
+linked to executable code and independently reproducible evidence. The current
+recon-silly-ation state records both its reconciliation engine and proposed
+ForthWall VM as 0% complete.
+
 [plantuml,components,svg]
 ----
 @startuml
@@ -17,12 +23,12 @@ skinparam componentStyle rectangle
 
 package "Human Side" {
   [Formatrix Docs] as FD
-  note right of FD : GUI (Tauri)\nTUI (Ada)\nMulti-format editor
+  note right of FD : Multi-format viewer\nGUI/TUI editor target\nSynchronised views
 }
 
 package "Machine Side" {
   [Recon-Silly-Ation] as RSA
-  note right of RSA : ReconForth DSL\nReconciliation engine\nConflict resolution
+  note right of RSA : Proposed ForthWall DSL\nConsistency reconciler\nConflict reporting
 
   [Docubot] as DB
   note right of DB : LLM integration\nDoc generation\nGuardrails
@@ -51,28 +57,34 @@ PS --> ARANGO : Pack manifests
 
 == Component Breakdown
 
-=== 1. Formatrix Docs (Human Editor)
+=== 1. Formatrix Docs (Multi-Format Viewer; Editor Target)
 
 *Location*: `~/repos/formatrix-docs`
 
-*Purpose*: Cross-platform document editor with format tabs
+*Conversion dependency*: DocMatrix supplies the independently tested parsers,
+renderers, format identification, and unified AST conversion core.
 
-*Capabilities*:
+*Proposed application purpose*: Cross-platform multi-format viewer/editor with
+synchronised format tabs. Editor behaviour is not a current DocMatrix
+capability.
 
-* View/edit same document in 7 formats (TXT, MD, ADOC, DJOT, ORG, RST, TYP)
-* Live format conversion via unified AST
-* Graph visualization of document links
-* OCR, TTS/STT, spell checking
-* Git integration
-* Nickel-based content pipelines
+*Current and proposed capabilities*:
+
+* Current dependency: DocMatrix parses and renders supported formats through a
+  unified AST
+* Proposed Formatrix Docs: view/edit the same document in 7 synchronised format
+  views
+* Proposed: graph visualisation, OCR, TTS/STT, spell checking, Git integration,
+  and Nickel-based content pipelines
 
 *Architecture*:
 
 [source]
 ----
+DocMatrix (external conversion core) ──> Formatrix Docs
+
 formatrix-docs/
 ├── crates/
-│   ├── formatrix-core/      # Unified AST + converters (Rust)
 │   ├── formatrix-gui/       # Tauri 2.0 commands
 │   ├── formatrix-db/        # ArangoDB client
 │   └── formatrix-pipeline/  # Nickel executor
@@ -105,24 +117,33 @@ pub struct Document {
 
 *Location*: `~/repos/recon-silly-ation`
 
-*Purpose*: Reconcile, deduplicate, and validate documentation bundles
+*Purpose*: Find and safely reconcile contradictions across documentation,
+history, metadata, terminology, language policy, attribution, and repository
+surfaces
 
-*Capabilities*:
+*Proposed capabilities (not currently delivered)*:
 
-* ReconForth DSL for reconciliation rules
+* ForthWall DSL for bounded reconciliation rules
 * 7-stage idempotent pipeline (Scan → Normalize → Deduplicate → Detect → Resolve → Ingest → Report)
 * Content-addressable storage (SHA-256)
 * Graph-based conflict resolution
 * Enforcement bot for automated policy compliance
 * Pack shipper for bundle distribution
 
-*Architecture*:
+ForthWall is an optional implementation layer beneath recon-silly-ation, not
+the meaning of “recon” or the identity of the product. Its permitted vocabulary
+must operate only on declared documents and evidence. Raw memory, unrestricted
+filesystem writes, shell execution, and networking are outside the wall.
+Ambiguous semantics, stale inputs, parser disagreement, or coordinate drift
+must cause refusal rather than automatic repair.
+
+*Proposed architecture*:
 
 [source]
 ----
 recon-silly-ation/
 ├── src/
-│   ├── ReconForth.res       # AffineScript bindings to WASM
+│   ├── ForthWall.res        # proposed AffineScript bindings to bounded WASM
 │   ├── EnforcementBot.res   # Policy enforcement
 │   ├── PackShipper.res      # Bundle distribution
 │   ├── LogicEngine.res      # Datalog-style inference
@@ -130,7 +151,7 @@ recon-silly-ation/
 ├── wasm-modules/
 │   └── src/
 │       ├── lib.rs           # WASM exports
-│       └── reconforth/      # Forth interpreter
+│       └── forthwall/       # proposed capability-bounded Forth interpreter
 │           ├── lexer.rs
 │           ├── types.rs
 │           ├── vm.rs
@@ -139,7 +160,7 @@ recon-silly-ation/
 └── validator/               # Haskell schema validation
 ----
 
-*ReconForth Example*:
+*Illustrative ForthWall syntax (not executable evidence)*:
 
 [source,forth]
 ----
@@ -254,8 +275,8 @@ Docubot
 ┌──────────────────────┐ ┌──────────────────────────────────────┐
 │      DOCUBOT         │ │          RECON-SILLY-ATION           │
 │  ┌────────────────┐  │ │  ┌──────────────┐  ┌──────────────┐ │
-│  │  LLM Engine    │  │ │  │  ReconForth  │  │ LogicEngine  │ │
-│  │  (guardrailed) │  │ │  │     VM       │  │  (Datalog)   │ │
+│  │  LLM Engine    │  │ │  │  ForthWall   │  │ LogicEngine  │ │
+│  │  (guardrailed) │  │ │  │  (proposed)  │  │  (Datalog)   │ │
 │  └────────┬───────┘  │ │  └──────┬───────┘  └──────┬───────┘ │
 └───────────┼──────────┘ │         └─────────────────┘         │
             │            │                  │                   │
@@ -431,14 +452,26 @@ services:
 
 === Adding a New Document Type
 
-1. *formatrix-docs*: Add parser and renderer to formatrix-core
-2. *recon-silly-ation*: Add format detection in ReconForth
-3. *Docubot*: Update templates for the new format
-4. *Docudactyl*: Add format to pipeline configuration
+1. *DocMatrix conversion core (required)*: implement and independently prove
+   the parser, renderer, format identification, and declared round-trip/loss
+   behaviour.
+2. *Optional reconciliation composition*: only when reconciliation is explicitly
+   enabled, add ForthWall detection after its capability-confinement, semantic
+   refusal, replay, and independent-proof gates pass.
+3. *Optional Docubot integration*: update templates only when generation for the
+   new format is enabled.
+4. *Optional Docudactyl integration*: add the format only to pipelines that
+   explicitly enable it.
+
+Format conversion, reconciliation detection, and automatic repair are separate
+capabilities and must be composed explicitly. Detection alone does not enable
+repair: automatic repair requires its own implementation evidence plus proofs
+of bounded edits, exact input/evidence binding, refusal on ambiguity or drift,
+replayability, and independent output verification.
 
 === Adding a New Enforcement Rule
 
-1. Define rule in ReconForth:
+1. Define a bounded rule in ForthWall:
 +
 [source,forth]
 ----
@@ -452,7 +485,7 @@ services:
 
 === Adding a New Pack Specification
 
-1. Define pack in ReconForth:
+1. Define pack in ForthWall:
 +
 [source,forth]
 ----
@@ -489,10 +522,13 @@ services:
 |Component |Role
 
 |*Formatrix Docs*
-|Human-facing editor with format tabs and graph view
+|Multi-format viewer and proposed human-facing editor that depends on DocMatrix
+for conversion; format tabs, editing, and graph view remain delivery-gated
+targets
 
 |*Recon-Silly-Ation*
-|Machine reconciliation with ReconForth DSL
+|Cross-document consistency reconciliation with an optional, proposed
+capability-bounded ForthWall DSL
 
 |*Docubot*
 |LLM-powered generation with mandatory guardrails
@@ -501,7 +537,10 @@ services:
 |Orchestrator connecting all components
 |===
 
-The four components form a complete documentation lifecycle:
+The four proposed components are intended to cover the following logical-document
+lifecycle once their implementation and evidence gates are satisfied. Fixed-layout
+form filling and coordinate-aware authoring remain the responsibility of Blocky
+Writer:
 
 ----
 Edit (formatrix) → Reconcile (RSA) → Enforce (bot) → Ship (packs)

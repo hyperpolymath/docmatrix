@@ -276,7 +276,7 @@ where
     use orgize::Event;
     let mut inlines = Vec::new();
 
-    while let Some(event) = events.next() {
+    for event in events.by_ref() {
         match &event {
             Event::End(elem) if is_end_element(elem) => break,
             Event::Start(Element::Text { value }) | Event::End(Element::Text { value }) => {
@@ -480,7 +480,7 @@ where
     I: Iterator<Item = orgize::Event<'a, 'b>>,
 {
     use orgize::Event;
-    while let Some(event) = events.next() {
+    for event in events.by_ref() {
         if matches!(event, Event::End(Element::TableRow(_))) {
             break;
         }
@@ -531,11 +531,11 @@ where
     use orgize::Event;
     let mut text = String::new();
 
-    while let Some(event) = events.next() {
+    for event in events.by_ref() {
         match event {
             Event::End(Element::TableCell(_)) => break,
             Event::Start(Element::Text { value }) | Event::End(Element::Text { value }) => {
-                text.push_str(&value);
+                text.push_str(value);
             }
             _ => {}
         }

@@ -4,8 +4,8 @@
 
 use formatrix_core::{
     ast::{DocumentMeta, SourceFormat},
-    traits::{Parser, ParseConfig, RenderConfig, Renderer},
     formats::PlainTextHandler,
+    traits::{ParseConfig, Parser, RenderConfig, Renderer},
 };
 use proptest::prelude::*;
 
@@ -37,10 +37,10 @@ proptest! {
     ) {
         let config = RenderConfig::default();
 
-        // Line width should be positive or zero
-        prop_assert!(config.line_width >= 0);
-        // Indent should exist
-        prop_assert!(!config.indent.is_empty());
+        prop_assert_eq!(config.line_width, 80);
+        prop_assert_eq!(config.indent, "  ");
+        prop_assert!(!config.hard_breaks);
+        prop_assert!(config.format_options.is_empty());
     }
 
     /// Property: Parse config format options preserve insertion order
@@ -85,7 +85,7 @@ proptest! {
         let doc2 = parser.parse(&output, &parse_config).expect("reparse");
 
         // Should have non-empty blocks
-        prop_assert!(doc2.content.len() > 0);
+        prop_assert!(!doc2.content.is_empty());
     }
 }
 

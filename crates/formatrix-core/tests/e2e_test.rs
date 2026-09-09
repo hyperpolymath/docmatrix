@@ -4,8 +4,8 @@
 
 use formatrix_core::{
     ast::{Block, Document, DocumentMeta, Inline, SourceFormat},
-    traits::{Parser, ParseConfig, RenderConfig, Renderer},
     formats::PlainTextHandler,
+    traits::{ParseConfig, Parser, RenderConfig, Renderer},
 };
 
 /// Test basic plaintext parsing
@@ -49,8 +49,10 @@ fn test_plaintext_parse_multiple_paragraphs() {
 fn test_plaintext_preserve_raw_source() {
     let parser = PlainTextHandler::new();
     let input = "Test content with\nmultiple lines.";
-    let mut config = ParseConfig::default();
-    config.preserve_raw_source = true;
+    let config = ParseConfig {
+        preserve_raw_source: true,
+        ..Default::default()
+    };
 
     let doc = parser.parse(input, &config).expect("parse failed");
     assert!(doc.raw_source.is_some(), "raw_source should be preserved");
@@ -60,7 +62,6 @@ fn test_plaintext_preserve_raw_source() {
 /// Test plaintext render from AST
 #[test]
 fn test_plaintext_render_document() {
-    let parser = PlainTextHandler::new();
     let renderer = PlainTextHandler::new();
 
     let doc = Document {
@@ -69,14 +70,12 @@ fn test_plaintext_render_document() {
             title: Some("Test Document".to_string()),
             ..Default::default()
         },
-        content: vec![
-            Block::Paragraph {
-                content: vec![Inline::Text {
-                    content: "Hello, world!".to_string(),
-                }],
-                span: None,
-            },
-        ],
+        content: vec![Block::Paragraph {
+            content: vec![Inline::Text {
+                content: "Hello, world!".to_string(),
+            }],
+            span: None,
+        }],
         raw_source: None,
     };
 
@@ -93,7 +92,11 @@ fn test_plaintext_empty_document() {
     let config = ParseConfig::default();
 
     let doc = parser.parse(input, &config).expect("parse failed");
-    assert_eq!(doc.content.len(), 0, "empty input should produce empty content");
+    assert_eq!(
+        doc.content.len(),
+        0,
+        "empty input should produce empty content"
+    );
 }
 
 /// Test document with only whitespace
@@ -104,7 +107,11 @@ fn test_plaintext_whitespace_only() {
     let config = ParseConfig::default();
 
     let doc = parser.parse(input, &config).expect("parse failed");
-    assert_eq!(doc.content.len(), 0, "whitespace-only input should produce no blocks");
+    assert_eq!(
+        doc.content.len(),
+        0,
+        "whitespace-only input should produce no blocks"
+    );
 }
 
 /// Test round-trip: parse then render
@@ -121,14 +128,22 @@ fn test_plaintext_round_trip() {
     let doc = parser.parse(input, &parse_config).expect("parse failed");
 
     // Render
-    let output = renderer.render(&doc, &render_config).expect("render failed");
+    let output = renderer
+        .render(&doc, &render_config)
+        .expect("render failed");
 
     // Both should be valid (content-wise equivalent)
     assert!(!output.is_empty(), "round-trip output should not be empty");
 
     // Re-parse the output
-    let doc2 = parser.parse(&output, &parse_config).expect("re-parse failed");
-    assert_eq!(doc.content.len(), doc2.content.len(), "round-trip block count mismatch");
+    let doc2 = parser
+        .parse(&output, &parse_config)
+        .expect("re-parse failed");
+    assert_eq!(
+        doc.content.len(),
+        doc2.content.len(),
+        "round-trip block count mismatch"
+    );
 }
 
 /// Test parser format identification
@@ -210,14 +225,12 @@ fn test_document_clone() {
             title: Some("Original".to_string()),
             ..Default::default()
         },
-        content: vec![
-            Block::Paragraph {
-                content: vec![Inline::Text {
-                    content: "Content".to_string(),
-                }],
-                span: None,
-            },
-        ],
+        content: vec![Block::Paragraph {
+            content: vec![Inline::Text {
+                content: "Content".to_string(),
+            }],
+            span: None,
+        }],
         raw_source: Some("Raw".to_string()),
     };
 
@@ -240,10 +253,12 @@ fn test_parse_config_immutability() {
 /// Test render config customization
 #[test]
 fn test_render_config_customization() {
-    let mut config = RenderConfig::default();
-    config.line_width = 120;
-    config.indent = "\t".to_string();
-    config.hard_breaks = true;
+    let config = RenderConfig {
+        line_width: 120,
+        indent: "\t".to_string(),
+        hard_breaks: true,
+        ..Default::default()
+    };
 
     assert_eq!(config.line_width, 120);
     assert_eq!(config.indent, "\t");

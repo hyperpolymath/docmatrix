@@ -142,13 +142,10 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
         BodyElement::BlockQuote(bq) => {
             let mut inner_blocks = Vec::new();
             for child in bq.children() {
-                match child {
-                    document_tree::element_categories::SubBlockQuote::BodyElement(be) => {
-                        if let Some(block) = convert_body_element(be) {
-                            inner_blocks.push(block);
-                        }
+                if let document_tree::element_categories::SubBlockQuote::BodyElement(be) = child {
+                    if let Some(block) = convert_body_element(be) {
+                        inner_blocks.push(block);
                     }
-                    _ => {}
                 }
             }
             Some(Block::BlockQuote {
@@ -163,18 +160,18 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
             let items: Vec<ListItem> = bl
                 .children()
                 .iter()
-                .filter_map(|item| {
+                .map(|item| {
                     let item_blocks: Vec<Block> = item
                         .children()
                         .iter()
-                        .filter_map(|child| convert_body_element(child))
+                        .filter_map(convert_body_element)
                         .collect();
 
-                    Some(ListItem {
+                    ListItem {
                         content: item_blocks,
                         checked: None,
                         marker: None,
-                    })
+                    }
                 })
                 .collect();
 
@@ -190,18 +187,18 @@ fn convert_body_element(element: &BodyElement) -> Option<Block> {
             let items: Vec<ListItem> = el
                 .children()
                 .iter()
-                .filter_map(|item| {
+                .map(|item| {
                     let item_blocks: Vec<Block> = item
                         .children()
                         .iter()
-                        .filter_map(|child| convert_body_element(child))
+                        .filter_map(convert_body_element)
                         .collect();
 
-                    Some(ListItem {
+                    ListItem {
                         content: item_blocks,
                         checked: None,
                         marker: None,
-                    })
+                    }
                 })
                 .collect();
 
@@ -434,7 +431,7 @@ fn render_block(output: &mut String, block: &Block, _depth: usize) {
                 4 => '^',
                 _ => '\'',
             };
-            let len = content.iter().map(|i| inline_text_len(i)).sum::<usize>();
+            let len = content.iter().map(inline_text_len).sum::<usize>();
             output.push_str(&underline.to_string().repeat(len.max(1)));
         }
 
@@ -583,7 +580,7 @@ fn render_inline(output: &mut String, inline: &Inline) {
         }
 
         Inline::LineBreak => {
-            output.push_str("\n");
+            output.push('\n');
         }
 
         Inline::SoftBreak => {

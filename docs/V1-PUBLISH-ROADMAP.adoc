@@ -10,8 +10,10 @@
 
 This roadmap outlines the path to publishing v1 of the Formatrix documentation ecosystem, comprising four components:
 
-1. **Formatrix Docs** - Human document editor with multi-format tabs
-2. **Recon-Silly-Ation** - Document reconciliation engine (ReconForth VM)
+1. **Formatrix Docs** - Multi-format viewer being developed into an editor with
+   synchronised format tabs
+2. **Recon-Silly-Ation** - Cross-document consistency reconciler; proposed
+   bounded rule layer named ForthWall
 3. **Docubot** - AI document generation assistant
 4. **Docudactyl** - Orchestration and pipeline management
 
@@ -22,15 +24,15 @@ This roadmap outlines the path to publishing v1 of the Formatrix documentation e
 |Component |Description |MUSTs |SHOULDs |COULDs
 
 |Formatrix Docs
-|Multi-format document editor
-|9/14 (64%)
-|6/12 (50%)
+|Multi-format viewer; editor under development
+|10/14 (71%)
+|5/12 (42%)
 |1/12 (8%)
 
 |Recon-Silly-Ation
-|ReconForth reconciliation engine
-|17/17 (100%)
-|2/12 (17%)
+|Consistency reconciler with proposed ForthWall rule engine
+|1/17 (6%)
+|0/12 (0%)
 |0/8 (0%)
 
 |Docubot
@@ -46,9 +48,17 @@ This roadmap outlines the path to publishing v1 of the Formatrix documentation e
 |0/6 (0%)
 |===
 
+Formatrix Docs totals are calculated from the current statuses in
+`MOSCOW-REQUIREMENTS.adoc`, which is the status source for this roadmap. The
+historical seam report is explicitly unverified and is not a readiness source;
+a recorded `Done` status supports readiness only with independently reproducible
+evidence.
+
 == v1 Minimum Viable Ecosystem
 
-For v1 publish, the following are **required**:
+For v1 publish, the following baseline items are **required**. Items labelled
+conditional are not v1 commitments unless their stated evidence gates are
+adopted as v1 acceptance criteria.
 
 === Phase 1: Core Library Completion
 
@@ -58,12 +68,12 @@ For v1 publish, the following are **required**:
 * [x] C FFI for Ada TUI
 * [x] ArangoDB document storage
 * [ ] Document event emission
-* [ ] File open/save operations
+* [x] File open/save operations
 
-.Recon-Silly-Ation Core
-* [x] ReconForth VM complete
-* [x] All core word sets
-* [x] WASM bindings
+.Recon-Silly-Ation Core (conditional v1 scope)
+* [ ] ForthWall VM specified, implemented, and proved
+* [ ] All core and document word sets implemented and individually evidenced
+* [ ] Bounded WASM bindings with capability-confinement tests
 * [ ] 7-stage pipeline implementation
 * [ ] CLI interface
 
@@ -80,11 +90,12 @@ For v1 publish, the following are **required**:
 * [ ] Scheduler
 * [ ] Health checks
 
-=== Phase 2: GUI/TUI Implementation
+=== Phase 2: Viewer and Conditional Editor Implementation
 
 .Formatrix GUI (Tauri 2.0 + AffineScript)
-* [ ] Basic shell with format tabs
-* [ ] Editor component (CodeMirror 6)
+* [x] Basic Tauri shell (FD-M07)
+* [ ] Format tabs (FD-M08; conditional on editor evidence gates)
+* [ ] Editor component (FD-M09; conditional on editor evidence gates)
 * [ ] File operations dialog
 * [ ] Status bar with git info
 
@@ -129,17 +140,31 @@ For v1 publish, the following are **required**:
 
 == v1 Scope Decisions
 
-=== Included in v1
+=== Baseline Included in v1
 
-* Basic document editing with format tabs (7 formats)
+* Multi-format viewing and conversion through the DocMatrix core (7 formats)
 * Document storage in ArangoDB with graph links
-* ReconForth-based reconciliation with format detection
 * Basic orchestration for pipeline execution
 * TUI for terminal-based editing
 * Container deployment
 
+=== Conditional v1 Scope
+
+* Synchronized editing (FD-M08 and FD-M09), only if the pending format-tab and
+  editor capabilities are implemented and independently reproduce cursor
+  mapping, synchronization, refusal, and undo/redo safety properties
+* ForthWall-based reconciliation with format detection, only when the editor
+  capabilities it composes with have passed those gates and ForthWall's own
+  capability-confinement, semantic-refusal, replay, and independent-proof gates
+  have also passed
+
+These capabilities require explicit composition. If their gates are not
+adopted as v1 acceptance criteria, both entries remain in deferred scope.
+
 === Deferred to v2
 
+* Synchronized editing (FD-M08/FD-M09) and ForthWall reconciliation when their
+  implementation and proof gates are outside v1 acceptance criteria
 * Graph visualization (Obsidian-style)
 * OCR integration (Tesseract)
 * TTS/STT integration
@@ -152,18 +177,18 @@ For v1 publish, the following are **required**:
 
 === Immediate (v1-blocking)
 
-1. FD-M06: File open/save operations
-2. FD-M07: Tauri GUI shell
-3. FD-M09: Editor component
-4. DD-M02: Event bus
-5. DD-M05: Pipeline executor
+1. FD-M12: Document event emission
+2. DD-M02: Event bus
+3. DD-M05: Pipeline executor
 
 === High Priority (v1-desired)
 
-1. FD-M11: Ada TUI
-2. RSA-S09: 7-stage pipeline
-3. RSA-S11: CLI interface
-4. DB-M01-M04: Docubot core (if time permits)
+1. FD-M08/FD-M09: Format tabs and editor, conditional on the editor evidence
+   gates
+2. FD-M11: Ada TUI
+3. RSA-S09: 7-stage pipeline
+4. RSA-S11: CLI interface
+5. DB-M01-M04: Docubot core (if time permits)
 
 === Nice to Have (post-v1)
 
@@ -205,14 +230,14 @@ docudactyl
 |Component |Remaining MUSTs |Remaining SHOULDs |Total Effort
 
 |Formatrix Docs
-|5 items (GUI/TUI focus)
-|6 items (GUI-dependent)
+|4 items (conditional editor/TUI/event focus)
+|7 items (GUI-dependent)
 |Large
 
 |Recon-Silly-Ation
-|0 items
-|10 items
-|Medium
+|16 items
+|12 items
+|Large
 
 |Docubot
 |10 items
@@ -227,17 +252,17 @@ docudactyl
 
 == Milestones
 
-=== M1: Core Complete (Current)
+=== M1: Core Complete (Not Yet Reached)
 * [x] All format handlers implemented
 * [x] FFI exports for Ada TUI
 * [x] ArangoDB client functional
-* [x] ReconForth VM operational
+* [ ] ForthWall VM operational, capability-confined, and proved
 
 === M2: Basic GUI Functional
-* [ ] Tauri shell running
-* [ ] Format tabs working
-* [ ] File open/save working
-* [ ] Editor with syntax highlighting
+* [x] Basic Tauri shell implemented
+* [ ] Format tabs working (conditional FD-M08)
+* [x] Core file open/save operations implemented
+* [ ] Editor with syntax highlighting (conditional FD-M09)
 
 === M3: Basic TUI Functional
 * [ ] Ada TUI compiling
@@ -296,16 +321,20 @@ docudactyl
 
 == Next Steps
 
-1. **Immediate**: Implement FD-M06 (file operations) in formatrix-core
-2. **This Week**: Set up Tauri shell with basic routing
-3. **This Month**: Get format tabs displaying content
+1. **Immediate**: Attach independently reproducible evidence to current `Done`
+   statuses
+2. **This Week**: Implement FD-M12 document event emission
+3. **Conditional editor scope**: Implement and prove FD-M08/FD-M09 only if their
+   gates are adopted for v1
 4. **Next Month**: TUI implementation parallel to GUI
 
 == Success Criteria for v1
 
-* [ ] User can create, edit, and save documents
-* [ ] User can switch between 7 format views
+* [ ] User can view, convert, and save documents through the evidenced core
+* [ ] If editor scope is accepted, users can edit and switch between 7 format
+  views only after FD-M08/FD-M09 safety and proof gates pass
 * [ ] Documents persist in ArangoDB
-* [ ] Basic reconciliation works
+* [ ] If reconciliation scope is accepted, ForthWall and the editor composition
+  pass their separate implementation, safety, and proof gates
 * [ ] Container deployment functional
 * [ ] Documentation sufficient for onboarding

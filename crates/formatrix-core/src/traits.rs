@@ -155,16 +155,17 @@ impl FormatRegistry {
         parse_config: &ParseConfig,
         render_config: &RenderConfig,
     ) -> Result<String> {
-        if from == to {
-            return Ok(input.to_string());
-        }
-
         let from_handler = self
             .get(from)
             .ok_or_else(|| ConversionError::UnsupportedFeature {
                 format: from,
                 feature: "parsing".to_string(),
             })?;
+
+        if from == to {
+            from_handler.parse(input, parse_config)?;
+            return Ok(input.to_string());
+        }
 
         let to_handler = self
             .get(to)
@@ -181,5 +182,84 @@ impl FormatRegistry {
 impl Default for FormatRegistry {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct ValidatingHandler;
+
+    impl Parser for ValidatingHandler {
+        fn format(&self) -> SourceFormat {
+            SourceFormat::PlainText
+        }
+
+        fn parse(&self, input: &str, _config: &ParseConfig) -> Result<Document> {
+            if input == "ambiguous" {
+                return Err(ConversionError::ParseError {
+                    line: 1,
+                    column: 1,
+                    message: "ambiguous test document".to_string(),
+                });
+            }
+
+            Ok(Document::new(SourceFormat::PlainText))
+        }
+    }
+
+    impl Renderer for ValidatingHandler {
+        fn format(&self) -> SourceFormat {
+            SourceFormat::PlainText
+        }
+
+        fn render(&self, _doc: &Document, _config: &RenderConfig) -> Result<String> {
+            unreachable!("identity conversion must not render")
+        }
+    }
+
+    impl FormatHandler for ValidatingHandler {
+        fn supports_feature(&self, _feature: &str) -> bool {
+            false
+        }
+
+        fn supported_features(&self) -> &[&str] {
+            &[]
+        }
+    }
+
+    #[test]
+    fn identity_conversion_validates_and_preserves_input() {
+        let mut registry = FormatRegistry::new();
+        registry.register(Box::new(ValidatingHandler));
+
+        let result = registry
+            .convert(
+                "valid input\n",
+                SourceFormat::PlainText,
+                SourceFormat::PlainText,
+                &ParseConfig::default(),
+                &RenderConfig::default(),
+            )
+            .unwrap();
+
+        assert_eq!(result, "valid input\n");
+    }
+
+    #[test]
+    fn identity_conversion_rejects_parser_errors() {
+        let mut registry = FormatRegistry::new();
+        registry.register(Box::new(ValidatingHandler));
+
+        let result = registry.convert(
+            "ambiguous",
+            SourceFormat::PlainText,
+            SourceFormat::PlainText,
+            &ParseConfig::default(),
+            &RenderConfig::default(),
+        );
+
+        assert!(matches!(result, Err(ConversionError::ParseError { .. })));
     }
 }
