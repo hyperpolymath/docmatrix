@@ -178,8 +178,8 @@ pub struct ConversionResult {
 
 /// Load a document from the filesystem (synchronous — uses std::fs)
 pub fn load_document(path: String) -> Result<DocumentData, String> {
-    let content = std::fs::read_to_string(&path)
-        .map_err(|e| format!("Failed to read file: {}", e))?;
+    let content =
+        std::fs::read_to_string(&path).map_err(|e| format!("Failed to read file: {}", e))?;
 
     // Detect format from extension
     let format = std::path::Path::new(&path)
@@ -219,8 +219,7 @@ pub fn save_document(
     content: String,
     format: String,
 ) -> Result<DocumentMeta, String> {
-    std::fs::write(&path, &content)
-        .map_err(|e| format!("Failed to write file: {}", e))?;
+    std::fs::write(&path, &content).map_err(|e| format!("Failed to write file: {}", e))?;
 
     let word_count = content.split_whitespace().count();
     let char_count = content.chars().count();
@@ -245,14 +244,6 @@ pub fn convert_to_format(
         RstHandler, TypstHandler,
     };
     use formatrix_core::traits::{Parser, Renderer};
-
-    // For now, just return the content as-is if converting to same format
-    if from_format == to_format {
-        return Ok(ConversionResult {
-            content,
-            warnings: Vec::new(),
-        });
-    }
 
     // Parse source format
     let parse_config = ParseConfig::default();
@@ -284,6 +275,14 @@ pub fn convert_to_format(
             return Err(format!("Unsupported source format: {}", from_format));
         }
     };
+
+    // Preserve identity conversions exactly, but only after validating input.
+    if from_format == to_format {
+        return Ok(ConversionResult {
+            content,
+            warnings: Vec::new(),
+        });
+    }
 
     // Render to target format
     let output = match to_format.as_str() {
@@ -480,4 +479,29 @@ pub fn get_supported_formats() -> Vec<FormatInfo> {
             extension: "typ".to_string(),
         },
     ]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn identity_conversion_validates_and_preserves_input() {
+        let input = "Heading\n=======\n".to_string();
+
+        let result = convert_to_format(input.clone(), "rst".to_string(), "rst".to_string())
+            .expect("valid RST should pass identity validation");
+
+        assert_eq!(result.content, input);
+        assert!(result.warnings.is_empty());
+    }
+
+    #[test]
+    fn identity_conversion_rejects_malformed_input() {
+        let malformed = ".. image:: example.png\n   :scale: not-a-number\n".to_string();
+
+        let result = convert_to_format(malformed, "rst".to_string(), "rst".to_string());
+
+        assert!(result.is_err());
+    }
 }

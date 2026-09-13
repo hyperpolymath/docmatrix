@@ -1178,6 +1178,7 @@ dependencies = [
 [[package]]
 name = "gossamer-rs"
 version = "0.1.0"
+source = "git+https://github.com/metadatastician/gossamer.git?rev=73d8c077616777cdcd99a3c3eda50d5fa8865e2c#73d8c077616777cdcd99a3c3eda50d5fa8865e2c"
 dependencies = [
  "serde",
  "serde_json",

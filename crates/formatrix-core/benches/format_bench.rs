@@ -2,12 +2,12 @@
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //! Benchmark tests for format conversion performance
 
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use formatrix_core::{
     ast::{Block, Document, DocumentMeta, Inline, SourceFormat},
-    traits::{Parser, ParseConfig, RenderConfig, Renderer},
     formats::PlainTextHandler,
+    traits::{ParseConfig, Parser, RenderConfig, Renderer},
 };
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 /// Benchmark plaintext parsing of small documents
 fn bench_parse_small_plaintext(c: &mut Criterion) {
@@ -26,7 +26,8 @@ fn bench_parse_medium_plaintext(c: &mut Criterion) {
     c.bench_function("parse_medium_plaintext_10kb", |b| {
         b.iter(|| {
             let parser = PlainTextHandler::new();
-            let input = black_box(&"Lorem ipsum dolor sit amet.\n\n".repeat(500));
+            let source = "Lorem ipsum dolor sit amet.\n\n".repeat(500);
+            let input = black_box(source.as_str());
             let config = ParseConfig::default();
             parser.parse(input, &config)
         })
@@ -38,7 +39,8 @@ fn bench_parse_large_plaintext(c: &mut Criterion) {
     c.bench_function("parse_large_plaintext_100kb", |b| {
         b.iter(|| {
             let parser = PlainTextHandler::new();
-            let input = black_box(&"Lorem ipsum dolor sit amet.\n\n".repeat(5000));
+            let source = "Lorem ipsum dolor sit amet.\n\n".repeat(5000);
+            let input = black_box(source.as_str());
             let config = ParseConfig::default();
             parser.parse(input, &config)
         })
@@ -51,14 +53,12 @@ fn bench_render_plaintext(c: &mut Criterion) {
         let doc = Document {
             source_format: SourceFormat::PlainText,
             meta: DocumentMeta::default(),
-            content: vec![
-                Block::Paragraph {
-                    content: vec![Inline::Text {
-                        content: "Test paragraph content.".to_string(),
-                    }],
-                    span: None,
-                },
-            ],
+            content: vec![Block::Paragraph {
+                content: vec![Inline::Text {
+                    content: "Test paragraph content.".to_string(),
+                }],
+                span: None,
+            }],
             raw_source: None,
         };
 
@@ -93,8 +93,10 @@ fn bench_parse_with_source_preservation(c: &mut Criterion) {
         b.iter(|| {
             let parser = PlainTextHandler::new();
             let input = black_box("Test content with preservation.\n\nAnother paragraph.");
-            let mut config = ParseConfig::default();
-            config.preserve_raw_source = true;
+            let config = ParseConfig {
+                preserve_raw_source: true,
+                ..Default::default()
+            };
 
             parser.parse(input, &config)
         })
@@ -107,8 +109,10 @@ fn bench_parse_with_span_preservation(c: &mut Criterion) {
         b.iter(|| {
             let parser = PlainTextHandler::new();
             let input = black_box("Test content with spans.\n\nAnother paragraph.");
-            let mut config = ParseConfig::default();
-            config.preserve_spans = true;
+            let config = ParseConfig {
+                preserve_spans: true,
+                ..Default::default()
+            };
 
             parser.parse(input, &config)
         })
@@ -118,26 +122,22 @@ fn bench_parse_with_span_preservation(c: &mut Criterion) {
 /// Benchmark document creation
 fn bench_document_creation(c: &mut Criterion) {
     c.bench_function("create_document_with_metadata", |b| {
-        b.iter(|| {
-            Document {
-                source_format: SourceFormat::PlainText,
-                meta: DocumentMeta {
-                    title: Some("Test Title".to_string()),
-                    authors: vec!["Author".to_string()],
-                    date: Some("2026-04-04".to_string()),
-                    language: Some("en".to_string()),
-                    ..Default::default()
-                },
-                content: vec![
-                    Block::Paragraph {
-                        content: vec![Inline::Text {
-                            content: black_box("Content".to_string()),
-                        }],
-                        span: None,
-                    },
-                ],
-                raw_source: None,
-            }
+        b.iter(|| Document {
+            source_format: SourceFormat::PlainText,
+            meta: DocumentMeta {
+                title: Some("Test Title".to_string()),
+                authors: vec!["Author".to_string()],
+                date: Some("2026-04-04".to_string()),
+                language: Some("en".to_string()),
+                ..Default::default()
+            },
+            content: vec![Block::Paragraph {
+                content: vec![Inline::Text {
+                    content: black_box("Content".to_string()),
+                }],
+                span: None,
+            }],
+            raw_source: None,
         })
     });
 }
@@ -150,7 +150,8 @@ fn bench_batch_parsing(c: &mut Criterion) {
             let config = ParseConfig::default();
 
             for i in 0..10 {
-                let input = black_box(&format!("Document {}.\n\nContent.", i));
+                let source = format!("Document {}.\n\nContent.", i);
+                let input = black_box(source.as_str());
                 let _ = parser.parse(input, &config);
             }
         })

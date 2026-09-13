@@ -3,9 +3,9 @@
 //! Comprehensive unit tests for formatrix-core
 
 use formatrix_core::{
-    ast::{Block, Document, DocumentMeta, Inline, SourceFormat, MetaValue},
-    traits::{FormatHandler, Parser, ParseConfig, RenderConfig, Renderer},
+    ast::{Block, Document, DocumentMeta, Inline, MetaValue, SourceFormat},
     formats::PlainTextHandler,
+    traits::{FormatHandler, ParseConfig, Parser, RenderConfig, Renderer},
 };
 use std::collections::HashMap;
 
@@ -38,8 +38,10 @@ fn test_parser_multiple_paragraphs() {
 fn test_parser_preserves_raw_source() {
     let parser = PlainTextHandler::new();
     let input = "Test input";
-    let mut config = ParseConfig::default();
-    config.preserve_raw_source = true;
+    let config = ParseConfig {
+        preserve_raw_source: true,
+        ..Default::default()
+    };
 
     let doc = parser.parse(input, &config).expect("parse failed");
     assert!(doc.raw_source.is_some());
@@ -91,7 +93,9 @@ fn test_renderer_single_paragraph() {
         raw_source: None,
     };
 
-    let output = renderer.render(&doc, &RenderConfig::default()).expect("render failed");
+    let output = renderer
+        .render(&doc, &RenderConfig::default())
+        .expect("render failed");
     assert_eq!(output, "Hello world");
 }
 
@@ -118,7 +122,9 @@ fn test_renderer_multiple_paragraphs() {
         raw_source: None,
     };
 
-    let output = renderer.render(&doc, &RenderConfig::default()).expect("render failed");
+    let output = renderer
+        .render(&doc, &RenderConfig::default())
+        .expect("render failed");
     assert_eq!(output, "Para 1\n\nPara 2");
 }
 
@@ -132,7 +138,9 @@ fn test_renderer_empty_document() {
         raw_source: None,
     };
 
-    let output = renderer.render(&doc, &RenderConfig::default()).expect("render failed");
+    let output = renderer
+        .render(&doc, &RenderConfig::default())
+        .expect("render failed");
     assert_eq!(output, "");
 }
 
@@ -153,7 +161,9 @@ fn test_renderer_heading() {
         raw_source: None,
     };
 
-    let output = renderer.render(&doc, &RenderConfig::default()).expect("render failed");
+    let output = renderer
+        .render(&doc, &RenderConfig::default())
+        .expect("render failed");
     assert_eq!(output, "Title");
 }
 
@@ -177,7 +187,9 @@ fn test_roundtrip_simple() {
     let render_config = RenderConfig::default();
 
     let doc = parser.parse(input, &config).expect("parse failed");
-    let output = renderer.render(&doc, &render_config).expect("render failed");
+    let output = renderer
+        .render(&doc, &render_config)
+        .expect("render failed");
 
     assert_eq!(output, input);
 }
@@ -192,7 +204,9 @@ fn test_roundtrip_multiple_paragraphs() {
     let render_config = RenderConfig::default();
 
     let doc = parser.parse(input, &config).expect("parse failed");
-    let output = renderer.render(&doc, &render_config).expect("render failed");
+    let output = renderer
+        .render(&doc, &render_config)
+        .expect("render failed");
 
     assert_eq!(output, input);
 }
@@ -340,11 +354,15 @@ fn test_parse_config_default() {
 
 #[test]
 fn test_parse_config_customization() {
-    let mut config = ParseConfig::default();
-    config.preserve_spans = true;
-    config.preserve_raw_source = true;
-    config.front_matter_delimiter = Some("---".to_string());
-    config.format_options.insert("key".to_string(), "value".to_string());
+    let mut config = ParseConfig {
+        preserve_spans: true,
+        preserve_raw_source: true,
+        front_matter_delimiter: Some("---".to_string()),
+        ..Default::default()
+    };
+    config
+        .format_options
+        .insert("key".to_string(), "value".to_string());
 
     assert!(config.preserve_spans);
     assert!(config.preserve_raw_source);
@@ -363,11 +381,15 @@ fn test_render_config_default() {
 
 #[test]
 fn test_render_config_customization() {
-    let mut config = RenderConfig::default();
-    config.line_width = 120;
-    config.indent = "\t".to_string();
-    config.hard_breaks = true;
-    config.format_options.insert("opt".to_string(), "val".to_string());
+    let mut config = RenderConfig {
+        line_width: 120,
+        indent: "\t".to_string(),
+        hard_breaks: true,
+        ..Default::default()
+    };
+    config
+        .format_options
+        .insert("opt".to_string(), "val".to_string());
 
     assert_eq!(config.line_width, 120);
     assert_eq!(config.indent, "\t");
@@ -420,9 +442,9 @@ fn test_metavalue_integer() {
 
 #[test]
 fn test_metavalue_float() {
-    let val = MetaValue::Float(3.14);
+    let val = MetaValue::Float(1.25);
     match val {
-        MetaValue::Float(f) => assert!((f - 3.14).abs() < 0.01),
+        MetaValue::Float(f) => assert!((f - 1.25).abs() < f64::EPSILON),
         _ => panic!("expected float"),
     }
 }
@@ -447,14 +469,7 @@ fn test_metavalue_list() {
 fn test_parse_never_panics_on_input() {
     let parser = PlainTextHandler::new();
     let large_str = "A".repeat(100_000);
-    let malformed_inputs: Vec<&str> = vec![
-        "",
-        " ",
-        "\n",
-        "\0",
-        &large_str,
-        "\u{FFFD}",
-    ];
+    let malformed_inputs: Vec<&str> = vec!["", " ", "\n", "\0", &large_str, "\u{FFFD}"];
 
     for input in malformed_inputs {
         let result = parser.parse(input, &ParseConfig::default());

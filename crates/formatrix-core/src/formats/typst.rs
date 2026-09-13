@@ -88,14 +88,14 @@ fn parse_syntax_tree(root: &SyntaxNode) -> Vec<Block> {
                 }
 
                 // Parse heading
-                if let Some(heading) = parse_heading(&child) {
+                if let Some(heading) = parse_heading(child) {
                     blocks.push(heading);
                 }
             }
 
             SyntaxKind::ListItem => {
                 // Handle list items
-                if let Some(item) = parse_list_item(&child) {
+                if let Some(item) = parse_list_item(child) {
                     // Check if we can append to existing list
                     if let Some(Block::List { items, .. }) = blocks.last_mut() {
                         items.push(item);
@@ -111,7 +111,7 @@ fn parse_syntax_tree(root: &SyntaxNode) -> Vec<Block> {
             }
 
             SyntaxKind::EnumItem => {
-                if let Some(item) = parse_list_item(&child) {
+                if let Some(item) = parse_list_item(child) {
                     if let Some(Block::List {
                         kind: ListKind::Ordered,
                         items,
@@ -132,8 +132,8 @@ fn parse_syntax_tree(root: &SyntaxNode) -> Vec<Block> {
 
             SyntaxKind::Raw => {
                 // Code block
-                let content = extract_raw_content(&child);
-                let language = extract_raw_language(&child);
+                let content = extract_raw_content(child);
+                let language = extract_raw_language(child);
                 blocks.push(Block::CodeBlock {
                     language,
                     content,
@@ -156,21 +156,21 @@ fn parse_syntax_tree(root: &SyntaxNode) -> Vec<Block> {
             }
 
             SyntaxKind::Strong => {
-                current_text.push_str(&format!("*{}*", extract_text(&child)));
+                current_text.push_str(&format!("*{}*", extract_text(child)));
             }
 
             SyntaxKind::Emph => {
-                current_text.push_str(&format!("_{}_", extract_text(&child)));
+                current_text.push_str(&format!("_{}_", extract_text(child)));
             }
 
             SyntaxKind::Link => {
-                let url = extract_text(&child);
+                let url = extract_text(child);
                 current_text.push_str(&url);
             }
 
             SyntaxKind::Markup => {
                 // Recurse into markup content
-                let inner_blocks = parse_syntax_tree(&child);
+                let inner_blocks = parse_syntax_tree(child);
                 blocks.extend(inner_blocks);
             }
 

@@ -8,18 +8,27 @@
 
 == Overview
 
-This document validates integration seams between ecosystem components after implementing all MUST requirements.
+WARNING: This is a historical design-time seam report. It does not validate the
+current checkouts and must not be used as evidence that the listed components
+or seams are implemented. In particular, the current recon-silly-ation state
+records its actual reconciliation engine and proposed ForthWall VM as 0%
+complete. Every status below requires revalidation against executable code and
+independently reproducible tests.
 
 == Components Checked
 
-[cols="1,2,1"]
+[cols="1,2,2"]
 |===
-| Component | Repository | Status
+| Component | Repository | Historical status (unverified)
 
-| Formatrix Docs | formatrix-docs | ✓ Implemented
-| Recon-Silly-Ation | recon-silly-ation | ✓ Implemented
-| Docubot | recon-silly-ation/Docubot.res | ✓ Implemented
-| Docudactyl | recon-silly-ation/Docudactyl.res | ✓ Implemented
+| Formatrix Docs | formatrix-docs | Historical claim: ✓ Implemented; unverified
+against current code
+| Recon-Silly-Ation | recon-silly-ation | Historical claim: reconciliation
+engine not implemented; unverified against current code
+| Docubot | recon-silly-ation/Docubot.res | Historical path and status;
+unverified against current code
+| Docudactyl | recon-silly-ation/Docudactyl.res | Historical path and status;
+unverified against current code
 |===
 
 == SEAM-1: Formatrix ↔ RSA
@@ -293,19 +302,25 @@ Different field structures between Protocol.res and Docubot.res.
 . **SEAM-3D:** Detailed shipping results (string acceptable MVP)
 . **SEAM-4B:** Multi-approver workflow (single approver acceptable MVP)
 
-== Fixes Applied
+== Historical Fixes Claimed (Unverified)
+
+The statements in this section record what the original report claimed. They
+have no dated commit references or independently reproducible evidence and are
+not current validation.
 
 === Fix 1: Update Rust DocumentEvent
 
-Added `id` and `source` fields (see `commands.rs` update).
+Historical claim (unverified): `id` and `source` fields were added (the original
+report referred only to a `commands.rs` update).
 
 === Fix 2: Update Protocol.res repoContext
 
-Added optional `dependencies` and `readme` fields.
+Historical claim (unverified): optional `dependencies` and `readme` fields were
+added.
 
 === Fix 3: Add Progress Tracking
 
-Will implement in SHOULDs phase.
+Historical plan (unverified): implement progress tracking in the SHOULD phase.
 
 == Seam Status Matrix
 
