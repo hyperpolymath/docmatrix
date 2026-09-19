@@ -37,7 +37,7 @@ git init
 sed -i 's/RSR-template-repo/my-project/g' justfile guix.scm README.adoc
 
 # Enter development environment
-guix shell -D -f guix.scm
+guix shell -D -f build/guix.scm
 
 # Validate compliance
 just validate-rsr
