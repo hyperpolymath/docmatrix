@@ -15,44 +15,44 @@ permissions:
   contents: read
 jobs:
   # ---------------------------------------------------------------------------
-  # Job 1: A2ML manifest validation
+  # Job 1: DEED manifest validation
   # ---------------------------------------------------------------------------
-  a2ml-validate:
-    name: Validate A2ML manifests
+  deed-validate:
+    name: Validate DEED manifests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-      - name: Check for A2ML files
+      - name: Check for manifest files (.a2ml/.deed)
         id: detect
         run: |
-          COUNT=$(find . -name '*.a2ml' -not -path './.git/*' | wc -l)
+          COUNT=$(find . \( -name '*.a2ml' -o -name '*.deed' \) -not -path './.git/*' | wc -l)
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           if [ "$COUNT" -eq 0 ]; then
-            echo "::warning::No .a2ml manifest files found. Every RSR repo should have 0-AI-MANIFEST.a2ml"
+            echo "::warning::No .a2ml/.deed manifest files found. Every RSR repo should have a repo deed (<reponame>_chora.deed); legacy 0-AI-MANIFEST.a2ml accepted mid-migration — a2ml retired: standards #837"
           fi
-      - name: Validate A2ML manifests
+      - name: Validate DEED manifests
         if: steps.detect.outputs.count > 0
-        uses: hyperpolymath/a2ml-ecosystem/validate-action@aa4b836bd969df2bc58128cb8e3d20bbc88d5e79 # main
+        uses: hyperpolymath/deed-ecosystem/validate-action@aa4b836bd969df2bc58128cb8e3d20bbc88d5e79 # main
         with:
           path: '.'
           strict: 'false'
       - name: Write summary
         run: |
-          A2ML_COUNT="${{ steps.detect.outputs.count }}"
-          if [ "$A2ML_COUNT" -eq 0 ]; then
+          MANIFEST_COUNT="${{ steps.detect.outputs.count }}"
+          if [ "$MANIFEST_COUNT" -eq 0 ]; then
             cat <<'EOF' >> "$GITHUB_STEP_SUMMARY"
-          ## A2ML Validation
+          ## DEED Manifest Validation
 
           :warning: **No .a2ml files found.** Every RSR-compliant repo should have at least `0-AI-MANIFEST.a2ml`.
 
-          Create one with: `a2mliser init` or copy from [rsr-template-repo](https://github.com/hyperpolymath/rsr-template-repo).
+          Copy it from [rsr-template-repo](https://github.com/hyperpolymath/rsr-template-repo). Manifests are validated against the DEED grammar (standards `1-formats/deed/`); the `.a2ml` → `.deed` extension migration is tracked in standards #837 — the deed validator scans both.
           EOF
           else
-            echo "## A2ML Validation" >> "$GITHUB_STEP_SUMMARY"
+            echo "## DEED Manifest Validation" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "Scanned **${A2ML_COUNT}** .a2ml file(s). See step output for details." >> "$GITHUB_STEP_SUMMARY"
+            echo "Scanned **${MANIFEST_COUNT}** .a2ml/.deed manifest(s). See step output for details." >> "$GITHUB_STEP_SUMMARY"
           fi
   # ---------------------------------------------------------------------------
   # Job 2: K9 contract validation
@@ -222,7 +222,7 @@ jobs:
     name: Dogfooding compliance summary
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [a2ml-validate, k9-validate, empty-lint, groove-check]
+    needs: [deed-validate, k9-validate, empty-lint, groove-check]
     if: always()
     steps:
       - name: Checkout repository
@@ -232,12 +232,12 @@ jobs:
           SCORE=0
           MAX=5
 
-          # A2ML manifest present?
-          if find . -name '*.a2ml' -not -path './.git/*' | head -1 | grep -q .; then
+          # DEED manifest present?
+          if find . \( -name '*.a2ml' -o -name '*.deed' \) -not -path './.git/*' | head -1 | grep -q .; then
             SCORE=$((SCORE + 1))
-            A2ML_STATUS=":white_check_mark:"
+            DEED_STATUS=":white_check_mark:"
           else
-            A2ML_STATUS=":x:"
+            DEED_STATUS=":x:"
           fi
 
           # K9 contracts present?
@@ -279,7 +279,7 @@ jobs:
 
           | Tool/Format | Status | Notes |
           |-------------|--------|-------|
-          | A2ML manifest (0-AI-MANIFEST.a2ml) | ${A2ML_STATUS} | Required for all RSR repos |
+          | DEED manifest (<reponame>_chora.deed, or legacy .a2ml) | ${DEED_STATUS} | Required for all RSR repos |
           | K9 contracts | ${K9_STATUS} | Required for repos with config files |
           | .editorconfig | ${EC_STATUS} | Required for all repos |
           | Groove endpoint | ${GROOVE_STATUS} | Required for service repos |
