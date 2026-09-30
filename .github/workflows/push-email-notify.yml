@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MPL-2.0
+# This workflow is managed by gh actions-lock.
 # Dormant push-email notification. ARMED by setting the repo variable
 # PUSH_EMAIL_ENABLED=true (the single on/off switch). Addresses are pre-filled;
 # sending needs the org SMTP secrets (SMTP_HOST/PORT/USER/PASS). Inherited by
