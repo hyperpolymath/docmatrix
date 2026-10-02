@@ -31,11 +31,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0 # Full history for better pattern analysis
       - name: Setup Elixir for Hypatia scanner
-        uses: erlef/setup-beam@fc68ffb90438ef2936bbb3251622353b3dcb2f93 # v1.18.2
+        uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.18.2
         with:
           elixir-version: '1.18'
           otp-version: '27'
@@ -85,7 +85,7 @@ jobs:
           echo "- High: $HIGH" >> $GITHUB_STEP_SUMMARY
           echo "- Medium: $MEDIUM" >> $GITHUB_STEP_SUMMARY
       - name: Upload findings artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: hypatia-findings
           path: hypatia-findings.json
@@ -223,7 +223,7 @@ jobs:
 
 
            github.event.pull_request.head.repo.fork != true)
-        uses: github/codeql-action/upload-sarif@0d579ffd059c29b07949a3cce3983f0780820c98 # v3.28.1
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v3.28.1
         with:
           sarif_file: hypatia.sarif
           # Distinct category so Hypatia results coexist with CodeQL's
@@ -315,6 +315,6 @@ jobs:
         # the pull-requests: write permission above: a token/API hiccup or
         # a fork PR (read-only token) skips the comment, not the check.
         continue-on-error: true
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v7
         with:
           script: "const fs = require('fs');\nconst findings = JSON.parse(fs.readFileSync('hypatia-findings.json', 'utf8'));\n\nconst critical = findings.filter(f => f.severity === 'critical').length;\nconst high = findings.filter(f => f.severity === 'high').length;\n\nlet comment = `## \U0001F50D Hypatia Security Scan\\n\\n`;\ncomment += `**Findings:** ${findings.length} issues detected\\n\\n`;\ncomment += `| Severity | Count |\\n|----------|-------|\\n`;\ncomment += `| \U0001F534 Critical | ${critical} |\\n`;\ncomment += `| \U0001F7E0 High | ${high} |\\n`;\ncomment += `| \U0001F7E1 Medium | ${findings.length - critical - high} |\\n\\n`;\n\nif (critical > 0) {\n  comment += `⚠️ **Action Required:** Critical security issues found!\\n\\n`;\n}\n\ncomment += `<details><summary>View findings</summary>\\n\\n`;\ncomment += `\\`\\`\\`json\\n${JSON.stringify(findings.slice(0, 10), null, 2)}\\n\\`\\`\\`\\n`;\ncomment += `</details>\\n\\n`;\ncomment += `*Powered by Hypatia Neurosymbolic CI/CD Intelligence*`;\n\ngithub.rest.issues.createComment({\n  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body: comment\n});"
