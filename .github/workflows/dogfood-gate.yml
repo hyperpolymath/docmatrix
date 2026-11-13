@@ -35,7 +35,7 @@ jobs:
           fi
       - name: Validate DEED manifests
         if: steps.detect.outputs.count > 0
-        uses: hyperpolymath/deed-ecosystem/validate-action@aa4b836bd969df2bc58128cb8e3d20bbc88d5e79 # main
+        uses: hyperpolymath/deed-ecosystem/validate-action@4cb8886be67cf0d67e150679d1213ea519c3806f # main
         with:
           path: '.'
           strict: 'false'
@@ -79,7 +79,7 @@ jobs:
           fi
       - name: Validate K9 contracts
         if: steps.detect.outputs.k9_count > 0
-        uses: hyperpolymath/k9-ecosystem/validate-action@89f3c2702f4f650a92aa7411502f38da06abd562 # main
+        uses: hyperpolymath/k9-ecosystem/validate-action@20f6be5b5a14a48680b236955b5c4ad9033d00d4 # main
         with:
           path: '.'
           strict: 'false'
