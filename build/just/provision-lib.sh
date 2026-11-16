@@ -543,9 +543,14 @@ cmd_doctor() {
     pass "mise $($T mise --version 2>/dev/null | awk '{print $1}')"
     if [ -f mise.toml ] || [ -f .mise.toml ]; then
       # Only THIS repo's declarations: `mise ls` also lists the user's global config.
-      local here=${ROOT/#$HOME/\~} missing
-      missing=$($T mise ls --current --missing 2>/dev/null | grep -F -e "$here/mise.toml" -e "$here/.mise.toml" -e "$ROOT/mise.toml" | awk '{print $1"@"$2}' | tr '\n' ' ')
-      [ -z "${missing// /}" ] && pass "every mise tool is installed" || fail "PV-E03 mise tools not installed: $missing— run: just setup"
+      local here=${ROOT/#$HOME/\~} missing listing mise_status
+      if listing=$($T mise ls --current --missing 2>&1); then
+        missing=$(printf '%s\n' "$listing" | grep -F -e "$here/mise.toml" -e "$here/.mise.toml" -e "$ROOT/mise.toml" | awk '{print $1"@"$2}' | tr '\n' ' ')
+        [ -z "${missing// /}" ] && pass "every mise tool is installed" || fail "PV-E03 mise tools not installed: $missing— run: just setup"
+      else
+        mise_status=$?
+        fail "PV-E03 mise tool diagnostic failed (exit $mise_status): $listing"
+      fi
     fi
   else warn "PV-W01 mise not found — tools must then come from Guix or your OS; install: $MISE_INSTALL_HINT"; fi
   if have guix; then pass "guix $($T guix --version 2>/dev/null | head -1 | awk '{print $NF}') (optional reproducible path)"

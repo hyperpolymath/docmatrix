@@ -165,7 +165,7 @@ container/              # Wolfi container configs
 just build           # Build all
 just build-core      # Build Rust core only
 just build-tui       # Build Ada TUI only
-just build-ui        # Build AffineScript UI only
+# AffineScript UI build workflow is unavailable
 just test            # Run all tests
 just fmt             # Format all code
 just lint            # Lint all code
@@ -176,8 +176,8 @@ just lint            # Lint all code
 [source,bash]
 ----
 just container-build           # Build Wolfi image
-just compose-up                # Start with ArangoDB
-just container-run-tui         # Run TUI in container
+just container-run --help      # Run the portable CLI in the image
+# ArangoDB compose and container TUI workflows are unavailable
 ----
 
 == RSR Compliance

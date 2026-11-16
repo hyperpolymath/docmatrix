@@ -68,7 +68,7 @@ jobs:
       - name: Check for K9 files
         id: detect
         run: |
-          COUNT=$(find . \( -name '*.k9' -o -name '*.k9.ncl' \) -not -path './.git/*' | wc -l)
+          COUNT=$(find . \( -name '*.k9' -o -name '*.k9.ncl' \) -not -path './.git/*' -type f | wc -l)
           CONFIG_COUNT=$(find . \( -name '*.toml' -o -name '*.yaml' -o -name '*.yml' -o -name '*.json' \) \
             -not -path './.git/*' -not -path './node_modules/*' -not -path './.deno/*' \
             -not -name 'package-lock.json' -not -name 'Cargo.lock' -not -name 'deno.lock' | wc -l)
@@ -78,11 +78,23 @@ jobs:
             echo "::warning::Found $CONFIG_COUNT config files but no K9 contracts. Run k9iser to generate contracts."
           fi
       - name: Validate K9 contracts
+        id: validate
         if: steps.detect.outputs.k9_count > 0
         uses: hyperpolymath/k9-ecosystem/validate-action@2155aa26a21758f2ba119f61bc7e0e1981c106fb # main
         with:
           path: '.'
           strict: 'false'
+          paths-ignore: ''
+      - name: Reject unclassified K9 contracts
+        if: steps.detect.outputs.k9_count > 0
+        env:
+          CANDIDATES: ${{ steps.detect.outputs.k9_count }}
+          SCANNED: ${{ steps.validate.outputs.files-scanned }}
+        run: |
+          if ! [[ "$SCANNED" =~ ^[0-9]+$ ]] || [ "$SCANNED" -ne "$CANDIDATES" ]; then
+            echo "::error::K9 candidates were skipped. Every contract must carry classification and pedigree signals."
+            exit 1
+          fi
       - name: Write summary
         run: |
           K9_COUNT="${{ steps.detect.outputs.k9_count }}"
@@ -98,7 +110,7 @@ jobs:
           else
             echo "## K9 Contract Validation" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "Validated **${K9_COUNT}** K9 contract(s) against **${CFG_COUNT}** config file(s)." >> "$GITHUB_STEP_SUMMARY"
+            echo "Validated **${{ steps.validate.outputs.files-scanned }}** K9 contract(s) against **${CFG_COUNT}** config file(s)." >> "$GITHUB_STEP_SUMMARY"
           fi
   # ---------------------------------------------------------------------------
   # Job 3: Empty-linter — invisible character detection

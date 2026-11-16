@@ -103,8 +103,9 @@ status:
     git status --short
 
 # Run the native CLI
+[positional-arguments]
 run *args:
-    cargo run --locked --bin docmatrix -- {{args}}
+    cargo run --locked --bin docmatrix -- "$@"
 
 # Print the package version
 version:

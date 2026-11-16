@@ -7,3 +7,7 @@ node_modules
 .env.*
 *.pem
 *.key
+**/.env
+**/.env.*
+**/*.pem
+**/*.key

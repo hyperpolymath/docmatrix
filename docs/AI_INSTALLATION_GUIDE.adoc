@@ -4,7 +4,7 @@
 Read README, docs/SETUP.adoc, docs/ASSURANCE.adoc and the selected warm-up.
 Inspect the host, existing tools and repository changes before acting.
 Use the pinned source and dependencies. Run the real build and tests, then
-launcher.sh --doctor. Explain each failure using its diagnostic and actual log.
+`bash ./launcher.sh --doctor` from the checkout. Explain each failure using its diagnostic and actual log.
 Never substitute a placeholder output or call a missing tool a pass.
 Do not request credentials for local parsing. Keep input documents local.
 Do not run Dhall imports or repository scripts obtained from input data.

@@ -40,8 +40,23 @@ record. Its workflow still needs a key, and any recorded step or transitive
 edge still needs its dependency record. Reviewed remote closure coverage is
 read from `actions-lock.closure.tsv`; this gate does not invent that evidence.
 
-Use the official generator and reviewed closure/merge process to refresh a
-lock. Completion, closure repair and pruning consume the same parsed workflow
+The official generator is the `gh actions-lock` extension, maintained in
+https://github.com/github/gh-actions-lock[github/gh-actions-lock]. From this
+checkout run `gh actions-lock --no-migrate-local-actions --no-narrow` and review
+the result.
+
+The closure checker is maintained outside this repository in
+https://github.com/metadatastician/standards/blob/main/scripts/check-reusable-closure.sh[metadatastician/standards/scripts/check-reusable-closure.sh].
+With that repository checked out at `../standards`, run from this checkout:
+
+[source,bash]
+----
+bash ../standards/scripts/check-reusable-closure.sh .github/workflows --write-baseline
+----
+
+This writes `.github/workflows/actions-lock.closure.tsv`; review and commit its
+rows as closure evidence. Use the estate's reviewed closure/merge process for
+completion, repair and pruning. Completion, closure repair and pruning consume the same parsed workflow
 fields. Closure repair discovers called workflows structurally and verifies
 the resulting closure before reporting success.
 Writers use the YAML encoder and verify a typed round trip before replacing

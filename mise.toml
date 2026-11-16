@@ -2,6 +2,6 @@
 [settings]
 lockfile = true
 [tools]
-rust = "latest"
-just = "latest"
+rust = "1.99.1"
+just = "1.58.0"
 shellcheck = "latest"

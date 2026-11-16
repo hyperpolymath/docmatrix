@@ -7,7 +7,9 @@ Document conversion infrastructure, with a separate structured-data boundary sha
 
 Install Git, Rust/rustup and Bash (Git Bash on Windows), then clone
 https://github.com/hyperpolymath/docmatrix. The repository's rust-toolchain.toml and Cargo.lock
-pin compilation. Run cargo build --locked --release, then
+pin compilation. Install the native linker toolchain first: `build-essential`
+on Ubuntu, or Xcode Command Line Tools (`xcode-select --install`) on macOS.
+Run cargo build --locked --release, then
 target/release/docmatrix --help (append .exe on Windows).
 Use ./launcher.sh --run --help from Bash or just run --help.
 Paths containing spaces are supported by the launcher.
@@ -29,7 +31,9 @@ Windows, Linux and macOS execution must each have their own receipt.
 == Guix
 
 guix time-machine -C channels.scm -- shell -m manifest.scm supplies the
-declared development environment. The Rust package uses the canonical cargo
+declared development environment. Entering this shell does not install or
+activate Rust. Run `mise install`, then build with `mise exec -- cargo build --locked --release`
+or activate mise in the shell before building. The Rust package uses the canonical cargo
 template and loads build/guix/crates.scm, generated from Cargo.lock by
 bash build/just/provision-lib.sh crates-scm.
 Compiled Guix packaging is not qualified until all registry and pinned git

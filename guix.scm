@@ -11,6 +11,8 @@
 ;; `just toolchain-refresh` regenerates it; never hand-edit it.
 (use-modules (guix packages) (guix gexp)
              (guix build-system cargo)
+             (guix git-download)
+             (srfi srfi-13)
              ((guix licenses) #:prefix license:))
 
 ;; The repository root: this file sits at the root or in build/ (PROVISIONING-STANDARD §1).
@@ -22,7 +24,7 @@
 ;; Build products and caches never enter the source (git-predicate is not used:
 ;; it breaks on tarball checkouts and on bind-mounted trees).
 (define %ignored
-  '(".git" "target" ".eval" "node_modules" "_build" "deps" "zig-out" ".zig-cache" "dist-newstyle"))
+  '(".git" "target" ".eval" "node_modules" "_build" "deps" "zig-out" ".zig-cache" "dist-newstyle" "secrets"))
 
 (package
   (name "docmatrix")
@@ -30,9 +32,15 @@
   (source (local-file %source-dir "docmatrix-checkout"
                       #:recursive? #t
                       #:select? (lambda (file stat)
-                                  (not (member (basename file) %ignored)))))
+                                  (let ((name (basename file)))
+                                    (not (or (member name %ignored)
+                                             (string=? name ".env")
+                                             (string-prefix? ".env." name)
+                                             (string-suffix? ".pem" name)
+                                             (string-suffix? ".key" name)))))))
   (build-system cargo-build-system)
-  (arguments (list #:install-source? #f))
+  (arguments (list #:install-source? #f
+                   #:install-path "crates/docmatrix-data"))
   (inputs %crate-inputs)
   (home-page "https://github.com/hyperpolymath/docmatrix")
   (synopsis "Document conversion infrastructure, with a separate structured-data boundary shared with kyq.")

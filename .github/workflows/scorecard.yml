@@ -15,6 +15,7 @@ jobs:
   analysis:
     uses: metadatastician/standards/.github/workflows/scorecard-reusable.yml@7641c7fdb01420696b5420ab85d88f599f32f609
     permissions:
+      actions: read
       contents: read
       security-events: write
       id-token: write

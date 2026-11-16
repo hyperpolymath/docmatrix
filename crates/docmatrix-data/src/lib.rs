@@ -20,7 +20,25 @@ pub enum Output {
 /// Multiple documents cannot silently be collapsed into one JSON document.
 pub fn convert(input: &[u8], from: Format, to: Output) -> Result<Vec<u8>, Error> {
     match to {
-        Output::Kyaml => kyq::format_documents(&kyq::parse(input, from)?),
+        Output::Kyaml => {
+            let documents = kyq::parse(input, from)?;
+            for document in &documents {
+                validate_kyaml_keys(document)?;
+            }
+            let mut output = Vec::new();
+            for (index, document) in documents.iter().enumerate() {
+                if index > 0 {
+                    output.extend_from_slice(b"---\n");
+                }
+                // kyq's emitter treats this root scalar as a document-end marker.
+                if matches!(document, Value::String(value) if value == "...") {
+                    output.extend_from_slice(b"\"...\"\n");
+                } else {
+                    output.extend(kyq::format_documents(std::slice::from_ref(document))?);
+                }
+            }
+            Ok(output)
+        }
         Output::Json | Output::Jcs => {
             let mut output = kyq::canonicalize(input, from)?;
             if matches!(to, Output::Json) {
@@ -31,9 +49,57 @@ pub fn convert(input: &[u8], from: Format, to: Output) -> Result<Vec<u8>, Error>
     }
 }
 
+fn validate_kyaml_keys(value: &Value) -> Result<(), Error> {
+    match value {
+        Value::Object(map) => {
+            for (key, value) in map {
+                if key.chars().count() > 1024 {
+                    return Err(Error {
+                        code: "KEY_LIMIT",
+                        message: "KYAML implicit keys cannot exceed 1024 characters".into(),
+                        line: 1,
+                        column: 1,
+                        path: key.clone(),
+                    });
+                }
+                validate_kyaml_keys(value)?;
+            }
+        }
+        Value::Array(items) => {
+            for item in items {
+                validate_kyaml_keys(item)?;
+            }
+        }
+        _ => {}
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn overlong_implicit_keys_are_rejected() {
+        let key = "a".repeat(1025);
+        for json in [
+            format!(r#"{{"{key}":0}}"#),
+            format!(r#"[{{"nested":{{"{key}":0}}}}]"#),
+        ] {
+            let error = convert(json.as_bytes(), Format::Json, Output::Kyaml).unwrap_err();
+            assert_eq!(error.code, "KEY_LIMIT");
+        }
+        let json = format!(r#"{{"{}":0}}"#, "a".repeat(1024));
+        assert!(convert(json.as_bytes(), Format::Json, Output::Kyaml).is_ok());
+    }
+
+    #[test]
+    fn document_end_scalar_round_trips() {
+        let json = br#""...""#;
+        let yaml = convert(json, Format::Json, Output::Kyaml).unwrap();
+        assert_eq!(yaml, b"\"...\"\n");
+        assert_eq!(convert(&yaml, Format::Kyaml, Output::Jcs).unwrap(), json);
+    }
+
     #[test]
     fn yaml_dhall_and_json_share_the_same_canonical_boundary() {
         use proven_evidence::parser_contract::{self, Case, Expected};

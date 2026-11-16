@@ -13,11 +13,16 @@ edit_file() {
   mv "$fixture/edited" "$file"
 }
 expect() {
-  local wanted=$1 label=$2 status=0
+  local wanted=$1 label=$2 message=${3-} status=0
   bash "$repo/scripts/check-lock-sync.sh" "$wf" > "$fixture/output" 2>&1 || status=$?
   if [[ "$status" != "$wanted" ]]; then
     cat "$fixture/output" >&2
     printf 'FAIL %s: expected %s, got %s\n' "$label" "$wanted" "$status" >&2
+    exit 1
+  fi
+  if [[ -n "$message" ]] && ! grep -Fq -- "$message" "$fixture/output"; then
+    cat "$fixture/output" >&2
+    printf 'FAIL %s: missing rejection message: %s\n' "$label" "$message" >&2
     exit 1
   fi
   passed=$((passed + 1))
@@ -241,7 +246,7 @@ done
 action_workflow
 good_lock
 edit_file "s/^    'example\/action@v1':/    'example\/action\/subdir@v1':/" "$wf/actions.lock"
-expect 1 'dependency record keys cannot include action subpaths'
+expect 1 'dependency record keys cannot include action subpaths' 'actions-lock: unsupported schema or malformed workflow/dependency records'
 good_lock
 edit_file 's/uses: example\/action@v1/uses: example\/action\/subdir@v1/' "$wf/probe.yml"
 expect 0 'action uses may include a subpath with a repository-owned record'
@@ -254,7 +259,7 @@ cat >> "$wf/actions.lock" <<'LOCK'
         owner_id: 1
         repo_id: 2
 LOCK
-expect 1 'dependency record repository names use coordinate syntax'
+expect 1 'dependency record repository names use coordinate syntax' 'actions-lock: unsupported schema or malformed workflow/dependency records'
 good_lock
 printf 'jobs:\n  test:\n    steps:\n      - uses: ./\n' > "$wf/probe.yml"
 printf 'runs:\n  using: composite\n  steps:\n    - uses: example/action@v1\n' > "$fixture/repo/action.yml"
@@ -304,7 +309,7 @@ cat >> "$wf/actions.lock" <<'LOCK'
         owner_id: 1
         repo_id: 3
 LOCK
-expect 1 'colon in an unused canonical dependency pin is refused'
+expect 1 'colon in an unused canonical dependency pin is refused' 'actions-lock: unsupported schema or malformed workflow/dependency records'
 printf 'version: v0.0.3\nworkflows:\n    '\''.github/workflows/probe.yml'\'': []\ndependencies: {}\n' > "$wf/actions.lock"
 printf 'jobs:\n  test:\n    steps:\n      - uses: docker://alpine@sha256:%s\n' "$(printf 'a%.0s' {1..64})" > "$wf/probe.yml"
 expect 0 'digest-pinned OCI actions do not require GitHub repository records'
@@ -422,6 +427,12 @@ cat >> "$wf/actions.lock" <<'LOCK'
         repo_id: 4
 LOCK
 expect 1 'a disconnected acyclic dependency tree is refused at its root'
+good_lock
+printf 'jobs: {child: {uses: example/reusable/.github/workflows/child.yml@v1}}\n' > "$wf/probe.yml"
+expect 1 'through-ref without step uses or baseline is refused'
+printf '.github/workflows/probe.yml\texample/reusable/.github/workflows/child.yml@v1\texample/action@v1\n' > "$wf/actions-lock.closure.tsv"
+expect 0 'reviewed closure baseline establishes the same through-ref'
+rm "$wf/actions-lock.closure.tsv"
 mkdir -p "$fixture/repo/.github/actions"
 printf 'jobs: {}\n' > "$fixture/repo/.github/actions/plain.yml"
 printf 'jobs: {test: {steps: [{uses: ./.github/actions/plain.yml}]}}\n' > "$wf/probe.yml"
