@@ -12,7 +12,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         .into_iter();
     let command = args.next().unwrap_or_else(|| "--help".into());
     if command == "--help" {
-        println!("docmatrix convert --from kyaml|json|dhall --to kyaml|json|jcs [FILE|-]\nStructured-data conversion through kyq. Prose conversion remains in the formatrix-core API.");
+        println!("docmatrix convert --from kyaml|json|jcs|dhall --to kyaml|json|jcs [FILE|-]\nStructured-data conversion through kyq. Prose conversion remains in the formatrix-core API.");
         return Ok(());
     }
     if command == "--version" {
@@ -31,6 +31,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
                 from = Some(match args.next().as_deref() {
                     Some("kyaml" | "yaml") => Format::Kyaml,
                     Some("json") => Format::Json,
+                    Some("jcs") => Format::Jcs,
                     Some("dhall") => Format::Dhall,
                     _ => return Err("unsupported input format".into()),
                 })

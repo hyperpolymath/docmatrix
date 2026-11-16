@@ -4,6 +4,7 @@ name = "formatrix-pipeline"
 description = "Nickel-based content pipeline engine for Formatrix Docs"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 authors.workspace = true
 license.workspace = true
 repository.workspace = true

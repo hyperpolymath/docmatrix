@@ -125,3 +125,25 @@ container-test:
 # Inspect first-party Creusot/Pearlite and Verus obligations
 proof-status:
     cat verification/PROOF-STATUS.adoc
+
+# Verify the real converter seeds before running an instrumented campaign
+fuzz-seeds:
+    cargo test --locked --manifest-path fuzz/Cargo.toml --lib
+    cargo clippy --locked --manifest-path fuzz/Cargo.toml --all-targets -- -D warnings
+
+# Instrumented campaign; cargo-fuzz and a nightly sanitizer toolchain are required
+fuzz target="kyaml":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    case {{quote(target)}} in
+      kyaml|json|jcs|dhall) ;;
+      *) echo "target must be kyaml, json, jcs or dhall" >&2; exit 2 ;;
+    esac
+    locked_copy=$(mktemp)
+    trap 'rm -f "$locked_copy"' EXIT
+    cp fuzz/Cargo.lock "$locked_copy"
+    cargo +nightly fetch --locked --manifest-path fuzz/Cargo.toml
+    fuzz_host=$(rustc +nightly -vV | sed -n 's/^host: //p')
+    test -n "$fuzz_host"
+    CARGO_NET_OFFLINE=true cargo +nightly fuzz run --target "$fuzz_host" {{quote(target)}} -- -max_total_time=300 -max_len=16384 -timeout=10 -rss_limit_mb=2048
+    cmp "$locked_copy" fuzz/Cargo.lock

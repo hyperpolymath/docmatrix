@@ -4,6 +4,7 @@ name = "docmatrix-data"
 description = "Bounded structured-data conversion for DocMatrix through kyq"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 
@@ -12,7 +13,7 @@ name = "docmatrix"
 path = "src/main.rs"
 
 [dependencies]
-kyq = { git = "https://github.com/metadatastician/kyq", rev = "9df66eb598093c15e4201af5c51a5b6527f8f8f2" }
+kyq = { git = "https://github.com/metadatastician/kyq", rev = "006707ebcd072720e62599f163471696b0f19c8e" }
 
 [dev-dependencies]
 proven-evidence = { git = "https://github.com/hyperpolymath/proven-tests-and-benches", rev = "2e978736732651098022169a6d1680e771eefc3e" }

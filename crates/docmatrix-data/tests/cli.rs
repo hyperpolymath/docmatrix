@@ -79,3 +79,20 @@ fn non_utf8_arguments_are_errors_not_panics() {
     assert!(out.stdout.is_empty());
     assert!(!String::from_utf8_lossy(&out.stderr).contains("panicked"));
 }
+
+#[test]
+fn large_integral_jcs_has_an_explicit_input_policy() {
+    let wire = b"10000000000000000";
+    let accepted = invoke(&["convert", "--from", "jcs", "--to", "jcs"], wire);
+    assert!(accepted.status.success());
+    assert_eq!(accepted.stdout, wire);
+    let strict = invoke(&["convert", "--from", "json", "--to", "jcs"], wire);
+    assert_eq!(strict.status.code(), Some(2));
+    assert!(strict.stdout.is_empty());
+    let rounded = invoke(
+        &["convert", "--from", "jcs", "--to", "jcs"],
+        b"9007199254740993",
+    );
+    assert!(rounded.status.success());
+    assert_eq!(rounded.stdout, b"9007199254740992");
+}

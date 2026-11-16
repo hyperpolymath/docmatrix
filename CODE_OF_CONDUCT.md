@@ -4,26 +4,6 @@ Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 -->
 # Code of Conduct
 
-<!-- 
-============================================================================
-TEMPLATE INSTRUCTIONS (delete this block before publishing)
-============================================================================
-Replace all {{PLACEHOLDER}} values:
-  Docmatrix     - Your project name
-  hyperpolymath            - GitHub/GitLab username or org
-  docmatrix             - Repository name
-  j.d.a.jewell@open.ac.uk    - Email for conduct reports
-  {{CONDUCT_TEAM}}     - Name of conduct team/committee
-  {{RESPONSE_TIME}}    - Initial response SLA (e.g., 48 hours)
-  2026     - Current year
-
-Review and customise:
-- Adjust enforcement ladder for your community size
-- Add/remove examples based on your context
-- Ensure contact methods work for your team
-============================================================================
--->
-
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in Docmatrix a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, caste, colour, religion, or sexual identity and orientation.
@@ -136,6 +116,8 @@ This Code of Conduct also applies when an individual is officially representing 
 
 If you experience or witness unacceptable behaviour, or have any other concerns, please report it as soon as possible.
 
+**Responsible maintainer:** Jonathan D.A. Jewell (repository maintainer).
+
 **How to Report**
 
 | Method | Details | Best For |
@@ -156,8 +138,8 @@ If you experience or witness unacceptable behaviour, or have any other concerns,
 
 **What Happens Next**
 
-1. You will receive acknowledgment within **{{RESPONSE_TIME}}**
-2. The {{CONDUCT_TEAM}} will review the report
+1. You will receive acknowledgement within **five working days**. The acknowledgement will outline the next steps; investigation and resolution may take longer.
+2. The repository maintainer will review the report
 3. We may ask for additional information
 4. We will determine appropriate action
 5. We will inform you of the outcome (respecting others' privacy)
@@ -173,7 +155,7 @@ All reports will be handled with discretion:
 
 ### Conflicts of Interest
 
-If a {{CONDUCT_TEAM}} member is involved in an incident:
+If the repository maintainer is involved in an incident:
 
 - They will recuse themselves from the process
 - Another maintainer or external party will handle the report
@@ -183,7 +165,7 @@ If a {{CONDUCT_TEAM}} member is involved in an incident:
 
 ## Enforcement Guidelines
 
-The {{CONDUCT_TEAM}} will follow these guidelines in determining consequences:
+The repository maintainer will follow these guidelines in determining consequences:
 
 ### 1. Correction
 
@@ -241,7 +223,7 @@ If you believe an enforcement decision was made in error:
 
 **Appeals Process**
 
-- Appeals are reviewed by a different {{CONDUCT_TEAM}} member than the original
+- Appeals must be reviewed by someone other than the repository maintainer who made the original decision
 - You will receive a response within 14 days
 - The appeals decision is final
 - You may only appeal once per incident

@@ -1,0 +1,37 @@
+= Fuzzing structured data
+:toc:
+
+The four Rust targets call the public DocMatrix converter for KYAML, strict JSON, binary64 JCS and
+Dhall. Successful inputs must retain the same canonical bytes after conversion
+to KYAML and reparsing; JCS must be idempotent and JSON must add exactly one LF.
+Invalid input seeds exercise duplicate-key and Dhall type rejection. Each target
+has a seed corpus, a 16 KiB mutation limit, a ten-second per-input timeout and a
+2 GiB process memory ceiling. The harness accepts up to 64 KiB; production size
+limits have separate boundary tests. Dhall normalization time remains an open
+production isolation obligation.
+
+Run `cargo +nightly fuzz run kyaml` (or `json`, `jcs`, `dhall`) from the repository root.
+Seed checks run with `cargo test --locked --manifest-path fuzz/Cargo.toml --lib`.
+The fuzz workspace has its own committed dependency lock.
+
+ClusterFuzzLite's Rust integration supports AddressSanitizer, not the template's
+undefined-sanitizer matrix. Its build API requires `.clusterfuzzlite/Dockerfile`
+and the OSS-Fuzz Rust builder. This is the third-party test toolchain, separate
+from DocMatrix's Wolfi/Podman product container and its Stapeln acceptance work.
+The build copies only the four declared executables and their corpora/options.
+PR fuzzing runs for five minutes and scheduled batch fuzzing for thirty minutes;
+job limits include time for compilation. A crash fails the job even when no
+SARIF file was produced. Building the harness alone is not a successful fuzz run.
+
+Sources: https://google.github.io/clusterfuzzlite/build-integration/[build API]
+and https://google.github.io/clusterfuzzlite/build-integration/rust-lang/[Rust integration].
+
+The builder selects GNU/Linux explicitly. A downloaded musl cargo-fuzz binary
+otherwise defaults to its own compiled host triple, which can select an
+uninstalled target even when the Rust compiler's host is GNU/Linux. The local
+Just recipe derives the target from the selected nightly compiler instead.
+
+Canonical bytes are reparsed with the explicit binary64 JCS reader. The strict
+JSON ingress policy intentionally rejects large integer tokens even when JCS
+can emit them from a double; the seeded numeric regression checks both policies
+and prevents the fuzz oracle from conflating their input domains.

@@ -7,7 +7,7 @@ The historical formatrix-core package name is retained for API compatibility;
 workspace repository metadata now identifies DocMatrix.
 
 docmatrix-data provides a standalone docmatrix CLI and a Rust conversion API.
-KYAML, strict JSON and Dhall enter through kyq. Outputs are block KYAML, canonical
+KYAML, strict JSON, explicit binary64 JCS and Dhall enter through kyq. Outputs are block KYAML, canonical
 JSON plus LF, or JCS bytes without LF. Multiple documents are rejected when
 the selected output can represent only one. Presentation comments and anchor
 spellings are not preserved. Structured data never enters the prose AST.
@@ -28,3 +28,8 @@ format-specific fuzzing and mutation campaigns, current taxonomy evidence,
 live platform CI, offline Guix builds with a sufficient compiler, and signed
 Stapeln admission. Proof claims inherit only the exact verified component
 boundary; a kyq budget lemma is not a proof of document conversion.
+
+The current follow-up pins kyq 006707ebcd072720e62599f163471696b0f19c8e and
+ijson-jcs c7091491ad48b64c19ee9bb754a28186f8e94042. Hosted validation is pending
+for this revision. Earlier local results above do not cover the new reader.
+The resource coordinator holds local heavy builds, proof runs and campaigns.

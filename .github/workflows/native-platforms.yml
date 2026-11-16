@@ -30,5 +30,9 @@ jobs:
           toolchain: "1.99.1"
       - run: cargo test --locked --all-targets
       - run: cargo test --locked --doc
+      - name: Verify structured-data fuzz seeds
+        run: cargo test --locked --manifest-path fuzz/Cargo.toml --lib
+        env:
+          CARGO_TARGET_DIR: target
       - run: bash launcher.sh --help
       - run: bash build/just/provision-lib.sh langs

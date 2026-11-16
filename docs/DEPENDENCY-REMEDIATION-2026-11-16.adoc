@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= Dependency remediation, 2026-11-16
+
+The first integration run of PR 93 rejected vulnerable versions of
+crossbeam-epoch, h2, imbl-sized-chunks, quick-xml and tokio. Cargo.lock now selects
+crossbeam-epoch 0.9.21, h2 0.4.20, quick-xml 0.41.0 through plist 1.10.0, and
+tokio 1.54.1. Nickel core is updated from 0.10 to 0.19.
+
+The published nickel-lang-vector 0.2.0 still requires imbl-sized-chunks 0.1.
+The crates.io patch points to the upstream Nickel repository at
+`75dafe94bce429d0b54e1b900c7d84d6e6ab59aa`, whose vector manifest uses the patched
+imbl-sized-chunks 0.2.0. Remove the patch only after a published compatible
+Nickel vector release carries that fix and the audit and tests pass.
+No advisory ignore was added.
+
+The shared Rust gate audits every workspace package with all features. Its
+existing policy reports unmaintained/yanked crates as warnings and fails on
+vulnerabilities and unsoundness. Remaining maintenance warnings are still debt,
+not a clean dependency bill of health. A strict cargo-deny invocation without
+that shared warning policy remains failing until those dependencies migrate.
+
+The old generated Justfile is available in Git at
+`246041dc820255373e1428c46cfd863995d5d07b`; its redundant text copy was removed
+because it advertised nonexistent source directories to documentation checks.
+The current Justfile is the operational entry point.

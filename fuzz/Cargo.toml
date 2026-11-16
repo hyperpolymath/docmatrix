@@ -1,20 +1,44 @@
+# SPDX-License-Identifier: MPL-2.0
 [package]
-name = "fuzz"
+name = "docmatrix-fuzz"
 version = "0.0.0"
 publish = false
-edition = "2021"
+edition = "2024"
 
 [package.metadata]
 cargo-fuzz = true
 
+[workspace]
+members = ["."]
+
 [dependencies]
 libfuzzer-sys = "0.4"
-
-[dependencies.docmatrix]
-path = ".."
+docmatrix-data = { path = "../crates/docmatrix-data" }
 
 [[bin]]
-name = "fuzz_main"
-path = "fuzz_targets/fuzz_main.rs"
+name = "kyaml"
+path = "fuzz_targets/kyaml.rs"
 test = false
 doc = false
+bench = false
+
+[[bin]]
+name = "json"
+path = "fuzz_targets/json.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "dhall"
+path = "fuzz_targets/dhall.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "jcs"
+path = "fuzz_targets/jcs.rs"
+test = false
+doc = false
+bench = false

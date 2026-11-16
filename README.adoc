@@ -216,3 +216,17 @@ MPL-2.0 with Palimpsest philosophy.
 * link:.machine_readable/6a2/ECOSYSTEM.a2ml[Ecosystem Position]
 * link:.machine_readable/6a2/META.a2ml[Architecture Decisions]
 * link:PALIMPSEST.adoc[Palimpsest Philosophy]
+
+== Reading canonical numeric output
+
+`docmatrix convert --from jcs --to kyaml FILE` reads RFC 8785 binary64 numbers,
+including large integral doubles produced by canonicalization. `--from json`
+retains strict integer-token validation. The distinction is intentional:
+`1e16` produces JCS `10000000000000000`, which is read through `--from jcs`.
+The JCS input model may round large integer tokens; keep exact identifiers and
+arbitrary-precision values in strings. Both input policies reject duplicate
+keys, invalid Unicode, non-finite numbers and trailing input.
+
+Run `just fuzz-seeds` for converter seed regressions and `just fuzz jcs` (or
+`kyaml`, `json`, `dhall`) for a bounded instrumented campaign. See
+link:fuzz/README.adoc[the fuzzing contract and resource limits].

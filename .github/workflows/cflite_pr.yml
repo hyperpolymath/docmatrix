@@ -7,17 +7,23 @@ on:
   pull_request:
     paths:
       - '**/*.rs'
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+      - '.clusterfuzzlite/**'
+      - 'fuzz/**'
+      - '.github/workflows/cflite_pr.yml'
 permissions:
   actions: read
   contents: read
+  security-events: write
 jobs:
   PR:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        sanitizer: [address, undefined]
+        sanitizer: [address]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: google/clusterfuzzlite/actions/build_fuzzers@884713a6c30a92e5e8544c39945cd7cb630abcd1 # v1
@@ -32,6 +38,6 @@ jobs:
           mode: code-change
           output-sarif: true
       - uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
-        if: always()
+        if: always() && hashFiles('vulnerabilities.sarif') != ''
         with:
           sarif_file: vulnerabilities.sarif

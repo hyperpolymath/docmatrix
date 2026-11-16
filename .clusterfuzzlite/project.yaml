@@ -1,4 +1,5 @@
+# SPDX-License-Identifier: MPL-2.0
 language: rust
+# ClusterFuzzLite's Rust integration supports AddressSanitizer.
 sanitizers:
   - address
-  - undefined

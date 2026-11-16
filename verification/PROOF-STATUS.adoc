@@ -53,7 +53,7 @@ packages are outside the portable default build and need their own validation.
 |Model persistence and pipeline state transitions. The historical GUI code does
 not establish a qualified DocMatrix desktop application.
 |TEST-INSTRUMENTS — OPEN
-|Rust tests and `crates/formatrix-core/benches/format_bench.rs`
+|Rust tests, `fuzz/`, and the core/data benchmark executables
 |Specify generators, comparators and measurement boundaries where feasible;
 keep empirical campaigns distinct from proof obligations.
 |Model oracle soundness and counterexample coverage assumptions; never treat
@@ -62,8 +62,8 @@ successful bounded testing as universal validity.
 
 == Imported proof boundary
 
-The adapter pins kyq to `9df66eb598093c15e4201af5c51a5b6527f8f8f2`, which pins
-ijson-jcs to `1735d68768920f6f59667c9ba2c84769d8d45336`. kyq's production
+The adapter pins kyq to `006707ebcd072720e62599f163471696b0f19c8e`, which pins
+ijson-jcs to `c7091491ad48b64c19ee9bb754a28186f8e94042`. kyq's production
 node-budget decrement has a Creusot/Pearlite proof; its Verus arithmetic model
 is separately verified. Consult kyq's `verification/PROOF-STATUS.adoc` and
 `verification/REPLAY-2026-11-16.adoc` for exact sources and trusted tools.
@@ -72,9 +72,13 @@ DocMatrix conversion, the whole KYAML parser, Dhall evaluation or prose parsing.
 
 == Evidence and admission
 
-On 2026-11-16 the Windows portable package tests and warnings-denied Clippy
+At the earlier kyq pin `9df66eb`, the 2026-11-16 Windows portable package tests and warnings-denied Clippy
 passed against the immutable Git dependency, including the three-format adapter
 and CLI byte-profile/rejection cases. These are empirical results, not proofs.
 CI must identify the tested commit and package/features; optional components,
 whole-converter proofs and all-estate acceptance remain separate obligations.
 No empty proof job is introduced merely to produce a green verifier badge.
+
+The explicit binary64 reader and fuzz harness follow-up await hosted execution.
+The earlier budget receipts apply only to their unchanged production kernel;
+new JSON reader behavior is not formally verified by those receipts.
