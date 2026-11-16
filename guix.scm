@@ -40,7 +40,7 @@
                                              (string-suffix? ".key" name)))))))
   (build-system cargo-build-system)
   (arguments (list #:install-source? #f
-                   #:install-path "crates/docmatrix-data"))
+                   #:cargo-install-paths #~(list "crates/docmatrix-data")))
   (inputs %crate-inputs)
   (home-page "https://github.com/hyperpolymath/docmatrix")
   (synopsis "Document conversion infrastructure, with a separate structured-data boundary shared with kyq.")

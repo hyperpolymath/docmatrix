@@ -19,12 +19,15 @@ pub fn check(data: &[u8], from: Format) {
         canonical,
         "canonicalization must be idempotent"
     );
-    let yaml = convert(data, from, Output::Kyaml).expect("accepted value must format");
-    assert_eq!(
-        convert(&yaml, Format::Kyaml, Output::Jcs).expect("formatted KYAML must parse"),
-        canonical,
-        "KYAML formatting must preserve value semantics"
-    );
+    match convert(data, from, Output::Kyaml) {
+        Ok(yaml) => assert_eq!(
+            convert(&yaml, Format::Kyaml, Output::Jcs).expect("formatted KYAML must parse"),
+            canonical,
+            "KYAML formatting must preserve value semantics"
+        ),
+        Err(error) if error.code == "KEY_LIMIT" => {}
+        Err(error) => panic!("accepted value must format: {error}"),
+    }
     let mut line = canonical;
     line.push(b'\n');
     assert_eq!(convert(data, from, Output::Json).unwrap(), line);
@@ -33,6 +36,20 @@ pub fn check(data: &[u8], from: Format) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn kyaml_key_limit_is_an_expected_rejection() {
+        for key in ["a".repeat(1025), r"\n".repeat(512)] {
+            let json = format!(r#"{{"{key}":0}}"#);
+            assert_eq!(
+                convert(json.as_bytes(), Format::Json, Output::Kyaml)
+                    .unwrap_err()
+                    .code,
+                "KEY_LIMIT"
+            );
+            check(json.as_bytes(), Format::Json);
+        }
+    }
+
     #[test]
     fn seeds_reach_the_converter_and_preserve_values() {
         for (data, format) in [

@@ -53,7 +53,16 @@ fn validate_kyaml_keys(value: &Value) -> Result<(), Error> {
     match value {
         Value::Object(map) => {
             for (key, value) in map {
-                if key.chars().count() > 1024 {
+                // Render through the same emitter used for mapping keys so quotes
+                // and JSON escapes count toward the reader's implicit-key limit.
+                // A scalar rendering includes one trailing LF.
+                let rendered = kyq::format_documents(&[Value::String(key.clone())])?;
+                let length = std::str::from_utf8(&rendered)
+                    .expect("KYAML emitter produces UTF-8")
+                    .chars()
+                    .count()
+                    - 1;
+                if length > 1024 {
                     return Err(Error {
                         code: "KEY_LIMIT",
                         message: "KYAML implicit keys cannot exceed 1024 characters".into(),
@@ -90,6 +99,29 @@ mod tests {
         }
         let json = format!(r#"{{"{}":0}}"#, "a".repeat(1024));
         assert!(convert(json.as_bytes(), Format::Json, Output::Kyaml).is_ok());
+    }
+
+    #[test]
+    fn emitted_key_boundaries_include_quotes_and_escapes() {
+        for (key_json, accepted) in [
+            (format!("#{}", "a".repeat(1021)), true),
+            (format!("#{}", "a".repeat(1022)), false),
+            (r"\n".repeat(511), true),
+            (r"\n".repeat(512), false),
+            ("é".repeat(1024), true),
+        ] {
+            let json = format!(r#"{{"{key_json}":0}}"#);
+            let result = convert(json.as_bytes(), Format::Json, Output::Kyaml);
+            if accepted {
+                let yaml = result.unwrap();
+                assert_eq!(
+                    convert(&yaml, Format::Kyaml, Output::Jcs).unwrap(),
+                    convert(json.as_bytes(), Format::Json, Output::Jcs).unwrap()
+                );
+            } else {
+                assert_eq!(result.unwrap_err().code, "KEY_LIMIT");
+            }
+        }
     }
 
     #[test]
