@@ -1,0 +1,9 @@
+.git
+target
+**/target
+.eval
+node_modules
+.env
+.env.*
+*.pem
+*.key

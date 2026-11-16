@@ -1,0 +1,30 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= DocMatrix structured-data acceptance boundary
+:revdate: 2026-11-16
+
+The portable default package set is formatrix-core and docmatrix-data.
+The historical formatrix-core package name is retained for API compatibility;
+workspace repository metadata now identifies DocMatrix.
+
+docmatrix-data provides a standalone docmatrix CLI and a Rust conversion API.
+KYAML, strict JSON and Dhall enter through kyq. Outputs are block KYAML, canonical
+JSON plus LF, or JCS bytes without LF. Multiple documents are rejected when
+the selected output can represent only one. Presentation comments and anchor
+spellings are not preserved. Structured data never enters the prose AST.
+
+Run cargo test --locked --all-targets, cargo test --locked --doc and
+cargo clippy --locked --all-targets -- -D warnings for the portable package set.
+The portable Windows tests and warnings-denied Clippy passed on 2026-11-16
+against immutable kyq revision `9df66eb598093c15e4201af5c51a5b6527f8f8f2`.
+The adapter has independent cross-format and CLI byte-profile/rejection regressions.
+See link:../verification/PROOF-STATUS.adoc[the Creusot/Pearlite and Verus scope ledger].
+
+The GUI, database and pipeline workspace packages remain separately selectable.
+Their platform dependencies and behavior are not certified by a portable-core
+job. The tabbed editor belongs to Formatrix Docs. ForthWall is still a proposal.
+
+Open requirements: complete losslessness tests for every prose converter,
+format-specific fuzzing and mutation campaigns, current taxonomy evidence,
+live platform CI, offline Guix builds with a sufficient compiler, and signed
+Stapeln admission. Proof claims inherit only the exact verified component
+boundary; a kyq budget lemma is not a proof of document conversion.

@@ -1,18 +1,18 @@
 # SPDX-License-Identifier: MPL-2.0
-# This workflow is managed by gh actions-lock.
-# // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-# SPDX-License-Identifier: MPL-2.0
-# Rust CI — thin wrapper calling the shared estate reusable in
-# hyperpolymath/standards. Configure once, propagate everywhere.
-# See: docs/CI-REUSABLE-WORKFLOWS.adoc in standards.
+# The shared workflow and transitive dependencies are recorded in actions.lock.
 name: Rust CI
 on:
   push:
     branches: [main, master]
   pull_request:
+  workflow_dispatch:
 permissions:
-  actions: read
   contents: read
+concurrency:
+  group: rust-ci-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   rust-ci:
-    uses: hyperpolymath/standards/.github/workflows/rust-ci-reusable.yml@412a7031577112b31ee287cc6060179d638d6500
+    uses: hyperpolymath/proven-cicd-and-workflows/.github/workflows/rust-ci.yml@9eb0bbf9bd80b7964ce5b9957e75821b3cd4a55b
+    with:
+      doc_packages: "-p formatrix-core -p docmatrix-data"

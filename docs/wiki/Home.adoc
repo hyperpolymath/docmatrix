@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= docmatrix
+
+Document conversion infrastructure, with a separate structured-data boundary shared with kyq.
+
+- https://github.com/hyperpolymath/docmatrix/blob/main/docs/SETUP.adoc[Setup and launcher]
+- https://github.com/hyperpolymath/docmatrix/blob/main/docs/ASSURANCE.adoc[Evidence and limits]
+- https://github.com/hyperpolymath/docmatrix/tree/main/docs/onboarding[AI onboarding]
+- https://github.com/hyperpolymath/docmatrix[Source and issues]
+
+These tracked wiki sources are reviewed with the implementation. Publishing a
+wiki page does not establish release or proof qualification.

@@ -55,7 +55,7 @@ perfective = 10   # % for SPDX headers, doc updates, formatting, style
 # Customise this per project — the template default is generic.
 
 [methodology.unique-strength]
-description = "{{PROJECT_UNIQUE_STRENGTH}}"
+description = "Document conversion through a shared prose AST and a separate bounded structured-data path with explicit canonical byte profiles."
 deepen-not-broaden = true
 
 # ============================================================================

@@ -6,18 +6,20 @@
 [workspace]
 resolver = "2"
 members = [
+    "crates/docmatrix-data",
     "crates/formatrix-core",
     "crates/formatrix-gui",
     "crates/formatrix-db",
     "crates/formatrix-pipeline",
 ]
+default-members = ["crates/formatrix-core", "crates/docmatrix-data"]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
 authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
 license = "MPL-2.0"
-repository = "https://github.com/hyperpolymath/formatrix-docs"
+repository = "https://github.com/hyperpolymath/docmatrix"
 keywords = ["document", "editor", "markdown", "asciidoc", "typst"]
 categories = ["text-processing", "gui"]
 

@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= docmatrix: test and benchmark acceptance
+
+Normative source: metadatastician/standards at
+b8f60511e76c9015d86990317162dce653c92fe1,
+3-practice/testing-and-benchmarking/TESTING-TAXONOMY.adoc.
+Shared execution helpers: proven-tests-and-benches parser-contract contribution
+https://github.com/hyperpolymath/proven-tests-and-benches/pull/104[PR 104].
+Ordinary Rust tests are Unproven evidence in that framework's terminology.
+
+The current standard has 18 categories and 14 aspects. Shared schema v2 remains
+17 x 14; it cannot certify the current taxonomy's 252 cells. The companion
+test-needs.tsv enumerates every coordinate as a pending assessment, preventing
+an unimplemented cell from being represented as covered. A suite passing does
+not clear this acceptance record.
+
+== Implemented evidence
+* formatrix-core retains its document parsing/rendering test suite.
+* docmatrix-data separately tests KYAML/JSON/Dhall conversion, semantic
+  round trips, duplicate rejection and refusal to collapse multiple documents.
+* CLI subprocess controls compare exact JCS/file bytes through all three
+  frontends and require exit 2 with no partial output on invalid input or usage.
+* Default members are formatrix-core and docmatrix-data. GUI, database and
+  pipeline packages are outside this portable gate and are NOT thereby qualified.
+
+
+== Required before broad estate admission
+
+* All three operating-system CI jobs and pinned shared Rust gates passing.
+* Exhaustive grammar/diagnostic contract work, mutation testing, sustained fuzz
+  campaigns, peak-memory and time-limit evidence, and release benchmark baselines.
+* Proof replay with planted false contracts; no whole-parser proof claim.
+* Clean launcher installation and upgrade/uninstall lifecycle tests.
+* Wolfi/Podman build, semantic and hostile-input smoke tests; Stapeln bundle,
+  signature, provenance and admission verification.
+* Hermetic Guix build with an adequate Rust toolchain and all Git inputs sealed.
+* Accessibility/usability and privacy/observability review of the actual CLI.
+* Read-only canaries across every discovered forge and local estate, followed
+  by format-specific migration proposals. Never rewrite a repository wholesale
+  or treat unrelated full-YAML/JSON dialect rejection as a repair instruction.
+
+Each pending coordinate needs executed evidence or a reasoned, reviewable N/A.
+No blanket N/A is assigned to make this matrix green.

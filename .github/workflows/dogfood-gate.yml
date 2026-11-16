@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Check for manifest files (.a2ml/.deed)
         id: detect
         run: |
@@ -35,7 +35,7 @@ jobs:
           fi
       - name: Validate DEED manifests
         if: steps.detect.outputs.count > 0
-        uses: hyperpolymath/deed-ecosystem/validate-action@aa4b836bd969df2bc58128cb8e3d20bbc88d5e79 # main
+        uses: hyperpolymath/deed-ecosystem/validate-action@44f9c9fc42901a55e0f489a40eabf4173e550d1d # main
         with:
           path: '.'
           strict: 'false'
@@ -64,7 +64,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Check for K9 files
         id: detect
         run: |
@@ -79,7 +79,7 @@ jobs:
           fi
       - name: Validate K9 contracts
         if: steps.detect.outputs.k9_count > 0
-        uses: hyperpolymath/k9-ecosystem/validate-action@89f3c2702f4f650a92aa7411502f38da06abd562 # main
+        uses: hyperpolymath/k9-ecosystem/validate-action@2155aa26a21758f2ba119f61bc7e0e1981c106fb # main
         with:
           path: '.'
           strict: 'false'
@@ -109,7 +109,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Scan for invisible characters
         id: lint
         run: |
@@ -170,7 +170,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Check for Groove manifest
         id: groove
         run: |
@@ -227,7 +227,7 @@ jobs:
     if: always()
     steps:
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Generate dogfooding scorecard
         run: |
           SCORE=0

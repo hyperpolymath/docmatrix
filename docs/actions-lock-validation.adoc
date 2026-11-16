@@ -1,0 +1,54 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= Actions lock validation
+
+Run `bash scripts/check-lock-sync.sh` from the repository root. The checker
+requires Bash 4 or later, jq, and Mike Farah yq v4. Lock CI installs yq 4.54.1
+from its official release and verifies its SHA-256 digest before use.
+
+YAML is parsed before comparison. Only job-level and step-level `uses` fields
+declare dependencies; an environment variable, action input or shell example
+named `uses` does not. Local composite actions are followed transitively.
+Missing local action metadata or local reusable workflow files fail the gate.
+
+Every workflow needs an explicit lock entry, including `[]` when it has no
+recorded dependencies. Recorded edges require structurally complete dependency
+records at every depth. Only reviewed schema versions `v0.0.2` and `v0.0.3`
+are accepted. Flow sequences, YAML quoting, comments and aliases are
+decoded by the parser; duplicate mapping keys and multiple documents are
+rejected. The reviewed schemas also constrain additional properties, canonical
+pins and the optional v0.0.3 hostname field. The schema source reviewed for
+these rules is `github/actions-lockfile` commit
+`54969dc7fee8b1e0e22b06bd4b591c44232f831c`.
+Repository names compare without case; the entire ref after the
+first `@` keeps its case.
+
+Symbolic coordinates must match the recorded ref. SHA coordinates must match
+the recorded commit; their ref must be recordable under the official tool's
+ref-name rules, or the existing reviewed caller-side exact-SHA representation
+proven by an actual job-level reusable call in this checkout. A composite
+record's `uses` list does not establish that identity. Closure repair resolves
+a symbolic tag for transitive reusable records without a local caller.
+Transitive edges use repository coordinates, and cycles fail verification even
+when every referenced record exists. Shared acyclic children remain valid.
+Unused dependency records also fail the reverse check. These estate locks run
+on GitHub.com, so an explicit hostname must be `github.com`; a syntactically
+valid foreign GHE hostname cannot be executed here.
+
+The estate's measured omitted-reusable-call policy remains in force: an
+unrecorded job-level reusable call does not itself require a caller-owned
+record. Its workflow still needs a key, and any recorded step or transitive
+edge still needs its dependency record. Reviewed remote closure coverage is
+read from `actions-lock.closure.tsv`; this gate does not invent that evidence.
+
+Use the official generator and reviewed closure/merge process to refresh a
+lock. Completion, closure repair and pruning consume the same parsed workflow
+fields. Closure repair discovers called workflows structurally and verifies
+the resulting closure before reporting success.
+Writers use the YAML encoder and verify a typed round trip before replacing
+the lock. This preserves apostrophes in refs and workflow names, comments and
+values outside the changed section. Flow-map comments on actual action steps
+remain available as moved-tag evidence; API ref parameters are URL-encoded.
+Their lock-writing format remains the generator's block mapping format.
+Review their diff and run the checker afterward; they never manufacture
+dependency digests or repository provenance. Failed local traversal leaves
+the previous lock unchanged.

@@ -1,0 +1,5 @@
+= Installation
+
+Use the repository's https://github.com/hyperpolymath/docmatrix/blob/main/docs/SETUP.adoc[setup guide] and `./launcher.sh --help`.
+
+The Rust candidate uses a locked Cargo graph and Rust 1.99.1. Linux, macOS and Windows with Git Bash are the intended launcher hosts. See the branch's assurance record for platforms actually checked. Guix and Stapeln qualification are tracked separately; the presence of their files is not a successful build receipt.

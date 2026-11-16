@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0,link="https://opensource.org/licenses/MPL-2.0"]
 = DocMatrix
 image:https://img.shields.io/badge/OpenSSF-Best_Practices-green?logo=openssourcesecurity[OpenSSF Best Practices,link="https://www.bestpractices.dev/en/projects/new?repo_url=https://github.com/hyperpolymath/docmatrix"]
 
@@ -16,9 +16,10 @@ image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,l
 
 == License & Philosophy
 
-This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
-
-Philosophy: **Palimpsest**. The MPL-2.0 (PMPL) text is provided in `license/MPL-2.0.txt`, and the canonical source is the palimpsest-license repository.
+The Rust package manifests declare `MPL-2.0`. The repository also carries
+Palimpsest terms in `LICENSES/PMPL-1.0.txt`; these are distinct texts, and this
+integration does not change either grant. Licence reconciliation remains an
+explicit release requirement rather than a tooling-driven relicensing claim.
 
 DocMatrix is multi-format document conversion and precision infrastructure for
 the wider document suite. The tabbed multi-format viewer/editor is the separate
@@ -29,6 +30,26 @@ ForthWall is a proposed capability-bounded Forth execution layer for critical
 precision operations. It is not currently implemented or proved.
 
 == Features
+
+The portable Rust candidate adds `docmatrix convert --from kyaml|json|dhall
+--to kyaml|json|jcs [FILE|-]`, sharing the kyq parser and I-JSON/JCS boundary.
+Structured data does not pass through the prose AST. See `docs/ASSURANCE.adoc`
+and `docs/TEST-NEEDS.adoc` for evidence and unqualified package boundaries.
+
+Start with `./launcher.sh --help`, `just setup`, then `just check`.
+The default Cargo members are `formatrix-core` and `docmatrix-data`; selecting
+GUI, database or pipeline packages requires their own dependencies and tests.
+
+[[ai-install]]
+=== AI-assisted setup
+
+[source,text]
+----
+Set up DocMatrix from https://github.com/hyperpolymath/docmatrix; follow docs/AI_INSTALLATION_GUIDE.adoc, read the warm-up for my role, run the real checks and report unresolved acceptance gates without claiming they passed.
+----
+
+Warm-ups cover users, developers, platform maintainers and theorists under
+`docs/onboarding/`. Maintained wiki sources live in `docs/wiki/`.
 
 * *Current core* - Parse and render supported formats through a unified AST
 * *Current interfaces* - Rust conversion APIs plus a C ABI/FFI surface
