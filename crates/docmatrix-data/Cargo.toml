@@ -13,7 +13,10 @@ name = "docmatrix"
 path = "src/main.rs"
 
 [dependencies]
-kyq = { git = "https://github.com/metadatastician/kyq", rev = "006707ebcd072720e62599f163471696b0f19c8e" }
+kyq = { git = "https://github.com/metadatastician/kyq", rev = "128cb50b62d77af171d351611e2229313c29ed7a" }
+
+[target.'cfg(unix)'.dependencies]
+rlimit = "0.11"
 
 [dev-dependencies]
 proven-evidence = { git = "https://github.com/hyperpolymath/proven-tests-and-benches", rev = "2e978736732651098022169a6d1680e771eefc3e" }

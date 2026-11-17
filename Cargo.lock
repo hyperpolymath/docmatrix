@@ -1080,6 +1080,7 @@ version = "0.1.0"
 dependencies = [
  "kyq",
  "proven-evidence",
+ "rlimit",
 ]
 
 [[package]]
@@ -2097,7 +2098,7 @@ dependencies = [
 [[package]]
 name = "kyq"
 version = "0.2.0"
-source = "git+https://github.com/metadatastician/kyq?rev=006707ebcd072720e62599f163471696b0f19c8e#006707ebcd072720e62599f163471696b0f19c8e"
+source = "git+https://github.com/metadatastician/kyq?rev=128cb50b62d77af171d351611e2229313c29ed7a#128cb50b62d77af171d351611e2229313c29ed7a"
 dependencies = [
  "ijson-jcs",
  "kyq-bounds",
@@ -2110,7 +2111,7 @@ dependencies = [
 [[package]]
 name = "kyq-bounds"
 version = "0.1.0"
-source = "git+https://github.com/metadatastician/kyq?rev=006707ebcd072720e62599f163471696b0f19c8e#006707ebcd072720e62599f163471696b0f19c8e"
+source = "git+https://github.com/metadatastician/kyq?rev=128cb50b62d77af171d351611e2229313c29ed7a#128cb50b62d77af171d351611e2229313c29ed7a"
 dependencies = [
  "creusot-std",
 ]
@@ -3348,6 +3349,15 @@ dependencies = [
  "libc",
  "untrusted",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "rlimit"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f35ee2729c56bb610f6dba436bf78135f728b7373bdffae2ec815b2d3eb98cc3"
+dependencies = [
+ "libc",
 ]
 
 [[package]]

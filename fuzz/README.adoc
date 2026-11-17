@@ -7,8 +7,18 @@ to KYAML and reparsing; JCS must be idempotent and JSON must add exactly one LF.
 Invalid input seeds exercise duplicate-key and Dhall type rejection. Each target
 has a seed corpus, a 16 KiB mutation limit, a ten-second per-input timeout and a
 2 GiB process memory ceiling. The harness accepts up to 64 KiB; production size
-limits have separate boundary tests. Dhall normalization time remains an open
-production isolation obligation.
+limits have separate boundary tests.
+
+Dhall evaluation (serde_dhall 0.13) is exponential in nesting depth: depth 8
+costs about 50 ms, depth 14 about 40 s. The CLI bounds it at the process
+boundary: Dhall runs in a worker under a wall-clock deadline and, on Unix,
+`RLIMIT_CPU` and `RLIMIT_AS` (`docmatrix_data::isolate`, tested in
+`crates/docmatrix-data/tests/cli.rs`). The in-process `dhall` target checks
+value semantics only, so it skips inputs nested deeper than eight brackets.
+
+`check` returns a `Violation` instead of panicking. The target binaries turn a
+violation into the abort libFuzzer records. Every file under `regressions/` is
+replayed by the seed tests; see `regressions/README.adoc` for each finding.
 
 Run `cargo +nightly fuzz run kyaml` (or `json`, `jcs`, `dhall`) from the repository root.
 Seed checks run with `cargo test --locked --manifest-path fuzz/Cargo.toml --lib`.

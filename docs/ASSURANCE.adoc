@@ -12,6 +12,13 @@ JSON plus LF, or JCS bytes without LF. Multiple documents are rejected when
 the selected output can represent only one. Presentation comments and anchor
 spellings are not preserved. Structured data never enters the prose AST.
 
+Dhall evaluation time is exponential in nesting depth in serde_dhall 0.13. The
+CLI runs Dhall in a worker process bounded by a wall-clock deadline on every
+platform and by `RLIMIT_CPU` and `RLIMIT_AS` on Unix; any limit is reported as
+`RESOURCE_LIMIT` (tested-only: `crates/docmatrix-data/tests/cli.rs`). The
+library function `convert` does not bound Dhall; callers with untrusted Dhall
+use `isolate::convert_isolated`. Windows relies on the wall-clock deadline alone.
+
 Run cargo test --locked --all-targets, cargo test --locked --doc and
 cargo clippy --locked --all-targets -- -D warnings for the portable package set.
 The portable Windows tests and warnings-denied Clippy passed on 2026-11-16
@@ -29,7 +36,7 @@ live platform CI, offline Guix builds with a sufficient compiler, and signed
 Stapeln admission. Proof claims inherit only the exact verified component
 boundary; a kyq budget lemma is not a proof of document conversion.
 
-The current follow-up pins kyq 006707ebcd072720e62599f163471696b0f19c8e and
+The current follow-up pins kyq 128cb50b62d77af171d351611e2229313c29ed7a and
 ijson-jcs c7091491ad48b64c19ee9bb754a28186f8e94042. Hosted validation is pending
 for this revision. Earlier local results above do not cover the new reader.
 The resource coordinator holds local heavy builds, proof runs and campaigns.

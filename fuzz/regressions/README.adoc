@@ -1,0 +1,50 @@
+// SPDX-License-Identifier: MPL-2.0
+= Fuzz regression inputs
+
+Each file is a libFuzzer finding kept byte-for-byte and named by its SHA-1, as
+libFuzzer writes it. `src/lib.rs` replays every file under `<format>/` through
+`check`, so adding a file here is enough to keep it covered.
+
+[cols="3,2,5"]
+|===
+|Input |Found by |Root cause and fix
+
+|`kyaml/crash-5d852488d72c6abfe71fdfc935ab70d80948e3ce`
+|ClusterFuzzLite PR run, AddressSanitizer, 2026-11-16
+|kyq `kyaml.rs:640` sliced `chars[m.index()..]` past the input. yaml-rust2
+advances `Marker::index` by UTF-8 bytes across block-scalar content, so
+multi-byte text pushed later markers beyond the end. Fixed in kyq by deriving
+offsets from line and column (metadatastician/kyq#28).
+
+|`kyaml/crash-9bdd6d36e943b583195db26844aca74a3aa3a72e`
+|Local ASan campaign, 2026-11-17
+|The string `... ?` was emitted plain and read back as a document-end marker.
+kyq now quotes every string that begins with `---` or `...`.
+
+|`json/crash-8a57cef6…`, `jcs/crash-e4ee8ee1…`, `dhall/crash-b54e039b…`
+|Local ASan campaign, 2026-11-17
+|U+007F was emitted raw inside quoted strings and rejected by the reader.
+Fixed by the kyq emitter rewrite on its integration branch (`82dd049`).
+
+|`json/crash-2bfa572b…`, `jcs/crash-4e68fe5b…`
+|Local ASan campaign, 2026-11-17
+|U+FEFF was emitted raw: stripped as a byte-order mark at the start of a
+stream (silent value change), rejected elsewhere. kyq now escapes every
+character its stream grammar rejects, checked exhaustively over all Unicode
+scalar values.
+
+|`jcs/crash-b41b652b16ce3c0b2e384f6f095917cecce276bf`
+|Local ASan campaign, 2026-11-17
+|Oracle defect, not a converter defect: the JSON key `<<` has no KYAML
+spelling (kyq's contract refuses the YAML 1.1 merge key however it is
+quoted), so `UNSUPPORTED_MERGE_KEY` is a documented target rejection. The
+oracle now lists its accepted rejections in `KYAML_TARGET_REJECTIONS`.
+
+|`dhall/timeout-442220421549a0db1dc4a9ae06d5c446ab60d7d5`
+|Local ASan campaign, 2026-11-17
+|serde_dhall 0.13 is exponential in nesting depth. The CLI evaluates Dhall in
+a worker process under a wall-clock deadline and, on Unix, CPU and
+address-space rlimits (`docmatrix_data::isolate`). The in-process fuzz target
+scopes Dhall to nesting depth 8, so this input is outside its scope; the
+bound itself is tested in `crates/docmatrix-data/tests/cli.rs`.
+|===

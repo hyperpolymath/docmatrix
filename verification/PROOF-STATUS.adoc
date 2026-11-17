@@ -62,7 +62,7 @@ successful bounded testing as universal validity.
 
 == Imported proof boundary
 
-The adapter pins kyq to `006707ebcd072720e62599f163471696b0f19c8e`, which pins
+The adapter pins kyq to `128cb50b62d77af171d351611e2229313c29ed7a`, which pins
 ijson-jcs to `c7091491ad48b64c19ee9bb754a28186f8e94042`. kyq's production
 node-budget decrement has a Creusot/Pearlite proof; its Verus arithmetic model
 is separately verified. Consult kyq's `verification/PROOF-STATUS.adoc` and
