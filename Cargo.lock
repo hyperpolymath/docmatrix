@@ -1081,6 +1081,7 @@ dependencies = [
  "kyq",
  "proven-evidence",
  "rlimit",
+ "serde_json",
 ]
 
 [[package]]

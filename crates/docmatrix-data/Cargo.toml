@@ -14,6 +14,7 @@ path = "src/main.rs"
 
 [dependencies]
 kyq = { git = "https://github.com/metadatastician/kyq", rev = "128cb50b62d77af171d351611e2229313c29ed7a" }
+serde_json.workspace = true
 
 [target.'cfg(unix)'.dependencies]
 rlimit = "0.11"

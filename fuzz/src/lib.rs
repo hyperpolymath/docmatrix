@@ -366,6 +366,18 @@ mod tests {
         assert_eq!(replayed, 9);
     }
 
+    /// The Dhall DEL fixture is a text literal whose braces exceed the depth
+    /// scope, so the replay above skips it. Check its value directly.
+    #[test]
+    fn dhall_del_regression_round_trips() {
+        let data =
+            include_bytes!("../regressions/dhall/crash-b54e039b714904b596734594cc64ff11996a60dc");
+        assert!(nesting_depth(data) > MAX_DHALL_NESTING);
+        let canonical = convert(data, Format::Dhall, Output::Jcs).unwrap();
+        assert!(canonical.contains(&0x7f));
+        check_canonical(data, Format::Dhall, canonical).unwrap();
+    }
+
     #[test]
     fn dhall_scope_is_nesting_depth_only() {
         assert_eq!(nesting_depth(b""), 0);

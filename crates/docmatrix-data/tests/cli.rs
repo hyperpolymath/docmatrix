@@ -216,6 +216,53 @@ mod unix_limits {
         assert_eq!(error.code, "RESOURCE_LIMIT", "{}", error.message);
     }
 
+    /// A caller's tighter hard limits must be kept, never raised (EPERM).
+    #[test]
+    fn tighter_inherited_limits_are_respected() {
+        let script = format!(
+            "ulimit -t 5 && {} exec \"$0\" __convert-worker dhall jcs 10 2147483648",
+            if cfg!(target_os = "linux") {
+                "ulimit -v 1048576 &&"
+            } else {
+                ""
+            }
+        );
+        let mut child = Command::new("sh")
+            .args(["-c", &script, env!("CARGO_BIN_EXE_docmatrix")])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
+        child.stdin.take().unwrap().write_all(b"{ a = 1 }").unwrap();
+        let out = child.wait_with_output().unwrap();
+        assert!(
+            out.status.success(),
+            "{}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+        assert_eq!(out.stdout, br#"{"a":1}"#);
+    }
+
+    /// An error report bigger than the 8 MiB conversion limit keeps its code
+    /// and path across the process boundary.
+    #[test]
+    fn oversized_error_reports_cross_the_boundary() {
+        let key = "k".repeat(kyq::MAX_INPUT_BYTES - 6);
+        let input = format!(r#"{{"{key}":0}}"#);
+        assert_eq!(input.len(), kyq::MAX_INPUT_BYTES);
+        let error = convert_isolated(
+            worker(),
+            input.as_bytes(),
+            Format::Json,
+            DataOutput::Kyaml,
+            Limits::default(),
+        )
+        .unwrap_err();
+        assert_eq!(error.code, "KEY_LIMIT", "{}", error.message);
+        assert_eq!(error.path, key);
+    }
+
     #[test]
     fn isolated_and_in_process_conversion_agree() {
         for (input, format) in [

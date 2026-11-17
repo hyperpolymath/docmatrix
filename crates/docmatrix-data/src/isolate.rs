@@ -31,6 +31,11 @@ pub const WORKER_ARG: &str = "__convert-worker";
 /// Worker exit status for a conversion error written to stderr.
 const CONVERSION_ERROR: u8 = 3;
 
+/// Largest worker error report the parent reads. A report can carry a key as
+/// its path, and JSON escaping can grow each input byte to six, so this is
+/// sized from the conversion input limit rather than equal to it.
+const REPORT_LIMIT: u64 = 6 * kyq::MAX_INPUT_BYTES as u64 + 64 * 1024;
+
 /// Resource budget for one isolated conversion.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Limits {
@@ -128,8 +133,9 @@ fn encode_error(e: &Error) -> String {
 }
 
 fn decode_error(bytes: &[u8]) -> Option<Error> {
-    let documents = kyq::parse(bytes, Format::Json).ok()?;
-    let crate::Value::Object(map) = documents.first()? else {
+    // Transport decoding is not conversion: kyq's 8 MiB input limit would
+    // reject a report that quotes a near-limit key, so use serde_json directly.
+    let crate::Value::Object(map) = serde_json::from_slice::<crate::Value>(bytes).ok()? else {
         return None;
     };
     let text = |key: &str| map.get(key)?.as_str().map(str::to_owned);
@@ -163,7 +169,7 @@ pub fn convert_isolated(
         .stderr(Stdio::piped())
         .spawn()
         .map_err(|e| error("WORKER_START", format!("cannot start worker: {e}")))?;
-    let (Some(mut stdin), Some(mut stdout), Some(mut stderr)) =
+    let (Some(mut stdin), Some(mut stdout), Some(stderr)) =
         (child.stdin.take(), child.stdout.take(), child.stderr.take())
     else {
         let _ = child.kill();
@@ -182,7 +188,10 @@ pub fn convert_isolated(
     });
     let err = thread::spawn(move || {
         let mut bytes = Vec::new();
-        stderr.read_to_end(&mut bytes).map(|_| bytes)
+        stderr
+            .take(REPORT_LIMIT)
+            .read_to_end(&mut bytes)
+            .map(|_| bytes)
     });
     let deadline = Instant::now() + limits.wall;
     let status = loop {
@@ -227,16 +236,29 @@ pub fn convert_isolated(
     }
 }
 
+/// Lower a resource limit to `budget` without ever raising it: a tighter
+/// limit inherited from the caller is kept, and an unlimited one is replaced.
+#[cfg(unix)]
+fn lower_limit(resource: rlimit::Resource, name: &str, budget: u64) -> Result<(), String> {
+    let (soft, hard) = resource.get().map_err(|e| format!("{name}: {e}"))?;
+    let target = clamp_limit(budget, soft, hard);
+    resource
+        .set(target, target)
+        .map_err(|e| format!("{name}: {e}"))
+}
+
+/// The limit to apply: never above the inherited soft or hard limit.
+/// `rlimit::INFINITY` compares greater than any finite budget.
+#[cfg(unix)]
+fn clamp_limit(budget: u64, soft: u64, hard: u64) -> u64 {
+    budget.min(soft).min(hard)
+}
+
 #[cfg(unix)]
 fn apply_limits(cpu_seconds: u64, address_space_bytes: u64) -> Result<(), String> {
-    use rlimit::Resource;
-    Resource::CPU
-        .set(cpu_seconds, cpu_seconds)
-        .map_err(|e| format!("RLIMIT_CPU: {e}"))?;
+    lower_limit(rlimit::Resource::CPU, "RLIMIT_CPU", cpu_seconds)?;
     #[cfg(target_os = "linux")]
-    Resource::AS
-        .set(address_space_bytes, address_space_bytes)
-        .map_err(|e| format!("RLIMIT_AS: {e}"))?;
+    lower_limit(rlimit::Resource::AS, "RLIMIT_AS", address_space_bytes)?;
     #[cfg(not(target_os = "linux"))]
     let _ = address_space_bytes;
     Ok(())
@@ -323,6 +345,33 @@ mod tests {
                 original.path
             )
         );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn limits_are_only_ever_lowered() {
+        let unlimited = rlimit::INFINITY;
+        assert_eq!(clamp_limit(10, unlimited, unlimited), 10);
+        assert_eq!(clamp_limit(10, 5, unlimited), 5);
+        assert_eq!(clamp_limit(10, 5, 7), 5);
+        assert_eq!(clamp_limit(10, 20, 7), 7);
+        assert_eq!(clamp_limit(3, 5, 7), 3);
+    }
+
+    #[test]
+    fn reports_larger_than_the_conversion_limit_still_decode() {
+        let key = "k".repeat(kyq::MAX_INPUT_BYTES);
+        let report = Error {
+            code: "KEY_LIMIT",
+            message: "KYAML implicit keys cannot exceed 1024 characters".into(),
+            line: 1,
+            column: 1,
+            path: key.clone(),
+        };
+        let encoded = encode_error(&report);
+        assert!(encoded.len() > kyq::MAX_INPUT_BYTES);
+        let decoded = decode_error(encoded.as_bytes()).unwrap();
+        assert_eq!((decoded.code, decoded.path), ("KEY_LIMIT", key));
     }
 
     #[test]
