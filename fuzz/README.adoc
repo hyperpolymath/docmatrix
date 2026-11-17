@@ -11,8 +11,8 @@ limits have separate boundary tests.
 
 Dhall evaluation (serde_dhall 0.13) is exponential in nesting depth: depth 8
 costs about 50 ms, depth 14 about 40 s. The CLI bounds it at the process
-boundary: Dhall runs in a worker under a wall-clock deadline and, on Unix,
-`RLIMIT_CPU` and `RLIMIT_AS` (`docmatrix_data::isolate`, tested in
+boundary: Dhall runs in a worker under a wall-clock deadline, `RLIMIT_CPU` on
+Unix and `RLIMIT_AS` on Linux (`docmatrix_data::isolate`, tested in
 `crates/docmatrix-data/tests/cli.rs`). The in-process `dhall` target checks
 value semantics only, so it skips inputs nested deeper than eight brackets.
 

@@ -200,7 +200,9 @@ mod unix_limits {
         assert!(started.elapsed() < Duration::from_secs(20));
     }
 
-    /// Reading 8 MiB of input cannot fit in a 16 MiB address space.
+    /// Reading 8 MiB of input cannot fit in a 16 MiB address space. The limit
+    /// is applied on Linux only; macOS rejects lowering RLIMIT_AS.
+    #[cfg(target_os = "linux")]
     #[test]
     fn address_space_rlimit_ends_the_worker() {
         let limits = Limits {

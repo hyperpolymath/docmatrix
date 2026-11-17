@@ -14,7 +14,8 @@ spellings are not preserved. Structured data never enters the prose AST.
 
 Dhall evaluation time is exponential in nesting depth in serde_dhall 0.13. The
 CLI runs Dhall in a worker process bounded by a wall-clock deadline on every
-platform and by `RLIMIT_CPU` and `RLIMIT_AS` on Unix; any limit is reported as
+platform, by `RLIMIT_CPU` on Unix and by `RLIMIT_AS` on Linux (macOS rejects
+lowering it, so memory is not capped there); any limit is reported as
 `RESOURCE_LIMIT` (tested-only: `crates/docmatrix-data/tests/cli.rs`). The
 library function `convert` does not bound Dhall; callers with untrusted Dhall
 use `isolate::convert_isolated`. Windows relies on the wall-clock deadline alone.

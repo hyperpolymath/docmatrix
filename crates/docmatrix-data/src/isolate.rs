@@ -9,9 +9,10 @@
 //!
 //! * the parent enforces a wall-clock deadline and kills the child, on every
 //!   platform;
-//! * on Unix the child also lowers its own CPU-time and address-space limits
-//!   before reading input, so it cannot outlive or outgrow its budget even if
-//!   the parent disappears.
+//! * on Unix the child also lowers its own CPU-time limit before reading
+//!   input, so it cannot outlive its budget even if the parent disappears;
+//! * on Linux it lowers its address-space limit too. macOS rejects lowering
+//!   `RLIMIT_AS` (`EINVAL`), so there the memory budget is not enforced.
 //!
 //! Any limit that ends the worker is reported as `RESOURCE_LIMIT`. Errors from
 //! the conversion itself cross the boundary unchanged.
@@ -35,9 +36,9 @@ const CONVERSION_ERROR: u8 = 3;
 pub struct Limits {
     /// Wall-clock deadline enforced by the parent.
     pub wall: Duration,
-    /// CPU seconds the worker may use (Unix `RLIMIT_CPU`).
+    /// CPU seconds the worker may use (`RLIMIT_CPU`, all Unix targets).
     pub cpu_seconds: u64,
-    /// Address space the worker may map (Unix `RLIMIT_AS`).
+    /// Address space the worker may map (`RLIMIT_AS`, Linux only).
     pub address_space_bytes: u64,
 }
 
@@ -227,14 +228,22 @@ pub fn convert_isolated(
 }
 
 #[cfg(unix)]
-fn apply_limits(cpu_seconds: u64, address_space_bytes: u64) -> std::io::Result<()> {
+fn apply_limits(cpu_seconds: u64, address_space_bytes: u64) -> Result<(), String> {
     use rlimit::Resource;
-    Resource::CPU.set(cpu_seconds, cpu_seconds)?;
-    Resource::AS.set(address_space_bytes, address_space_bytes)
+    Resource::CPU
+        .set(cpu_seconds, cpu_seconds)
+        .map_err(|e| format!("RLIMIT_CPU: {e}"))?;
+    #[cfg(target_os = "linux")]
+    Resource::AS
+        .set(address_space_bytes, address_space_bytes)
+        .map_err(|e| format!("RLIMIT_AS: {e}"))?;
+    #[cfg(not(target_os = "linux"))]
+    let _ = address_space_bytes;
+    Ok(())
 }
 
 #[cfg(not(unix))]
-fn apply_limits(_cpu_seconds: u64, _address_space_bytes: u64) -> std::io::Result<()> {
+fn apply_limits(_cpu_seconds: u64, _address_space_bytes: u64) -> Result<(), String> {
     // The parent's wall-clock deadline is the bound on this platform.
     Ok(())
 }
@@ -260,7 +269,7 @@ pub fn run_worker(args: &[String]) -> ExitCode {
         return fail(error("WORKER_PROTOCOL", "invalid worker arguments"));
     };
     if let Err(e) = apply_limits(cpu, memory) {
-        return fail(error("WORKER_LIMITS", format!("cannot apply limits: {e}")));
+        return fail(error("WORKER_LIMITS", format!("cannot apply {e}")));
     }
     let mut input = Vec::new();
     if let Err(e) = std::io::stdin()

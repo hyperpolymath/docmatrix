@@ -34,7 +34,7 @@ precision operations. It is not currently implemented or proved.
 The portable Rust candidate adds `docmatrix convert --from kyaml|json|jcs|dhall
 --to kyaml|json|jcs [--dhall-timeout SECONDS] [FILE|-]`, sharing the kyq parser
 and I-JSON/JCS boundary. Dhall is evaluated in a resource-limited worker process
-(default 10 s; CPU and address-space rlimits on Unix).
+(default 10 s; a CPU rlimit on Unix and an address-space rlimit on Linux).
 Structured data does not pass through the prose AST. See `docs/ASSURANCE.adoc`
 and `docs/TEST-NEEDS.adoc` for evidence and unqualified package boundaries.
 
