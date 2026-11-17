@@ -6,18 +6,21 @@
 [workspace]
 resolver = "2"
 members = [
+    "crates/docmatrix-data",
     "crates/formatrix-core",
     "crates/formatrix-gui",
     "crates/formatrix-db",
     "crates/formatrix-pipeline",
 ]
+default-members = ["crates/formatrix-core", "crates/docmatrix-data"]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.99"
 authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
 license = "MPL-2.0"
-repository = "https://github.com/hyperpolymath/formatrix-docs"
+repository = "https://github.com/hyperpolymath/docmatrix"
 keywords = ["document", "editor", "markdown", "asciidoc", "typst"]
 categories = ["text-processing", "gui"]
 
@@ -35,7 +38,7 @@ asciidoc-parser = "0.14"
 arangors = "0.6"
 
 # Pipeline
-nickel-lang-core = "0.10"
+nickel-lang-core = "0.19"
 
 # External tools
 tesseract-rs = "0.3"
@@ -65,3 +68,8 @@ lto = true
 codegen-units = 1
 strip = true
 opt-level = "z"
+
+# Nickel 0.19's published vector crate still requires vulnerable
+# imbl-sized-chunks 0.1. Pin the upstream fix using patched 0.2 until released.
+[patch.crates-io]
+nickel-lang-vector = { git = "https://github.com/nickel-lang/nickel", rev = "75dafe94bce429d0b54e1b900c7d84d6e6ab59aa" }

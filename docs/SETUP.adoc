@@ -1,0 +1,58 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= docmatrix setup and operation
+
+Document conversion infrastructure, with a separate structured-data boundary shared with kyq.
+
+== Native installation
+
+Install Git, Rust/rustup and Bash (Git Bash on Windows), then clone
+https://github.com/hyperpolymath/docmatrix. The repository's rust-toolchain.toml and Cargo.lock
+pin compilation. Install the native linker toolchain first: `build-essential`
+on Ubuntu, or Xcode Command Line Tools (`xcode-select --install`) on macOS.
+Run cargo build --locked --release, then
+target/release/docmatrix --help (append .exe on Windows).
+Use ./launcher.sh --run --help from Bash or just run --help.
+Paths containing spaces are supported by the launcher.
+
+For managed development, install mise, review mise.toml, run mise trust,
+and install GNU coreutils (`brew install coreutils` on macOS) for bounded
+provisioning commands; its `gtimeout` name is supported. Then run
+mise install, and just doctor. just setup calls the shared standards
+provisioning engine. Diagnostics return failure for unmet requirements.
+No service, port, credentials or database is required for the portable CLI.
+
+== Verification
+
+just check runs formatting, strict clippy, ordinary tests, documentation
+examples and documentation generation. just bench measures release builds.
+Retain compiler version, host, source revision and timings together.
+Windows, Linux and macOS execution must each have their own receipt.
+
+== Guix
+
+guix time-machine -C channels.scm -- shell -m manifest.scm supplies the
+declared development environment. Entering this shell does not install or
+activate Rust. Run `mise install`, then build with `mise exec -- cargo build --locked --release`
+or activate mise in the shell before building. The Rust package uses the canonical cargo
+template and loads build/guix/crates.scm, generated from Cargo.lock by
+bash build/just/provision-lib.sh crates-scm.
+Compiled Guix packaging is not qualified until all registry and pinned git
+dependencies and a sufficiently new Rust compiler build offline.
+The inspected local Guix provides Rust 1.93; the native toolchain is 1.99.1.
+See docs/ASSURANCE.adoc for this outstanding acceptance item.
+
+== Containers
+
+just container-build builds a Wolfi runtime with Podman.
+just container-run --help uses a read-only root, no network and no capabilities.
+Only explicitly mounted files are visible. Use stdin for simple conversions.
+The OCI image alone is not a signed Stapeln .ctp bundle: attestations,
+SBOM, signatures and strict runtime admission are separate release requirements.
+
+== OPSM and removal
+
+opsm install https://github.com/hyperpolymath/docmatrix.git --registry git selects the git adapter;
+there is no claim of a published registry package. Follow the OPSM repository's
+own installation guide if it is absent. Removing this checkout removes this
+source installation; remove installed binaries separately. No global state
+is deleted by the launcher.

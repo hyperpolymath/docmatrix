@@ -1,0 +1,5 @@
+= Assurance
+
+The https://github.com/hyperpolymath/docmatrix/blob/main/docs/TEST-NEEDS.adoc[acceptance record] distinguishes executable tests, formal proofs, packaging and estate admission. The https://github.com/hyperpolymath/docmatrix/blob/main/docs/test-needs.tsv[252-coordinate matrix] is pending assessment, not a completeness claim.
+
+Read the user, developer, platform-maintainer or theorist warm-up under `docs/onboarding/` before AI-assisted work. Keep data and private estate inventories local.

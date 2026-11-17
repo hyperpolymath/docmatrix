@@ -1,0 +1,76 @@
+# SPDX-License-Identifier: MPL-2.0
+name: Lock Sync Gate
+
+# Estate-wide template from metadatastician/standards for issue #968.
+# Adapted from metadatastician/burble#224.
+#
+# Fails any pull request whose .github/workflows/actions.lock has drifted from
+# the workflow YAML. That drift is not cosmetic: GitHub refuses such a run at
+# startup, creating ZERO jobs, and reports only "This run likely failed because
+# of a workflow file issue."
+#
+# This workflow deliberately carries NO `uses:` of its own. It checks out by
+# calling git in a `run:` step instead of using actions/checkout, so it has no
+# lockfile entry to go stale and is structurally immune to the very failure it
+# detects. Do not add a `uses:` to this file.
+#
+# There is also no `paths:` filter, on purpose: a filtered workflow never
+# reports on pull requests that miss the filter, which deadlocks any branch
+# ruleset that requires this check.
+#
+# For the 39 repos with step-level desync (metadatastician/standards#968):
+#   - 37 have latest run conclusion = startup_failure
+#   - 2 are stale (will die on next run)
+# The cure: adopt this gate, then regenerate the lockfile with:
+#   gh actions-lock --no-migrate-local-actions --no-narrow
+# And verify with:
+#   gh actions-lock --verify-local
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lock-sync-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lock-sync:
+    name: actions.lock is in sync with the workflow YAML
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out without actions/checkout
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          git init -q .
+          git remote add origin "https://github.com/${REPO}.git"
+          git fetch -q --depth 1 origin "${SHA}"
+          git checkout -q FETCH_HEAD
+          echo "checked out ${SHA}"
+
+      - name: Install pinned YAML parser
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/lock-tools"
+          curl --proto '=https' --proto-redir '=https' --tlsv1.2 -fsSL --retry 3 https://github.com/mikefarah/yq/releases/download/v4.54.1/yq_linux_amd64 -o "$RUNNER_TEMP/lock-tools/yq"
+          echo "8e34fc298390875de416e6a4afcb8cabeceb25d9aa8506c1a2f9353cf702ea5f  $RUNNER_TEMP/lock-tools/yq" | sha256sum --check
+          chmod u+x "$RUNNER_TEMP/lock-tools/yq"
+          echo "$RUNNER_TEMP/lock-tools" >> "$GITHUB_PATH"
+
+      - name: Exercise lock verifier positive and negative controls
+        run: bash tests/check-lock-sync-controls.sh
+
+      - name: Verify lockfile synchronisation
+        run: |
+          set -euo pipefail
+          test -x scripts/check-lock-sync.sh \
+            || { echo "::error::scripts/check-lock-sync.sh missing or not executable"; exit 1; }
+          ./scripts/check-lock-sync.sh

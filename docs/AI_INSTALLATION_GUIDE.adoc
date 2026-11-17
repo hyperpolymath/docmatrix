@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= AI installation guide for docmatrix
+
+Read README, docs/SETUP.adoc, docs/ASSURANCE.adoc and the selected warm-up.
+Inspect the host, existing tools and repository changes before acting.
+Use the pinned source and dependencies. Run the real build and tests, then
+`bash ./launcher.sh --doctor` from the checkout. Explain each failure using its diagnostic and actual log.
+Never substitute a placeholder output or call a missing tool a pass.
+Do not request credentials for local parsing. Keep input documents local.
+Do not run Dhall imports or repository scripts obtained from input data.
+Ask only for missing deployment requirements that cannot be inferred locally.
+Report native checks, container checks, proof checks and Guix build separately.
+Do not rename repositories, merge changes or publish releases as a setup step.

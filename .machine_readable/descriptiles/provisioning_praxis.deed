@@ -1,0 +1,15 @@
+;; SPDX-License-Identifier: MPL-2.0
+(praxis-deed
+  :schema-version "1.0.0"
+  :canonical-name "docmatrix-provisioning"
+  :name "docmatrix"
+  :repo "hyperpolymath/docmatrix"
+  :version "0.1.0"
+  :archetype "tool"
+  :languages "rust"
+  :build "cargo build --locked"
+  :test "cargo test --locked --all-targets"
+  :bench "cargo bench --locked"
+  :lint "cargo clippy --locked --all-targets -- -D warnings"
+  :run "cargo run --locked --bin docmatrix -- --help"
+  :ai-say-it "Set up docmatrix from https://github.com/hyperpolymath/docmatrix; follow docs/AI_INSTALLATION_GUIDE.adoc and report actual checks and unresolved requirements.")

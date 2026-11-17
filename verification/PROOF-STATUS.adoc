@@ -1,0 +1,84 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= DocMatrix proof scopes and obligations
+:revdate: 2026-11-16
+
+First-party implementation uses Rust, Creusot implementation verification,
+Pearlite contracts and complementary Verus specifications/proofs, following
+`metadatastician/standards@305743d271bac04cf271a792b703a6379e29588b`,
+`3-practice/PROOF-POLICY.adoc` sections 1.2, 5 and 6.
+A scope assignment is not a completed verification run. OPEN means work remains;
+none of the DocMatrix-owned scopes below has a successful formal receipt yet.
+
+== Component ledger
+
+[cols="1,2,3,3",options="header"]
+|===
+|Scope |Owning source |Creusot and Pearlite obligation |Complementary Verus obligation
+|DATA-CONVERT — OPEN
+|`crates/docmatrix-data/src/lib.rs`
+|Specify success/error propagation and the exact JSON newline/JCS byte boundary;
+prove preservation of kyq's canonical meaning under stated dependency assumptions.
+|Model the three output representations and prove conversion laws; establish
+correspondence with the production wrapper before promoting model results.
+|DATA-CLI — OPEN
+|`crates/docmatrix-data/src/main.rs`
+|Specify argument parsing, bounded reads, pre-output validation and exit behavior;
+separate fallible OS writes from conversion correctness.
+|Model CLI states and rejection transitions, including malformed arguments,
+multidocument input and resource-limit errors.
+|CORE-AST — OPEN
+|`crates/formatrix-core/src/ast.rs`, `traits.rs`
+|State AST validity, traversal/count bounds and identity-conversion contracts.
+|Model AST equivalence, metadata preservation and conversion composition.
+|PROSE-FORMATS — OPEN
+|`crates/formatrix-core/src/formats/`
+|Allocate parser/renderer contracts for Markdown, Djot, Org, reStructuredText,
+Typst, AsciiDoc and plain text, explicitly identifying unsupported constructs.
+|Prove representation relations for each supported subset. Universal losslessness
+is not established by round-tripping simple examples.
+|CORE-IO — OPEN
+|`crates/formatrix-core/src/file_ops.rs`
+|Specify format selection, errors, file replacement and bounds under OS assumptions.
+|Model successful/failed conversion transactions and effects.
+|CORE-FFI — OPEN
+|`crates/formatrix-core/src/ffi.rs`, feature `ffi`
+|Identify unsafe ownership, pointer validity, encoding and panic boundaries;
+unsupported verifier operations need explicit assumptions or separate obligations.
+|Model allocation handles, ownership transfer and caller preconditions; prove the
+relation to the C ABI implementation before claiming memory safety.
+|OPTIONAL-COMPONENTS — OPEN
+|`crates/formatrix-db`, `crates/formatrix-pipeline`, `crates/formatrix-gui`
+|Specify database/pipeline/UI effects and trusted external interfaces. These
+packages are outside the portable default build and need their own validation.
+|Model persistence and pipeline state transitions. The historical GUI code does
+not establish a qualified DocMatrix desktop application.
+|TEST-INSTRUMENTS — OPEN
+|Rust tests, `fuzz/`, and the core/data benchmark executables
+|Specify generators, comparators and measurement boundaries where feasible;
+keep empirical campaigns distinct from proof obligations.
+|Model oracle soundness and counterexample coverage assumptions; never treat
+successful bounded testing as universal validity.
+|===
+
+== Imported proof boundary
+
+The adapter pins kyq to `128cb50b62d77af171d351611e2229313c29ed7a`, which pins
+ijson-jcs to `c7091491ad48b64c19ee9bb754a28186f8e94042`. kyq's production
+node-budget decrement has a Creusot/Pearlite proof; its Verus arithmetic model
+is separately verified. Consult kyq's `verification/PROOF-STATUS.adoc` and
+`verification/REPLAY-2026-11-16.adoc` for exact sources and trusted tools.
+The model-to-production refinement remains open. Neither receipt proves
+DocMatrix conversion, the whole KYAML parser, Dhall evaluation or prose parsing.
+
+== Evidence and admission
+
+At the earlier kyq pin `9df66eb`, the 2026-11-16 Windows portable package tests and warnings-denied Clippy
+passed against the immutable Git dependency, including the three-format adapter
+and CLI byte-profile/rejection cases. These are empirical results, not proofs.
+CI must identify the tested commit and package/features; optional components,
+whole-converter proofs and all-estate acceptance remain separate obligations.
+No empty proof job is introduced merely to produce a green verifier badge.
+
+The explicit binary64 reader and fuzz harness follow-up await hosted execution.
+The earlier budget receipts apply only to their unchanged production kernel;
+new JSON reader behavior is not formally verified by those receipts.

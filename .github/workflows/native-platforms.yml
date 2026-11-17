@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: MPL-2.0
+name: Native platforms
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-platforms-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: "1.99.1"
+      - run: cargo test --locked --all-targets
+      - run: cargo test --locked --doc
+      - name: Verify structured-data fuzz seeds
+        run: cargo test --locked --manifest-path fuzz/Cargo.toml --lib
+        env:
+          CARGO_TARGET_DIR: target
+      - run: bash launcher.sh --help
+      - run: bash build/just/provision-lib.sh langs

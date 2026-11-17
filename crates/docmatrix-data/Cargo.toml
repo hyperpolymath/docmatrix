@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: MPL-2.0
+[package]
+name = "docmatrix-data"
+description = "Bounded structured-data conversion for DocMatrix through kyq"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "docmatrix"
+path = "src/main.rs"
+
+[dependencies]
+kyq = { git = "https://github.com/metadatastician/kyq", rev = "128cb50b62d77af171d351611e2229313c29ed7a" }
+serde_json.workspace = true
+
+[target.'cfg(unix)'.dependencies]
+rlimit = "0.11"
+
+[dev-dependencies]
+proven-evidence = { git = "https://github.com/hyperpolymath/proven-tests-and-benches", rev = "2e978736732651098022169a6d1680e771eefc3e" }
+
+[[bench]]
+name = "structured_data"
+harness = false
