@@ -24,11 +24,11 @@ Cross-platform document editor with format tabs, allowing users to view and edit
 - Ada (TUI)
 - Nickel (pipelines, config)
 - Guile Scheme (SCM files)
-- Deno (runtime)
+- Bun (runtime, first choice)
 
 ### BANNED - Do Not Use
 - TypeScript (use AffineScript)
-- Node.js/npm/bun (use Deno)
+- Node.js/npm (use Bun first)
 - Go (use Rust)
 - Python (not applicable here)
 - Makefiles (use justfile)
