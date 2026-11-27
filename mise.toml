@@ -45,8 +45,8 @@ run = "cargo test --workspace"
 
 [tasks.lint]
 depends = ["setup"]
-run = "bunx --no-install --bun prettier --check ."
+run = 'bunx --no-install --bun prettier --check --no-error-on-unmatched-pattern "**/*.{js,mjs,cjs,json,md}"'
 
 [tasks.fmt]
 depends = ["setup"]
-run = "bunx --no-install --bun prettier --write ."
+run = 'bunx --no-install --bun prettier --write --no-error-on-unmatched-pattern "**/*.{js,mjs,cjs,json,md}"'
